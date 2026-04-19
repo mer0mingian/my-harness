@@ -16,10 +16,8 @@ permission:
   bash:
     '*': allow
   skills:
-    e2e-testing-patterns: allow
     python-testing-uv-playwright: allow
-    webapp-testing: allow
-    systematic-debugging: allow
+    review-*: allow
     general-*: allow
 ---
 # Agent Persona: Daniel's QA Agent

@@ -21,9 +21,8 @@ permission:
     ls *: allow
     mkdir *: allow
   skills:
-    general-system-design: allow
-    architecture-patterns: allow
-    api-design-principles: allow
+    general-*: allow
+    arch-*: allow
     daniels-openspec: allow
 ---
 # Agent Persona: Daniel's Design Agent

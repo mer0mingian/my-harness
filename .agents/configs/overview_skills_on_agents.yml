@@ -7,7 +7,7 @@ skills:
   path: .agents/skills/alpine-js-patterns/SKILL.md
   installed_by:
   - python-dev
-- name: api-design-principles
+- name: arch-api-design-principles
   description: Master REST and GraphQL API design principles to build intuitive, scalable,
     and maintainable APIs that delight developers. Use when designing new APIs...
   lines: 529
@@ -16,7 +16,7 @@ skills:
   path: .agents/skills/arch-api-design-principles/SKILL.md
   installed_by:
   - daniels-architect-agent
-- name: architecture-patterns
+- name: arch-architecture-patterns
   description: Implement proven backend architecture patterns including Clean Architecture,
     Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex
     backend systems or refactoring existing applications for better maintainability.
@@ -64,7 +64,7 @@ skills:
   path: .agents/skills/databases/SKILL.md
   installed_by:
   - python-dev
-- name: design-system-patterns
+- name: arch-design-system-patterns
   description: Build scalable design systems with design tokens, theming infrastructure,
     and component architecture patterns. Use when creating design tokens, implementing
     theme switching, building component libraries, or establishing design system foundations.
@@ -74,7 +74,7 @@ skills:
   path: .agents/skills/arch-design-system-patterns/SKILL.md
   installed_by:
   - daniels-architect-agent
-- name: differential-review
+- name: review-differential-review
   description: 'Perform security-focused differential review of code changes (PRs,
     commits, diffs). Use when analyzing code for security regressions, identifying
     blast radius, and checking test coverage. Adapts analysis depth to codebase size.
@@ -85,7 +85,7 @@ skills:
   path: .agents/skills/review-differential-review/SKILL.md
   installed_by:
   - code-reviewer
-- name: dispatching-parallel-agents
+- name: orchestrate-dispatching-parallel-agents
   description: Use when facing 2+ independent tasks that can be worked on without
     shared state or sequential dependencies
   lines: 181
@@ -106,7 +106,7 @@ skills:
   path: .agents/skills/docker-expert/SKILL.md
   installed_by:
   - python-dev
-- name: e2e-testing-patterns
+- name: review-e2e-testing-patterns
   description: Master end-to-end testing with Playwright and Cypress to build reliable
     test suites that catch bugs, improve confidence, and enable fast deployment. Use
     when implementing E2E tests, debugging flaky tests, or establishing testing standards.
@@ -116,7 +116,7 @@ skills:
   path: .agents/skills/review-e2e-testing-patterns/SKILL.md
   installed_by:
   - daniels-qa-agent
-- name: executing-plans
+- name: orchestrate-executing-plans
   description: Use when you have a written implementation plan to execute in a separate
     session with review checkpoints
   lines: 85
@@ -364,7 +364,7 @@ skills:
   - daniels-qa-agent
   - daniels-critical-thinking-agent
   - python-dev
-- name: subagent-driven-development
+- name: orchestrate-subagent-driven-development
   description: Use when executing implementation plans with independent tasks in the
     current session
   lines: 243
@@ -392,7 +392,7 @@ skills:
   - daniels-architect-agent
   - daniels-qa-agent
   - python-dev
-- name: systematic-debugging
+- name: review-systematic-debugging
   description: Use when encountering any bug, test failure, or unexpected behavior,
     before proposing fixes
   lines: 297
@@ -471,7 +471,7 @@ skills:
   - daniels-architect-agent
   - daniels-qa-agent
   - python-dev
-- name: webapp-testing
+- name: review-webapp-testing
   description: Toolkit for interacting with and testing local web applications using
     Playwright. Supports verifying frontend functionality, debugging UI behavior,
     capturing browser screenshots, and viewing browser logs.
@@ -482,7 +482,7 @@ skills:
   installed_by:
   - daniels-qa-agent
   - python-dev
-- name: writing-plans
+- name: arch-writing-plans
   description: Use when you have a spec or requirements for a multi-step task, before
     touching code
   lines: 117
@@ -491,7 +491,7 @@ skills:
   path: .agents/skills/arch-writing-plans/SKILL.md
   installed_by:
   - daniels-architect-agent
-- name: smart-docs
+- name: arch-smart-docs
   description: Deepwiki-rs skill to automatically write and update docs
   lines: 96
   allowed_in:

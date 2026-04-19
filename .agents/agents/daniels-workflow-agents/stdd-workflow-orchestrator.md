@@ -18,9 +18,9 @@ permission:
     git branch: allow
     git status: allow
   skills:
-    subagent-driven-development: allow
-    executing-plans: allow
-    daniels-ask-questions-if-underspecified: allow
+    orchestrate-subagent-driven-development: allow
+    orchestrate-executing-plans: allow
+    stdd-ask-questions-if-underspecified: allow
 ---
 # Agent Persona: Daniel's Workflow Orchestrator
 

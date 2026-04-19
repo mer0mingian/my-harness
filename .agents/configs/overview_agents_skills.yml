@@ -4,15 +4,15 @@ agents:
     guidance on API design patterns for FastAPI. Role: Design & Planning. Phase: planning.'
   source: local
   skills:
-  - writing-plans
+  - arch-writing-plans
   - general-using-git-worktrees
   - general-system-design
   - general-solid
   - python-design-patterns
   - python-packaging
-  - api-design-principles
-  - architecture-patterns
-  - design-system-patterns
+  - arch-api-design-principles
+  - arch-architecture-patterns
+  - arch-design-system-patterns
   - general-using-superpowers
   - general-rtk-usage
   - python-testing-uv-playwright
@@ -21,14 +21,14 @@ agents:
   - general-git-advanced-workflows
   - general-python-environment
   - general-verification-before-completion
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   installed_by_skills:
-  - api-design-principles
-  - architecture-patterns
-  - design-system-patterns
+  - arch-api-design-principles
+  - arch-architecture-patterns
+  - arch-design-system-patterns
   - arch-smart-docs
   - skill-creator
-  - writing-plans
+  - arch-writing-plans
 - name: code-reviewer
   description: Use this agent when a major project step has been completed and needs
     to be reviewed against the original plan and coding standards.
@@ -312,8 +312,8 @@ agents:
   source: local
   skills:
   - general-system-design
-  - architecture-patterns
-  - api-design-principles
+  - arch-architecture-patterns
+  - arch-api-design-principles
   - stdd-openspec
   - arch-smart-docs
   - general-using-superpowers
@@ -323,12 +323,12 @@ agents:
   - general-solid
   - general-using-git-worktrees
   - general-python-environment
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   installed_by_skills:
   - general-system-design
   - general-solid
   - general-verification-before-completion
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   - general-git-advanced-workflows
   - general-using-git-worktrees
   - general-python-environment
