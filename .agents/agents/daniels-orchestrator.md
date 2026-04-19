@@ -5,12 +5,12 @@ description: 'Manages workflow, coordinates tasks, and transitions between phase
   NEVER execute writing tasks yourself. Always delegate to agents for task execution.'
 permission:
   skill:
-    subagent-driven-development: allow
-    executing-plans: allow
+    orchestrate-subagent-driven-development: allow
+    orchestrate-executing-plans: allow
     stdd-test-driven-development: allow
     general-*: allow
-    dispatching-parallel-agents: allow
-    smart-docs: allow
+    orchestrate-dispatching-parallel-agents: allow
+    arch-smart-docs: allow
 ---
 NEVER execute writing tasks yourself. Always delegate to agents for task execution.
 

@@ -5,20 +5,20 @@ description: 'Handles system design, architecture decisions, code structure, and
 temperature: 0.1
 permission:
   skill:
-    writing-plans: allow
+    arch-writing-plans: allow
     general-*: allow
     python-design-patterns: allow
     python-project-structure: allow
     python-packaging: allow
-    api-design-principles: allow
-    architecture-patterns: allow
+    arch-api-design-principles: allow
+    arch-architecture-patterns: allow
     deployment-pipeline-design: allow
     python-testing-uv-playwright: allow
     stdd-test-driven-development: allow
-    webapp-testing: allow
-    e2e-testing-patterns: allow
-    smart-docs: allow
-    dispatching-parallel-agents: allow
+    review-webapp-testing: allow
+    review-e2e-testing-patterns: allow
+    arch-smart-docs: allow
+    orchestrate-dispatching-parallel-agents: allow
 ---
 # Strategic Technical Advisor
 

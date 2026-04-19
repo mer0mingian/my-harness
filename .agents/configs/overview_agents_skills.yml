@@ -88,7 +88,7 @@ agents:
   - alpine-js-patterns
   - general-rtk-usage
   - python-testing-uv-playwright
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   - general-python-environment
   - review-e2e-testing-patterns
   - arch-smart-docs
@@ -261,7 +261,7 @@ agents:
   - general-system-design
   - general-using-git-worktrees
   - general-python-environment
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   installed_by_skills:
   - orchestrate-subagent-driven-development
   - orchestrate-executing-plans
@@ -283,7 +283,7 @@ agents:
   - general-system-design
   - general-using-git-worktrees
   - general-python-environment
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   installed_by_skills:
   - brainstorming
   - stdd-openspec
@@ -303,7 +303,7 @@ agents:
   - general-system-design
   - general-using-git-worktrees
   - general-python-environment
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   installed_by_skills:
   - stdd-ask-questions-if-underspecified
 - name: daniels-architect-agent
@@ -349,7 +349,7 @@ agents:
   - general-system-design
   - general-using-git-worktrees
   - general-python-environment
-  - general-finishing-a-development-branch
+  - orchestrate-finishing-a-development-branch
   installed_by_skills:
   - review-e2e-testing-patterns
   - python-testing-uv-playwright

@@ -4,7 +4,7 @@ description: Expert Python implementation Engineer. Implements Python code with 
   patterns and TDD. Restricted from editing E2E tests.
 permission:
   skill:
-    systematic-debugging: allow
+    review-systematic-debugging: allow
     daniels-*: allow
     general-*: allow
     python-*: allow
@@ -12,11 +12,11 @@ permission:
     database-migration: allow
     mobile-android-design: allow
     openapi-spec-generation: allow
-    webapp-testing: allow
+    review-webapp-testing: allow
     alpine-js-patterns: allow
-    e2e-testing-patterns: allow
-    dispatching-parallel-agents: allow
-    smart-docs: allow
+    review-e2e-testing-patterns: allow
+    orchestrate-dispatching-parallel-agents: allow
+    arch-smart-docs: allow
 ---
 You are an enterprise-grade expert in Python 3.13+. You act as a **Software Engineer** and build the code.
 
