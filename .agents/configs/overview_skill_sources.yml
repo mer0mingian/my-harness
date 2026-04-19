@@ -1,0 +1,131 @@
+api-design-principles:
+  - https://smithery.ai/skill/thapaliyabikendra/api-design-principles
+  - https://mcp.directory/skills/api-design-principles
+architecture-patterns:
+  - https://explainx.ai/skill/architecture-patterns
+async-python-patterns:
+  - https://mcpmarket.com/skill/l3digitalnet/async-python-patterns
+brainstorming:
+  - https://mcpmarket.com/skill/brainstorming
+  - https://smithery.ai/skill/Jamie-BitFlight/brainstorming-skill
+  - https://explainx.ai/skill/brainstorming
+  - https://llmbase.ai/skill/brainstorming
+ask-questions-if-underspecified:
+  - https://agentskills.me/ask-questions-if-underspecified
+  - https://explainx.ai/skill/ask-questions-if-underspecified
+  - https://github.com/trailofbits/skills/tree/main/plugins/ask-questions-if-underspecified
+openspec:
+  - https://lobehub.com/skills/openspec
+  - https://github.com/Fission-AI/OpenSpec
+  - https://smithery.ai/skill/ricardoroche/openspec-authoring
+product-spec-formats:
+  - https://agentskills.io/specification
+  - https://addyosmani.com/blog/how-to-write-a-good-spec-for-ai-agents/
+project-summary:
+  - https://medium.com/@bibekpoudel/the-skill-md-pattern-how-to-write-ai-agent-skills-that-actually-work-546377287756
+tdd:
+  - https://mcpmarket.com/skill/tdd-coding-agent
+  - https://langwatch.ai/blog/how-to-test-ai-agents-with-domain-driven-tdd
+  - https://medium.com/towards-dev/test-driven-development-tdd-with-ai-agents-a-beginner-s-guide-5f5656565656
+database-migration:
+  - https://lobehub.com/skills/administrakt0r-ai-agents-safe-coding-skills-database-migration
+databases:
+  - https://github.com/planetscale/database-skills
+  - https://database-skills.com
+design-system-patterns:
+  - https://clawbot.ai/skills/design-system-patterns
+  - https://quantaintelligence.ai/skills/building-design-system
+differential-review:
+  - https://github.com/trailofbits/awesome-agent-skills
+  - https://antigravity.codes/skills/security/differential-review
+dispatching-parallel-agents:
+  - https://github.com/Eibon7/roastr-ai
+  - https://aimcp.info/skills/dispatching-parallel-agents-skill
+docker-expert:
+  - https://smithery.ai/skill/gonzoblasco/docker-expert
+  - https://skillsplayground.com/skills/docker-expert
+  - https://explainx.ai/skill/docker-expert
+e2e-testing-patterns:
+  - https://lobehub.com/skills/e2e-testing-patterns
+  - https://github.com/Padmaraj-nidagundi/Playwright-AI-Agent-POM-MCP-Server
+  - https://claudepluginhub.com/skills/e2e-testing
+executing-plans:
+  - https://antigravity.codes/skills/executing-plans
+  - https://llmbase.ai/skill/executing-plans
+fastapi-templates:
+  - https://mcp.directory/skills/fastapi-templates
+  - https://lobehub.com/skills/fastapi-templates
+  - https://smithery.ai/skill/feiwanghub/fastapi-templates-skill
+find-skills:
+  - https://lobehub.com/skills/find-skills
+  - https://github.com/vercel-labs/skills/tree/main/skills/find-skills
+  - https://explainx.ai/skill/find-skills
+finishing-a-development-branch:
+  - https://agentskills.me/finishing-a-development-branch
+  - https://aimcp.info/skills/finishing-a-development-branch
+  - https://github.com/vertexaisearch/cloud-google-com/blob/main/skills/finishing-a-development-branch
+git-advanced-workflows:
+  - https://mcpmarket.com/skill/git-advanced-workflows
+  - https://github.com/netresearch/git-workflow-skill
+  - https://github.com/addyosmani/agent-skills/tree/main/skills/git-workflow-and-versioning
+python-environment:
+  - https://elite-ai-assisted-coding.dev/python-environment-skills
+  - https://github.com/astral-sh/uv-agent-integration
+rtk-usage:
+  - https://rtk-ai.app/
+  - https://skillsllm.com/agent-skills/rtk
+  - https://github.com/rtk-ai/rtk
+solid:
+  - https://github.com/ramziddin/solid-skills
+  - https://reddit.com/r/nestjs/comments/solid-agent-skill
+system-design:
+  - https://agentskills.io/system-design-patterns
+  - https://github.com/microsoft/awesome-agent-skills/tree/main/skills/cloud-solution-architect
+using-git-worktrees:
+  - https://antigravity.codes/skills/using-git-worktrees
+  - https://mcpmarket.com/skill/git-worktree-manager
+  - https://llmbase.ai/skill/using-git-worktrees
+verification-before-completion:
+  - https://explainx.ai/skill/verification-before-completion
+  - https://llmbase.ai/skill/verification-before-completion
+  - https://github.com/guanyang/antigravity-skills
+mcp-builder:
+  - https://lobehub.com/skills/mcp-builder
+  - https://mcpservers.org/mcp-builder
+  - https://claudeskills.org/mcp-builder
+mobile-android-design:
+  - https://agentmagic.com/skills/mobile-android-design
+  - https://skillsplayground.com/skills/mobile-android-design
+  - https://mcp.directory/skills/mobile-android-design
+python-code-style: []
+python-configuration: []
+python-design-patterns:
+  - https://mcp.directory/skills/python-design-patterns
+  - https://level8.bg/skills/python-design-patterns
+python-packaging:
+  - https://llmbase.ai/skill/python-packaging
+  - https://agentmagic.com/skills/python-packaging
+  - https://explainx.ai/skill/python-packaging
+python-testing-uv-playwright: []
+skill-auditor:
+  - https://llmbase.ai/skill/skill-auditor
+  - https://explainx.ai/skill/skill-auditor
+  - https://claudepluginhub.com/skills/skill-auditor
+skill-creator:
+  - https://agentman.ai/skills/skill-creator
+  - https://llmbase.ai/skill/skill-creator
+  - https://anthropic.com/news/building-skills-with-skill-creator
+smart-docs: []
+subagent-driven-development:
+  - https://towardsai.net/p/l/subagent-driven-development
+  - https://smithery.ai/skill/CodingCossack/subagent-driven-development
+  - https://github.com/obra/superpowers/tree/main/skills/subagent-driven-development
+systematic-debugging:
+  - https://verdent.ai/guides/systematic-debugging
+test-driven-development:
+  - https://mcpmarket.com/skill/tdd-coding-agent
+  - https://langwatch.ai/blog/tdd-for-ai-agents
+webapp-testing:
+  - https://llmbase.ai/skill/webapp-testing
+  - https://agentman.ai/skills/webapp-testing
+  - https://eigent.ai/skills/webapp-testing
