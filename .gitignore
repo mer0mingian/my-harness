@@ -15,6 +15,7 @@ env/
 .pytest_cache/
 .logs/
 .litho/
+.tmp/
 
 # IDE
 .idea/
