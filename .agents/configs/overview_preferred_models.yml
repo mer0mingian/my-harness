@@ -1,0 +1,17 @@
+models:
+  - opencode/minimax-m2.5-free
+  - opencode/big-pickle
+  - opencode/nemotron-3-super-free
+  - opencode/mimo-v2-pro-free
+  - opencode/mimo-v2-omni-free
+  - opencode/qwen3.6-plus-free
+  - openrouter/nvidia/nemotron-3-super-120b-a12b-free
+  - openrouter/stepfun/step-3.5-flash:free
+  - openrouter/qwen/qwen3.6-plus-preview:free
+
+models_to_test:
+  - mistralai/labs-leanstral-2603
+
+reference_pages:
+  - https://opencode.ai/zen/v1/models
+  - https://models.dev/model-schema.json

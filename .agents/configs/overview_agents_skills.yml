@@ -1,0 +1,291 @@
+agents:
+- name: daniels-architect
+  description: 'Handles system design, architecture decisions, and planning. Provides
+    guidance on API design patterns for FastAPI. Role: Design & Planning. Phase: pla...'
+  source: local
+  skills:
+  - writing-plans
+  - general-using-git-worktrees
+  - general-system-design
+  - general-solid
+  - python-design-patterns
+  - python-packaging
+  - api-design-principles
+  - architecture-patterns
+  - design-system-patterns
+  - general-using-superpowers
+  - general-rtk-usage
+  - python-testing-uv-playwright
+  - skill-creator
+  - smart-docs
+- name: daniels-code-reviewer
+  description: Use this agent when a major project step has been completed and needs
+    to be reviewed against the original plan and coding standards.
+  source: local
+  skills:
+  - python-code-style
+  - differential-review
+  - general-solid
+  - general-rtk-usage
+  - python-testing-uv-playwright
+  - e2e-testing-patterns
+  - skill-auditor
+  - smart-docs
+- name: daniels-orchestrator
+  description: 'Manages workflow, coordinates tasks, and transitions between phases.
+    Role: Coordination & Progress Tracking. Phase: brainstorming. Tools Access: minim...'
+  source: local
+  skills:
+  - general-using-superpowers
+  - brainstorming
+  - subagent-driven-development
+  - executing-plans
+  - test-driven-development
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - dispatching-parallel-agents
+  - smart-docs
+- name: daniels-python-dev
+  description: 'Implements Python code with modern patterns and best practices. Provides
+    explicit deployment instructions. Role: Implementation. Phase: implementation...'
+  source: local
+  skills:
+  - subagent-driven-development
+  - test-driven-development
+  - systematic-debugging
+  - general-verification-before-completion
+  - general-git-advanced-workflows
+  - python-async-patterns
+  - python-packaging
+  - python-type-safety
+  - python-code-style
+  - python-configuration
+  - python-design-patterns
+  - general-solid
+  - fastapi-templates
+  - databases
+  - docker-expert
+  - database-migration
+  - mobile-android-design
+  - general-using-git-worktrees
+  - webapp-testing
+  - alpine-js-patterns
+  - general-rtk-usage
+  - python-testing-uv-playwright
+  - general-finishing-a-development-branch
+  - general-python-environment
+  - e2e-testing-patterns
+  - smart-docs
+  - daniels-tdd
+  - daniels-openspec
+- name: architect
+  description: Strategic technical advisor providing high-leverage guidance on architecture,
+    code structure, and complex engineering trade-offs. Read-only.
+  source: opencode-froggy
+  mode: subagent
+  tools:
+    write: false
+    edit: false
+    bash: false
+    patch: false
+  skills: []
+- name: doc-writer
+  description: Technical writer that crafts clear, comprehensive documentation (README,
+    API docs, architecture docs, user guides).
+  source: opencode-froggy
+  mode: subagent
+  skills: []
+- name: code-reviewer
+  description: Read-only code review agent for quality, correctness, security, and
+    maintainability feedback.
+  source: opencode-froggy
+  mode: subagent
+  tools:
+    write: false
+    edit: false
+    permission:
+      bash:
+        '*': deny
+        git fetch*: allow
+        git diff*: allow
+        git log*: allow
+        git show*: allow
+        git status*: allow
+  skills: []
+- name: code-simplifier
+  description: Simplifies recently modified code for clarity and maintainability while
+    strictly preserving behavior.
+  source: opencode-froggy
+  mode: subagent
+  skills: []
+- name: partner
+  description: Strategic ideation partner that breaks frames, expands solution spaces,
+    and surfaces non-obvious strategic options. Read-only.
+  source: opencode-froggy
+  mode: subagent
+  tools:
+    write: false
+    edit: false
+    bash: false
+    patch: false
+  skills: []
+- name: rubber-duck
+  description: Strategic thinking partner for exploratory dialogue. Challenges assumptions,
+    asks pointed questions, and sharpens thinking through conversational friction.
+    Read-only.
+  source: opencode-froggy
+  mode: subagent
+  tools:
+    write: false
+    edit: false
+    bash: false
+    patch: false
+  skills: []
+- name: explore
+  description: Fast agent specialized for exploring codebases. Use for quick file
+    searches, code keyword searches, or answering questions about the codebase.
+  source: opencode-froggy
+  mode: subagent
+  skills: []
+- name: general
+  description: General-purpose agent for researching complex questions and executing
+    multi-step tasks.
+  source: opencode-froggy
+  mode: subagent
+  skills: []
+- name: tdd-orchestrator
+  description: Master TDD orchestrator specializing in red-green-refactor discipline,
+    multi-agent workflow coordination, and comprehensive test-driven development practices.
+  source: opencode-froggy
+  mode: subagent
+  skills:
+  - daniels-tdd
+- name: tdd-code-reviewer
+  description: Elite code review expert specializing in modern AI-powered code analysis,
+    security vulnerabilities, performance optimization, and production reliability.
+  source: opencode-froggy
+  mode: subagent
+  skills: []
+- name: openspec-plan
+  description: OpenSpec Architect - Plan and specify software architecture. Allows
+    creating and editing OpenSpec documents while keeping implementation code read-only.
+  source: opencode-plugin-openspec
+  mode: primary
+  color: '#FF6B6B'
+  permission:
+    read:
+      '*': allow
+    edit:
+      '*': deny
+      project.md: allow
+      AGENTS.md: allow
+      openspec/**: allow
+      specs/**: allow
+    bash:
+      '*': deny
+      openspec: allow
+      openspec *: allow
+      grep *: allow
+      ls: allow
+      ls *: allow
+      cat *: allow
+      find *: allow
+      echo: allow
+      echo *: allow
+      pwd: allow
+      which *: allow
+      env: allow
+      printenv *: allow
+      git status*: allow
+      git log*: allow
+      git diff*: allow
+      git show*: allow
+  skills: []
+- name: daniels-workflow-orchestrator
+  description: Master read-only interface for the SDD workflow. Manages task sequences,
+    parallel execution, and user approval gates.
+  source: local
+  skills:
+  - general-using-superpowers
+  - subagent-driven-development
+  - executing-plans
+  - daniels-ask-questions-if-underspecified
+  - general-rtk-usage
+  - general-verification-before-completion
+  - general-git-advanced-workflows
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-python-environment
+  - general-finishing-a-development-branch
+- name: daniels-spec-agent
+  description: Requirements Engineer. Defines project summary and feature specs using
+    OpenSpec and modern formats.
+  source: local
+  skills:
+  - brainstorming
+  - daniels-openspec
+  - daniels-product-spec-formats
+  - daniels-project-summary
+  - general-using-superpowers
+  - general-rtk-usage
+  - general-verification-before-completion
+  - general-git-advanced-workflows
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-python-environment
+  - general-finishing-a-development-branch
+- name: daniels-critical-thinking-agent
+  description: Red Team Validator. Excels in critical thinking. Analyzes specs and
+    plans for completeness and edge cases.
+  source: local
+  skills:
+  - daniels-ask-questions-if-underspecified
+  - general-using-superpowers
+  - general-rtk-usage
+  - general-verification-before-completion
+  - general-git-advanced-workflows
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-python-environment
+  - general-finishing-a-development-branch
+- name: daniels-architect-agent
+  description: Technical Solution Designer. Handles C4 design, technical blueprinting,
+    and PR summaries.
+  source: local
+  skills:
+  - general-system-design
+  - architecture-patterns
+  - api-design-principles
+  - daniels-openspec
+  - smart-docs
+  - general-using-superpowers
+  - general-rtk-usage
+  - general-verification-before-completion
+  - general-git-advanced-workflows
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-python-environment
+  - general-finishing-a-development-branch
+- name: daniels-qa-agent
+  description: Quality Assurance Specialist. Creates E2E/Integration tests and reviews
+    SWE implementations.
+  source: local
+  skills:
+  - e2e-testing-patterns
+  - python-testing-uv-playwright
+  - webapp-testing
+  - systematic-debugging
+  - general-solid
+  - general-using-superpowers
+  - general-rtk-usage
+  - general-verification-before-completion
+  - general-git-advanced-workflows
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-python-environment
+  - general-finishing-a-development-branch

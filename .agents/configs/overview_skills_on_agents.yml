@@ -1,0 +1,406 @@
+skills:
+- name: alpine-js-patterns
+  description: ''
+  lines: 56
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/alpine-js-patterns/SKILL.md
+- name: api-design-principles
+  description: Master REST and GraphQL API design principles to build intuitive, scalable,
+    and maintainable APIs that delight developers. Use when designing new APIs...
+  lines: 529
+  allowed_in:
+  - daniels-architect-agent
+  path: .opencode/skills/api-design-principles/SKILL.md
+- name: architecture-patterns
+  description: Implement proven backend architecture patterns including Clean Architecture,
+    Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex
+    backend systems or refactoring existing applications for better maintainability.
+  lines: 495
+  allowed_in:
+  - daniels-architect-agent
+  path: .opencode/skills/architecture-patterns/SKILL.md
+- name: daniels-ask-questions-if-underspecified
+  description: Clarify requirements before implementing. Use when serious doubts arise.
+  lines: unknown
+  source: opencode-froggy
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  path: .opencode/skills/daniels-ask-questions-if-underspecified/SKILL.md
+- name: brainstorming
+  description: You MUST use this before any creative work - creating features, building
+    components, adding functionality, or modifying behavior. Explores user intent...
+  lines: 55
+  allowed_in:
+  - daniels-spec-agent
+  path: .opencode/skills/brainstorming/SKILL.md
+- name: database-migration
+  description: Execute database migrations across ORMs and platforms with zero-downtime
+    strategies, data transformation, and rollback procedures. Use when migrating ...
+  lines: 434
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/database-migration/SKILL.md
+- name: databases
+  description: Work with MongoDB (document database, BSON documents, aggregation pipelines,
+    Atlas cloud) and PostgreSQL (relational database, SQL queries, psql CLI, ...
+  lines: 233
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/databases/SKILL.md
+- name: design-system-patterns
+  description: Build scalable design systems with design tokens, theming infrastructure,
+    and component architecture patterns. Use when creating design tokens, implementing
+    theme switching, building component libraries, or establishing design system foundations.
+  lines: 338
+  allowed_in:
+  - daniels-architect
+  path: .opencode/skills/design-system-patterns/SKILL.md
+- name: differential-review
+  description: 'Perform security-focused differential review of code changes (PRs,
+    commits, diffs). Use when analyzing code for security regressions, identifying
+    blast radius, and checking test coverage. Adapts analysis depth to codebase size.
+    Cluster: Code Quality (CHECK)'
+  lines: 280
+  allowed_in:
+  - daniels-code-reviewer
+  path: .opencode/skills/differential-review/SKILL.md
+- name: dispatching-parallel-agents
+  description: Use when facing 2+ independent tasks that can be worked on without
+    shared state or sequential dependencies
+  lines: 181
+  allowed_in:
+  - daniels-orchestrator
+  - daniels-workflow-orchestrator
+  - daniels-refine-agent
+  path: .opencode/skills/dispatching-parallel-agents/SKILL.md
+- name: docker-expert
+  description: Docker containerization expert with deep knowledge of multi-stage builds,
+    image optimization, container security, Docker Compose orchestration, and production
+    deployment patterns. Use PROACTIVELY for Dockerfile optimization, container issues,
+    image size problems, security hardening, networking, and orchestration challenges.
+  lines: 409
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/docker-expert/SKILL.md
+- name: e2e-testing-patterns
+  description: Master end-to-end testing with Playwright and Cypress to build reliable
+    test suites that catch bugs, improve confidence, and enable fast deployment. Use
+    when implementing E2E tests, debugging flaky tests, or establishing testing standards.
+  lines: 545
+  allowed_in:
+  - daniels-qa-agent
+  path: .opencode/skills/e2e-testing-patterns/SKILL.md
+- name: executing-plans
+  description: Use when you have a written implementation plan to execute in a separate
+    session with review checkpoints
+  lines: 85
+  allowed_in:
+  - daniels-workflow-orchestrator
+  path: .opencode/skills/executing-plans/SKILL.md
+- name: fastapi-templates
+  description: Create production-ready FastAPI projects with async patterns, dependency
+    injection, and comprehensive error handling. Use when building new FastAPI applications
+    or setting up backend API projects.
+  lines: 568
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/fastapi-templates/SKILL.md
+- name: general-finishing-a-development-branch
+  description: Use when implementation is complete, all tests pass, and you need to
+    decide how to integrate the work - guides completion of development work by presenting
+    structured options for merge, PR, or cleanup
+  lines: 201
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-finishing-a-development-branch/SKILL.md
+- name: general-git-advanced-workflows
+  description: Master advanced Git workflows including rebasing, cherry-picking, bisect,
+    worktrees, and reflog to maintain clean history and recover from any situation.
+    Use when managing complex Git histories, collaborating on feature branches, or
+    troubleshooting repository issues.
+  lines: 406
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-git-advanced-workflows/SKILL.md
+- name: hugging-face-cli
+  description: Execute Hugging Face Hub operations using the `hf` CLI. Use when the
+    user needs to download models/datasets/spaces, upload files to Hub repositories,
+    create repos, manage local cache, or run compute jobs on HF infrastructure. Covers
+    authentication, file transfers, repository creation, cache operations, and cloud
+    compute.
+  lines: 187
+  allowed_in: []
+  path: .opencode/skills/hugging-face-cli/SKILL.md
+- name: mcp-builder
+  description: Guide for creating high-quality MCP (Model Context Protocol) servers
+    that enable LLMs to interact with external services through well-designed tools.
+    Use when building MCP servers to integrate external APIs or services, whether
+    in Python (FastMCP) or Node/TypeScript (MCP SDK).
+  lines: 237
+  allowed_in: []
+  path: .opencode/skills/mcp-builder/SKILL.md
+- name: mobile-android-design
+  description: Master Material Design 3 and Jetpack Compose patterns for building
+    native Android apps. Use when designing Android interfaces, implementing Compose
+    UI, or following Google's Material Design guidelines.
+  lines: 441
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/mobile-android-design/SKILL.md
+- name: python-async-patterns
+  description: Master Python asyncio, concurrent programming, and async/await patterns
+    for high-performance applications. Use when building async APIs, concurrent systems,
+    or I/O-bound applications requiring non-blocking operations. Covers event loops,
+    tasks, futures, and synchronization primitives.
+  lines: 71
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/python-async-patterns/SKILL.md
+- name: python-code-style
+  description: Python code style, linting, formatting, naming conventions, and documentation
+    standards. Use when writing new code, reviewing style, configuring linters, writing
+    docstrings, or establishing project standards.
+  lines: 361
+  allowed_in:
+  - daniels-code-reviewer
+  - daniels-python-dev
+  path: .opencode/skills/python-code-style/SKILL.md
+- name: python-configuration
+  description: Python configuration management via environment variables and typed
+    settings. Use when externalizing config, setting up pydantic-settings, managing
+    secrets, or implementing environment-specific behavior.
+  lines: 369
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/python-configuration/SKILL.md
+- name: python-design-patterns
+  description: Python design patterns including KISS, Separation of Concerns, Single
+    Responsibility, and composition over inheritance. Use when making architecture
+    decisions, refactoring code structure, or evaluating when abstractions are appropriate.
+  lines: 412
+  allowed_in:
+  - daniels-architect
+  - daniels-python-dev
+  path: .opencode/skills/python-design-patterns/SKILL.md
+- name: general-python-environment
+  description: 'Configure Python projects, manage dependencies with uv, and package
+    code for distribution. Use when setting up new projects, managing virtual environments,
+    or creating PyPI-ready packages. Cluster: Python Development (MERGED)'
+  lines: 90
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-python-environment/SKILL.md
+- name: python-packaging
+  description: Create distributable Python packages with proper project structure,
+    setup.py/pyproject.toml, and publishing to PyPI. Use when packaging Python libraries,
+    creating CLI tools, or distributing Python code.
+  lines: 889
+  allowed_in:
+  - daniels-architect
+  - daniels-python-dev
+  path: .opencode/skills/python-packaging/SKILL.md
+- name: python-testing-uv-playwright
+  description: 'Run Python Playwright E2E tests using uv package manager. Use when:
+    - Running Python pytest-playwright tests - Need E2E testing for Python web applications
+    - Working with playwright.sync_api in Python - NOTE: For JavaScript/TypeScript
+    Playwright tests (.spec.js), use rtk or npx instead'
+  lines: 72
+  allowed_in:
+  - daniels-qa-agent
+  path: .opencode/skills/python-testing-uv-playwright/SKILL.md
+- name: python-type-safety
+  description: Python type safety with type hints, generics, protocols, and strict
+    type checking. Use when adding type annotations, implementing generic classes,
+    defining structural interfaces, or configuring mypy/pyright.
+  lines: 429
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/python-type-safety/SKILL.md
+- name: general-rtk-usage
+  description: 'Use RTK (Rust Token Killer) CLI for token-optimized command execution.
+    RTK is a high-performance CLI proxy that reduces LLM token consumption by 60-90%
+    on common dev commands. Use when: - Running common CLI commands (git, npm, pytest,
+    docker, etc.) - Need to optimize token usage in CLI outputs - Working with GitHub
+    CLI (gh), Docker, npm, or other supported commands - NOTE: Does NOT support Python
+    pytest-playwright (.py) files - only JavaScript/TypeScript'
+  lines: 71
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-rtk-usage/SKILL.md
+- name: skill-auditor
+  description: Use when auditing skill quality, reviewing skills for improvements,
+    or ensuring skills follow best practices. Evaluates skills against comprehensive
+    quality criteria including structure, discoverability, effectiveness, and technical
+    implementation.
+  lines: 88
+  allowed_in:
+  - daniels-code-reviewer
+  path: .opencode/skills/skill-auditor/SKILL.md
+- name: skill-creator
+  description: Guide for creating effective skills. This skill should be used when
+    users want to create a new skill (or update an existing skill) that extends Claude's
+    capabilities with specialized knowledge, workflows, or tool integrations.
+  lines: 357
+  allowed_in:
+  - daniels-architect
+  path: .opencode/skills/skill-creator/SKILL.md
+- name: general-solid
+  description: 'Enforce SOLID principles for robust, maintainable, and flexible code.
+    Use when writing, refactoring, designing architecture, or reviewing code. Explicitly
+    checks for SRP, OCP, LSP, ISP, and DIP adherence. Cluster: Code Quality (CHECK)'
+  lines: 45
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-solid/SKILL.md
+- name: subagent-driven-development
+  description: Use when executing implementation plans with independent tasks in the
+    current session
+  lines: 243
+  allowed_in:
+  - daniels-workflow-orchestrator
+  path: .opencode/skills/subagent-driven-development/SKILL.md
+- name: general-system-design
+  description: 'Diagnose design problems and guide architecture decisions for software
+    projects. This skill should be used when the user asks to ''design the system'',
+    ''plan the architecture'', ''make technology choices'', ''create ADRs'', ''define
+    components'', or needs help translating requirements into architecture. Keywords:
+    architecture, design, components, ADR, walking skeleton, trade-offs, integration,
+    YAGNI. Cluster: Architecture (MERGE CANDIDATE)'
+  lines: 58
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-system-design/SKILL.md
+- name: systematic-debugging
+  description: Use when encountering any bug, test failure, or unexpected behavior,
+    before proposing fixes
+  lines: 297
+  allowed_in:
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/systematic-debugging/SKILL.md
+- name: daniels-tdd
+  description: Apply Test-Driven Development workflow for new features and bugfixes.
+  lines: unknown
+  source: opencode-froggy
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/daniels-tdd/SKILL.md
+- name: test-driven-development
+  description: Use when implementing any feature or bugfix, before writing implementation
+    code
+  lines: 372
+  allowed_in:
+  - daniels-python-dev
+  path: .opencode/skills/test-driven-development/SKILL.md
+- name: general-using-git-worktrees
+  description: Use when starting feature work that needs isolation from current workspace
+    or before executing implementation plans - creates isolated git worktrees with
+    smart directory selection and safety verification
+  lines: 219
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-using-git-worktrees/SKILL.md
+- name: general-using-superpowers
+  description: Use when starting any conversation - establishes how to find and use
+    skills, requiring Skill tool invocation before ANY response including clarifying
+    questions
+  lines: 88
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-using-superpowers/SKILL.md
+- name: general-verification-before-completion
+  description: Use when about to claim work is complete, fixed, or passing, before
+    committing or creating PRs - requires running verification commands and confirming
+    output before making any success claims; evidence before assertions always
+  lines: 140
+  allowed_in:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - daniels-python-dev
+  path: .opencode/skills/general-verification-before-completion/SKILL.md
+- name: webapp-testing
+  description: Toolkit for interacting with and testing local web applications using
+    Playwright. Supports verifying frontend functionality, debugging UI behavior,
+    capturing browser screenshots, and viewing browser logs.
+  lines: 96
+  allowed_in:
+  - daniels-qa-agent
+  path: .opencode/skills/webapp-testing/SKILL.md
+- name: writing-plans
+  description: Use when you have a spec or requirements for a multi-step task, before
+    touching code
+  lines: 117
+  allowed_in:
+  - daniels-architect
+  - daniels-refine-agent
+  path: .opencode/skills/writing-plans/SKILL.md
+- name: smart-docs
+  description: Deepwiki-rs skill to automatically write and update docs
+  lines: unknown
+  allowed_in:
+  - daniels-architect-agent
+  path: .opencode/skills/smart-docs/SKILL.md
+- name: daniels-openspec
+  description: Master the OpenSpec artifact-guided workflow for AI-assisted development.
+    Use this skill when proposing, designing, or implementing new features.
+  lines: 32
+  allowed_in:
+  - daniels-spec-agent
+  - daniels-architect-agent
+  - daniels-python-dev
+  path: .opencode/skills/daniels-openspec/SKILL.md
+- name: daniels-product-spec-formats
+  description: Master various formats for defining product requirements and logic-heavy
+    features (Job Stories, Gherkin, EARS, Planguage, Anti-Story).
+  lines: 37
+  allowed_in:
+  - daniels-spec-agent
+  path: .opencode/skills/daniels-product-spec-formats/SKILL.md
+- name: daniels-project-summary
+  description: Define and maintain the project/product summary (Goal, Tech Stack,
+    Users, Scale).
+  lines: 35
+  allowed_in:
+  - daniels-spec-agent
+  path: .opencode/skills/daniels-project-summary/SKILL.md

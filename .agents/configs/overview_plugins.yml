@@ -1,0 +1,42 @@
+# Overview of installed plugins
+opencode-managed-plugins:
+  - Froggy:
+      note: Introduces some good skills and hooks for managing tasks
+      source: https://github.com/smartfrog/opencode-froggy?tab=readme-ov-file#installation
+  - Conductor:
+      note: Creates a coordinator for a team of agents.
+      source: https://github.com/derekbar90/opencode-conductor
+  - Envsitter-Guard:
+      note: Protects environment variables
+      source: https://github.com/boxpositron/envsitter-guard
+  - Subtask2: 
+      note: Enables chaining of prompts within commands
+      source: https://github.com/spoons-and-mirrors/subtask2
+  - Superpowers:
+      note: Very popular harness with combination of agents, well-tested 
+      source: "https://github.com/obra/superpowers"
+
+foreign-plugins:
+  - name: opencode_background_agents
+    installation_type: manual
+    source: https://github.com/kdcokenny/opencode-background-agents
+    note: Create "delegate" tool for read-only agents.
+    dependencies:
+      unique-names-generator:
+        command: "npm i -S unique-names-generator"
+        source: https://github.com/andreasonny83/unique-names-generator
+  - name: deepwiki-rs
+    installation_type: managed
+    dependency: rust, cargo
+    source: https://github.com/sopaco/deepwiki-rs?tab=readme-ov-file
+    note: Focussing on Architecture, clear readable report with auto-update skill
+
+future:
+  - Handy: https://github.com/cjpais/Handy
+  - Vibeguard: https://github.com/inkdust2021/opencode-vibeguard
+  - name: openspec
+    command: "npm install -g @fission-ai/openspec@latest"
+    source: "https://github.com/Fission-AI/OpenSpec?tab=readme-ov-file"
+  - name: opencode-ensemble
+    source: "https://github.com/hueyexe/opencode-ensemble"
+    note: definitely worth watching, fast growing and mature exchange of agent contexts in the team
