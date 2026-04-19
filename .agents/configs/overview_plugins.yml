@@ -37,6 +37,47 @@ future:
   - name: openspec
     command: "npm install -g @fission-ai/openspec@latest"
     source: "https://github.com/Fission-AI/OpenSpec?tab=readme-ov-file"
+
+mer0mingian-forks:
+  # Original: https://github.com/bigknoxy/opencode-skill-evolution
+  - name: opencode-skill-evolution
+    installation_type: managed
+    source: https://github.com/mer0mingian/opencode-skill-evolution
+    note: Learns from skill usage and suggests relevant skills automatically
+
+  # Original: https://github.com/KristjanPikhof/OpenCode-Hooks
+  - name: OpenCode-Hooks
+    installation_type: manual
+    source: https://github.com/mer0mingian/OpenCode-Hooks
+    note: Runs command, tool, and bash hooks from hooks.yaml during session and tool lifecycle
+
+  # Original: https://github.com/hueyexe/opencode-ensemble
   - name: opencode-ensemble
-    source: "https://github.com/hueyexe/opencode-ensemble"
-    note: definitely worth watching, fast growing and mature exchange of agent contexts in the team
+    installation_type: managed
+    source: https://github.com/mer0mingian/opencode-ensemble
+    note: Run parallel AI agents in OpenCode, each with own session and git worktree
+
+  # Original: https://github.com/spoons-and-mirrors/subtask2
+  - name: subtask2-mer0mingian
+    installation_type: manual
+    source: https://github.com/mer0mingian/subtask2
+    note: Enhanced subtask control with return context and prompt chaining
+
+  # Original: https://github.com/Octane0411/opencode-plugin-openspec
+  - name: opencode-plugin-openspec
+    installation_type: managed
+    source: https://github.com/mer0mingian/opencode-plugin-openspec
+    note: Dedicated OpenSpec Architect agent for planning and specifying
+
+  # Original: https://github.com/kdcokenny/opencode-background-agents
+  - name: opencode-background-agents
+    installation_type: manual
+    source: https://github.com/mer0mingian/opencode-background-agents
+    note: Create "delegate" tool for read-only background agents
+
+  # Original: https://github.com/JsonLee12138/agent-team
+  - name: agent-team
+    installation_type: manual
+    dependency: go
+    source: https://github.com/JsonLee12138/agent-team
+    note: Multi-agent manager with Role + Worker model in isolated git worktrees

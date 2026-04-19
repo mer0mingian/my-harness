@@ -3,18 +3,41 @@
     // Set this as additional information for all agents.
     "instructions": [
         "README.md", 
-        "docs/README.md", 
+        // "docs/README.md", 
         // TODO: Add architecture infos here from deepwiki!
     ],
     "plugin": [
         // TDD-workflow + addtional hooks
-        "opencode-froggy", 
+        "github:mer0mingian/opencode-froggy@latest", 
         //
         // Protect Env Variables
         "envsitter-guard@latest",
         //
         // Subtask-System
+        // Installation: npm install -g @spoons-and-mirrors/subtask2
         "github:spoons-and-mirrors/subtask2#debug",
+        //
+        // Skill Evolution (mer0mingian fork - learns from skill usage)
+        // Installation: opencode plugin opencode-skill-evolution@latest --global
+        // "github:mer0mingian/opencode-skill-evolution",
+        //
+        // OpenCode-Hooks (mer0mingian fork - YAML hooks)
+        // Installation: bun add "https://github.com/mer0mingian/OpenCode-Hooks.git"
+        //
+        // OpenCode Ensemble (mer0mingian fork - parallel agents)
+        // Installation: npm install -g @hueyexe/opencode-ensemble
+        // "github:mer0mingian/opencode-ensemble",
+        //
+        // OpenCode Plugin OpenSpec (mer0mingian fork - dedicated architect)
+        // Installation: npm install -g opencode-plugin-openspec
+        "github:mer0mingian/opencode-plugin-openspec",
+        //
+        // Background Agents (mer0mingian fork - delegate tool)
+        // Installation: bun add "https://github.com/mer0mingian/opencode-background-agents.git"
+        //
+        // Agent Team (JsonLee12138 - go install)
+        // Installation: go install github.com/JsonLee12138/agent-team@latest
+        // Note: Not a plugin, requires separate CLI setup
     ],
 /*  
     // Only needed if Conductor plugin active
