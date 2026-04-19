@@ -17,7 +17,7 @@ agents:
   - general-rtk-usage
   - python-testing-uv-playwright
   - skill-creator
-  - smart-docs
+  - arch-smart-docs
   - general-git-advanced-workflows
   - general-python-environment
   - general-verification-before-completion
@@ -26,7 +26,7 @@ agents:
   - api-design-principles
   - architecture-patterns
   - design-system-patterns
-  - smart-docs
+  - arch-smart-docs
   - skill-creator
   - writing-plans
 - name: code-reviewer
@@ -35,15 +35,15 @@ agents:
   source: local
   skills:
   - python-code-style
-  - differential-review
+  - review-differential-review
   - general-solid
   - general-rtk-usage
   - python-testing-uv-playwright
-  - e2e-testing-patterns
+  - review-e2e-testing-patterns
   - skill-auditor
-  - smart-docs
+  - arch-smart-docs
   installed_by_skills:
-  - differential-review
+  - review-differential-review
   - skill-auditor
 - name: daniels-orchestrator
   description: 'Manages workflow, coordinates tasks, and transitions between phases.
@@ -53,22 +53,22 @@ agents:
   skills:
   - general-using-superpowers
   - brainstorming
-  - subagent-driven-development
-  - executing-plans
-  - general-finishing-a-development-branch
+  - orchestrate-subagent-driven-development
+  - orchestrate-executing-plans
+  - orchestrate-finishing-a-development-branch
   - general-git-advanced-workflows
-  - dispatching-parallel-agents
-  - smart-docs
+  - orchestrate-dispatching-parallel-agents
+  - arch-smart-docs
   installed_by_skills:
-  - dispatching-parallel-agents
+  - orchestrate-dispatching-parallel-agents
 - name: python-dev
   description: 'Implements Python code with modern patterns and best practices. Provides
     explicit deployment instructions. Role: Implementation. Phase: implementation.'
   source: local
   skills:
-  - subagent-driven-development
-  - test-driven-development
-  - systematic-debugging
+  - orchestrate-subagent-driven-development
+  - stdd-test-driven-development
+  - review-systematic-debugging
   - general-verification-before-completion
   - general-git-advanced-workflows
   - python-async-patterns
@@ -84,14 +84,14 @@ agents:
   - database-migration
   - mobile-android-design
   - general-using-git-worktrees
-  - webapp-testing
+  - review-webapp-testing
   - alpine-js-patterns
   - general-rtk-usage
   - python-testing-uv-playwright
   - general-finishing-a-development-branch
   - general-python-environment
-  - e2e-testing-patterns
-  - smart-docs
+  - review-e2e-testing-patterns
+  - arch-smart-docs
   - stdd-test-driven-development
   - stdd-openspec
   installed_by_skills:
@@ -106,10 +106,10 @@ agents:
   - docker-expert
   - mobile-android-design
   - alpine-js-patterns
-  - systematic-debugging
+  - review-systematic-debugging
   - stdd-test-driven-development
   - stdd-openspec
-  - webapp-testing
+  - review-webapp-testing
   - python-testing-uv-playwright
 - name: architect
   description: Strategic technical advisor providing high-leverage guidance on architecture,
@@ -251,8 +251,8 @@ agents:
   source: local
   skills:
   - general-using-superpowers
-  - subagent-driven-development
-  - executing-plans
+  - orchestrate-subagent-driven-development
+  - orchestrate-executing-plans
   - stdd-ask-questions-if-underspecified
   - general-rtk-usage
   - general-verification-before-completion
@@ -263,8 +263,8 @@ agents:
   - general-python-environment
   - general-finishing-a-development-branch
   installed_by_skills:
-  - subagent-driven-development
-  - executing-plans
+  - orchestrate-subagent-driven-development
+  - orchestrate-executing-plans
   - stdd-ask-questions-if-underspecified
 - name: daniels-spec-agent
   description: Requirements Engineer. Defines project summary and feature specs using
@@ -315,7 +315,7 @@ agents:
   - architecture-patterns
   - api-design-principles
   - stdd-openspec
-  - smart-docs
+  - arch-smart-docs
   - general-using-superpowers
   - general-rtk-usage
   - general-verification-before-completion
@@ -337,10 +337,10 @@ agents:
     SWE implementations.
   source: local
   skills:
-  - e2e-testing-patterns
+  - review-e2e-testing-patterns
   - python-testing-uv-playwright
-  - webapp-testing
-  - systematic-debugging
+  - review-webapp-testing
+  - review-systematic-debugging
   - general-solid
   - general-using-superpowers
   - general-rtk-usage
@@ -351,7 +351,7 @@ agents:
   - general-python-environment
   - general-finishing-a-development-branch
   installed_by_skills:
-  - e2e-testing-patterns
+  - review-e2e-testing-patterns
   - python-testing-uv-playwright
-  - webapp-testing
-  - systematic-debugging
+  - review-webapp-testing
+  - review-systematic-debugging

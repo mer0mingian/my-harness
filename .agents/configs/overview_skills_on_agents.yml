@@ -13,7 +13,7 @@ skills:
   lines: 529
   allowed_in:
   - daniels-architect-agent
-  path: .agents/skills/api-design-principles/SKILL.md
+  path: .agents/skills/arch-api-design-principles/SKILL.md
   installed_by:
   - daniels-architect-agent
 - name: architecture-patterns
@@ -23,7 +23,7 @@ skills:
   lines: 495
   allowed_in:
   - daniels-architect-agent
-  path: .agents/skills/architecture-patterns/SKILL.md
+  path: .agents/skills/arch-architecture-patterns/SKILL.md
   installed_by:
   - daniels-architect-agent
 - name: stdd-ask-questions-if-underspecified
@@ -71,7 +71,7 @@ skills:
   lines: 338
   allowed_in:
   - daniels-architect-agent
-  path: .agents/skills/design-system-patterns/SKILL.md
+  path: .agents/skills/arch-design-system-patterns/SKILL.md
   installed_by:
   - daniels-architect-agent
 - name: differential-review
@@ -82,7 +82,7 @@ skills:
   lines: 280
   allowed_in:
   - code-reviewer
-  path: .agents/skills/differential-review/SKILL.md
+  path: .agents/skills/review-differential-review/SKILL.md
   installed_by:
   - code-reviewer
 - name: dispatching-parallel-agents
@@ -92,7 +92,7 @@ skills:
   allowed_in:
   - daniels-orchestrator
   - daniels-workflow-orchestrator
-  path: .agents/skills/dispatching-parallel-agents/SKILL.md
+  path: .agents/skills/orchestrate-dispatching-parallel-agents/SKILL.md
   installed_by:
   - daniels-workflow-orchestrator
 - name: docker-expert
@@ -113,7 +113,7 @@ skills:
   lines: 545
   allowed_in:
   - daniels-qa-agent
-  path: .agents/skills/e2e-testing-patterns/SKILL.md
+  path: .agents/skills/review-e2e-testing-patterns/SKILL.md
   installed_by:
   - daniels-qa-agent
 - name: executing-plans
@@ -122,7 +122,7 @@ skills:
   lines: 85
   allowed_in:
   - daniels-workflow-orchestrator
-  path: .agents/skills/executing-plans/SKILL.md
+  path: .agents/skills/orchestrate-executing-plans/SKILL.md
   installed_by:
   - daniels-workflow-orchestrator
 - name: python-fastapi-templates
@@ -147,7 +147,7 @@ skills:
   - daniels-architect-agent
   - daniels-qa-agent
   - python-dev
-  path: .agents/skills/general-finishing-a-development-branch/SKILL.md
+  path: .agents/skills/orchestrate-finishing-a-development-branch/SKILL.md
   installed_by:
   - daniels-workflow-orchestrator
   - daniels-spec-agent
@@ -370,7 +370,7 @@ skills:
   lines: 243
   allowed_in:
   - daniels-workflow-orchestrator
-  path: .agents/skills/subagent-driven-development/SKILL.md
+  path: .agents/skills/orchestrate-subagent-driven-development/SKILL.md
   installed_by:
   - daniels-workflow-orchestrator
 - name: general-system-design
@@ -399,7 +399,7 @@ skills:
   allowed_in:
   - daniels-qa-agent
   - python-dev
-  path: .agents/skills/systematic-debugging/SKILL.md
+  path: .agents/skills/review-systematic-debugging/SKILL.md
   installed_by:
   - python-dev
   - daniels-qa-agent
@@ -478,7 +478,7 @@ skills:
   lines: 96
   allowed_in:
   - daniels-qa-agent
-  path: .agents/skills/webapp-testing/SKILL.md
+  path: .agents/skills/review-webapp-testing/SKILL.md
   installed_by:
   - daniels-qa-agent
   - python-dev
@@ -488,7 +488,7 @@ skills:
   lines: 117
   allowed_in:
   - daniels-architect-agent
-  path: .agents/skills/writing-plans/SKILL.md
+  path: .agents/skills/arch-writing-plans/SKILL.md
   installed_by:
   - daniels-architect-agent
 - name: smart-docs
@@ -496,7 +496,7 @@ skills:
   lines: 96
   allowed_in:
   - daniels-architect-agent
-  path: .agents/skills/smart-docs/SKILL.md
+  path: .agents/skills/arch-smart-docs/SKILL.md
   installed_by:
   - daniels-architect-agent
 - name: stdd-openspec
