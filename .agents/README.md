@@ -1,6 +1,6 @@
 # AI Developer Tools Installation Guide
 
-Prerequisites: npm, python3, pip, uv, cargo (for Rust tools)
+Prerequisites: npm, python3, pip, uv
 
 ---
 
@@ -46,12 +46,14 @@ curl -fsSL https://opencode.ai/install | bash
 ### 4. Rust Token Killer (RTK)
 
 ```bash
-# Install (requires Rust)
-cargo install --git https://github.com/rtk-ai/rtk
+# Install via install script (no cargo needed)
+curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/master/install.sh | sh
+# Or via Homebrew
+brew install rtk
 # Verify
 rtk --version
-# Update
-cargo install --git https://github.com/rtk-ai/rtk --force
+# Update (re-run install script)
+curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/master/install.sh | sh
 ```
 
 ### 5. OpenSpecs (Spec-Driven Development)
@@ -142,8 +144,8 @@ npm update -g @anthropic-ai/claude-code @google/gemini-cli @fission-ai/openspec 
 # pip tools  
 pip install --upgrade codegraphcontext graphiti
 
-# cargo tool
-cargo install --git https://github.com/rtk-ai/rtk --force
+# RTK (install script)
+curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/master/install.sh | sh
 
 # Warp (system package manager)
 sudo apt update && sudo apt install warp-terminal
