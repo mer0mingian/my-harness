@@ -411,15 +411,6 @@ skills:
   path: .agents/skills/stdd-test-driven-development/SKILL.md
   installed_by:
   - python-dev
-- name: test-driven-development
-  description: Use when implementing any feature or bugfix, before writing implementation
-    code
-  lines: 372
-  allowed_in:
-  - python-dev
-  path: .agents/skills/test-driven-development/SKILL.md
-  installed_by:
-  - python-dev
 - name: general-using-git-worktrees
   description: Use when starting feature work that needs isolation from current workspace
     or before executing implementation plans - creates isolated git worktrees with

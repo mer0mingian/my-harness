@@ -55,7 +55,6 @@ agents:
   - brainstorming
   - subagent-driven-development
   - executing-plans
-  - test-driven-development
   - general-finishing-a-development-branch
   - general-git-advanced-workflows
   - dispatching-parallel-agents
@@ -108,7 +107,6 @@ agents:
   - mobile-android-design
   - alpine-js-patterns
   - systematic-debugging
-  - test-driven-development
   - stdd-test-driven-development
   - stdd-openspec
   - webapp-testing
