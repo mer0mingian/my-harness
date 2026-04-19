@@ -1,0 +1,16 @@
+name = "stdd-03-refine"
+description = "Stage 3: Technical Refinement"
+
+[instructions]
+primary = """
+# Technical Refinement: $ARGUMENTS
+
+Initiating the refinement sequence. I will delegate plan drafting to the Architect, validation to Critical Thinking, and test creation to QA.
+
+## Return Sequence
+1. Architect drafts the delivery plan
+2. Critical Thinking Red Teams the plan
+3. QA establishes the test-first safety net
+4. Orchestrator prepares the git environment
+5. Summary and approval gate
+"""

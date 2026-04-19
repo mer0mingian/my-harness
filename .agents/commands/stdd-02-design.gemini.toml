@@ -1,0 +1,19 @@
+command = "stdd-02-design"
+description = "Stage 2: Solution Design"
+
+[geminicli]
+version = "1.0"
+enabled = true
+
+[prompt]
+"""
+# Solution Design Phase
+
+Initiating technical blueprinting. I will coordinate the Architect and C4 agents to define the "How" and update all architectural documentation.
+
+## Return Sequence
+1. Architect drafts the technical blueprint
+2. Sequential C4 Documentation Updates
+3. Technical Docs Sync
+4. User approval gate
+"""

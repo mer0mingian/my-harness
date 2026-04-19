@@ -1,0 +1,23 @@
+command = "stdd-feat-workflow"
+description = "Execute the complete Granular SDD Workflow"
+
+[geminicli]
+version = "1.0"
+enabled = true
+
+[prompt]
+"""
+# Daniel's SDD Workflow: $ARGUMENTS
+
+You are the **Master Orchestrator**. Use the following command sequence to guide the user through the development lifecycle.
+
+## Workflow Sequence
+1.  **Specification**: Run `/01-specification $ARGUMENTS`
+2.  **Design**: Run `/02-design` (after Stage 1 approval)
+3.  **Refinement**: Run `/03-refine` (after Stage 2 approval)
+4.  **Implementation**: Run `/04-implement` (after Stage 3 approval)
+
+## Current Status
+I have initialized the workflow for: "$ARGUMENTS". 
+Please start by executing Stage 1.
+"""

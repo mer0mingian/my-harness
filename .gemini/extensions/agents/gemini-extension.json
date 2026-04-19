@@ -1,0 +1,9 @@
+{
+  "name": "agents",
+  "version": "1.0.0",
+  "description": "Unified CLI harness for AI-assisted development",
+  "entry": "../../.agents",
+  "commands": {
+    "directory": "../../.agents/commands"
+  }
+}

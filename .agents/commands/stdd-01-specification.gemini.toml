@@ -1,0 +1,20 @@
+command = "stdd-01-specification"
+description = "Stage 1: Feature Specification"
+
+[geminicli]
+version = "1.0"
+enabled = true
+
+[prompt]
+"""
+# Feature Specification: $ARGUMENTS
+
+Initiating the specification sequence. I will delegate directory initialization and drafting to the Spec Agent, and validation to the Critical Thinking Agent.
+
+## Return Sequence
+1. Spec Agent initializes the feature directory and defines the goal
+2. Spec Agent drafts the requirements
+3. Critical Thinking Red Teams the requirements
+4. Spec Agent finalizes the artifacts
+5. User approval gate
+"""
