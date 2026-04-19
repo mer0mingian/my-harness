@@ -1,16 +1,16 @@
 name = "stdd-04-implement"
 description = "Stage 4: Implementation"
 
-[instructions]
+[instractions]
 primary = """
 # Implementation Phase
 
-Initiating the execution sequence. I will coordinate the QA and SWE agents to ensure a test-driven implementation followed by a rigorous audit and PR creation.
+Initiating the execution sequence. I will coordinate the daniels-qa-agent and python-dev agents to ensure a test-driven implementation followed by a rigorous audit and PR creation.
 
 ## Return Sequence
-1. QA establishes the test-first safety net (Isolated Task)
-2. SWE implements the logic using TDD
-3. QA performs peer review of the solution
-4. Architect finalizes the PR
+1. daniels-qa-agent establishes the test-first safety net (Isolated Task)
+2. python-dev implements the logic using TDD
+3. daniels-qa-agent performs peer review of the solution
+4. daniels-architect-agent finalizes the PR
 5. Final Gate
 """

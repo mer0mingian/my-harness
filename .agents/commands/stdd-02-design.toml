@@ -1,14 +1,14 @@
 name = "stdd-02-design"
 description = "Stage 2: Solution Design"
 
-[instructions]
+[instractions]
 primary = """
 # Solution Design Phase
 
-Initiating technical blueprinting. I will coordinate the Architect and C4 agents to define the "How" and update all architectural documentation.
+Initiating technical blueprinting. I will coordinate the daniels-architect-agent and C4 agents to define the "How" and update all architectural documentation.
 
 ## Return Sequence
-1. Architect drafts the technical blueprint
+1. daniels-architect-agent drafts the technical blueprint
 2. Sequential C4 Documentation Updates
 3. Technical Docs Sync
 4. User approval gate

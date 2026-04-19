@@ -1,7 +1,7 @@
 agents:
-- name: daniels-architect
+- name: daniels-architect-agent
   description: 'Handles system design, architecture decisions, and planning. Provides
-    guidance on API design patterns for FastAPI. Role: Design & Planning. Phase: pla...'
+    guidance on API design patterns for FastAPI. Role: Design & Planning. Phase: planning.'
   source: local
   skills:
   - writing-plans
@@ -18,7 +18,7 @@ agents:
   - python-testing-uv-playwright
   - skill-creator
   - smart-docs
-- name: daniels-code-reviewer
+- name: code-reviewer
   description: Use this agent when a major project step has been completed and needs
     to be reviewed against the original plan and coding standards.
   source: local
@@ -33,7 +33,8 @@ agents:
   - smart-docs
 - name: daniels-orchestrator
   description: 'Manages workflow, coordinates tasks, and transitions between phases.
-    Role: Coordination & Progress Tracking. Phase: brainstorming. Tools Access: minim...'
+    Role: Coordination & Progress Tracking. Phase: brainstorming. Tools Access: minimal.
+    NEVER execute writing tasks yourself. Always delegate to agents for task execution.'
   source: local
   skills:
   - general-using-superpowers
@@ -45,9 +46,9 @@ agents:
   - general-git-advanced-workflows
   - dispatching-parallel-agents
   - smart-docs
-- name: daniels-python-dev
+- name: python-dev
   description: 'Implements Python code with modern patterns and best practices. Provides
-    explicit deployment instructions. Role: Implementation. Phase: implementation...'
+    explicit deployment instructions. Role: Implementation. Phase: implementation.'
   source: local
   skills:
   - subagent-driven-development
@@ -62,7 +63,7 @@ agents:
   - python-configuration
   - python-design-patterns
   - general-solid
-  - fastapi-templates
+  - python-fastapi-templates
   - databases
   - docker-expert
   - database-migration
@@ -76,8 +77,8 @@ agents:
   - general-python-environment
   - e2e-testing-patterns
   - smart-docs
-  - daniels-tdd
-  - daniels-openspec
+  - stdd-test-driven-development
+  - stdd-openspec
 - name: architect
   description: Strategic technical advisor providing high-leverage guidance on architecture,
     code structure, and complex engineering trade-offs. Read-only.
@@ -159,7 +160,7 @@ agents:
   source: opencode-froggy
   mode: subagent
   skills:
-  - daniels-tdd
+  - stdd-test-driven-development
 - name: tdd-code-reviewer
   description: Elite code review expert specializing in modern AI-powered code analysis,
     security vulnerabilities, performance optimization, and production reliability.
@@ -209,7 +210,7 @@ agents:
   - general-using-superpowers
   - subagent-driven-development
   - executing-plans
-  - daniels-ask-questions-if-underspecified
+  - stdd-ask-questions-if-underspecified
   - general-rtk-usage
   - general-verification-before-completion
   - general-git-advanced-workflows
@@ -224,9 +225,9 @@ agents:
   source: local
   skills:
   - brainstorming
-  - daniels-openspec
-  - daniels-product-spec-formats
-  - daniels-project-summary
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
   - general-using-superpowers
   - general-rtk-usage
   - general-verification-before-completion
@@ -241,7 +242,7 @@ agents:
     plans for completeness and edge cases.
   source: local
   skills:
-  - daniels-ask-questions-if-underspecified
+  - stdd-ask-questions-if-underspecified
   - general-using-superpowers
   - general-rtk-usage
   - general-verification-before-completion
@@ -259,14 +260,13 @@ agents:
   - general-system-design
   - architecture-patterns
   - api-design-principles
-  - daniels-openspec
+  - stdd-openspec
   - smart-docs
   - general-using-superpowers
   - general-rtk-usage
   - general-verification-before-completion
   - general-git-advanced-workflows
   - general-solid
-  - general-system-design
   - general-using-git-worktrees
   - general-python-environment
   - general-finishing-a-development-branch
@@ -284,7 +284,6 @@ agents:
   - general-rtk-usage
   - general-verification-before-completion
   - general-git-advanced-workflows
-  - general-solid
   - general-system-design
   - general-using-git-worktrees
   - general-python-environment
