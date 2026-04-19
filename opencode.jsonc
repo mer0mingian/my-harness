@@ -1,0 +1,76 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    // Set this as additional information for all agents.
+    "instructions": [
+        "README.md", 
+        "docs/README.md", 
+        // TODO: Add architecture infos here from deepwiki!
+    ],
+    "plugin": [
+        // TDD-workflow + addtional hooks
+        "opencode-froggy", 
+        //
+        // Protect Env Variables
+        "envsitter-guard@latest",
+        //
+        // Subtask-System
+        "github:spoons-and-mirrors/subtask2#debug",
+    ],
+/*  
+    // Only needed if Conductor plugin active
+    "agent": {
+        "conductor": {
+        "model": "google/gemini-flash-latest"
+        }
+    },
+*/    
+    "username": "Daniel",
+    "mcp": {
+        "context7": {
+            "type": "local",
+            "command": [
+                "npx",
+                "-y",
+                "@upstash/context7-mcp",
+                "--api-key",
+                "CONTEXT7_API_KEY"
+            ],
+            "enabled": false,
+            "environment": {
+                "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+            },
+            "timeout": 20000
+        },
+        "tavily": {
+            "type": "local",
+            "command": [
+                "npx",
+                "-y",
+                "tavily-mcp"
+            ],
+            "enabled": true,
+            "environment": {
+                "TAVILY_API_KEY": "{env:TAVILY_API_KEY}",
+                "DEFAULT_PARAMETERS": "{\"include_images\": false, \"max_results\": 7}"
+            },
+            "timeout": 10000
+        },
+        "sequential-thinking": {
+            "type": "local",
+            "command": [
+                "docker",
+                "run",
+                "--rm",
+                "-i",
+                "mcp/sequentialthinking"
+            ],
+            "enabled": true,
+            "timeout": 20000
+        }
+    },
+    "tools": {
+        "context7_*": false,
+        "tavily_*": true,
+        "sequential-thinking_*": true
+    }
+}

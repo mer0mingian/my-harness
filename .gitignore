@@ -1,0 +1,49 @@
+# Database
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.env
+.ruff_cache/
+.pytest_cache/
+.logs/
+.litho/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Copyright Protected Files
+referenceFiles/
+docs/lcars-images/
+docs/sta2e_rules/
+docs/sta2e_rules/data_tables/
+sta/web/uploads/
+lcars/source
+
+# Worktrees
+.worktrees/
+.coverage
+logs/
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
