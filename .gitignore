@@ -30,11 +30,6 @@ Thumbs.db
 
 # Copyright Protected Files
 referenceFiles/
-docs/lcars-images/
-docs/sta2e_rules/
-docs/sta2e_rules/data_tables/
-sta/web/uploads/
-lcars/source
 
 # Worktrees
 .worktrees/
@@ -47,3 +42,6 @@ logs/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Java
+.agents/skills/brainstorming/scripts/node_modules

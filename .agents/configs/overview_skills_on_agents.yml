@@ -5,6 +5,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/alpine-js-patterns/SKILL.md
+  installed_by:
+  - python-dev
 - name: api-design-principles
   description: Master REST and GraphQL API design principles to build intuitive, scalable,
     and maintainable APIs that delight developers. Use when designing new APIs...
@@ -12,6 +14,8 @@ skills:
   allowed_in:
   - daniels-architect-agent
   path: .agents/skills/api-design-principles/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: architecture-patterns
   description: Implement proven backend architecture patterns including Clean Architecture,
     Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex
@@ -20,6 +24,8 @@ skills:
   allowed_in:
   - daniels-architect-agent
   path: .agents/skills/architecture-patterns/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: stdd-ask-questions-if-underspecified
   description: Clarify requirements before implementing. Use when serious doubts arise.
   lines: 55
@@ -28,6 +34,9 @@ skills:
   - daniels-spec-agent
   - daniels-critical-thinking-agent
   path: .agents/skills/stdd-ask-questions-if-underspecified/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-critical-thinking-agent
 - name: brainstorming
   description: You MUST use this before any creative work - creating features, building
     components, adding functionality, or modifying behavior. Explores user intent...
@@ -35,6 +44,8 @@ skills:
   allowed_in:
   - daniels-spec-agent
   path: .agents/skills/brainstorming/SKILL.md
+  installed_by:
+  - daniels-spec-agent
 - name: database-migration
   description: Execute database migrations across ORMs and platforms with zero-downtime
     strategies, data transformation, and rollback procedures. Use when migrating ...
@@ -42,6 +53,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/database-migration/SKILL.md
+  installed_by:
+  - python-dev
 - name: databases
   description: Work with MongoDB (document database, BSON documents, aggregation pipelines,
     Atlas cloud) and PostgreSQL (relational database, SQL queries, psql CLI, ...
@@ -49,6 +62,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/databases/SKILL.md
+  installed_by:
+  - python-dev
 - name: design-system-patterns
   description: Build scalable design systems with design tokens, theming infrastructure,
     and component architecture patterns. Use when creating design tokens, implementing
@@ -57,6 +72,8 @@ skills:
   allowed_in:
   - daniels-architect-agent
   path: .agents/skills/design-system-patterns/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: differential-review
   description: 'Perform security-focused differential review of code changes (PRs,
     commits, diffs). Use when analyzing code for security regressions, identifying
@@ -66,6 +83,8 @@ skills:
   allowed_in:
   - code-reviewer
   path: .agents/skills/differential-review/SKILL.md
+  installed_by:
+  - code-reviewer
 - name: dispatching-parallel-agents
   description: Use when facing 2+ independent tasks that can be worked on without
     shared state or sequential dependencies
@@ -74,6 +93,8 @@ skills:
   - daniels-orchestrator
   - daniels-workflow-orchestrator
   path: .agents/skills/dispatching-parallel-agents/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
 - name: docker-expert
   description: Docker containerization expert with deep knowledge of multi-stage builds,
     image optimization, container security, Docker Compose orchestration, and production
@@ -83,6 +104,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/docker-expert/SKILL.md
+  installed_by:
+  - python-dev
 - name: e2e-testing-patterns
   description: Master end-to-end testing with Playwright and Cypress to build reliable
     test suites that catch bugs, improve confidence, and enable fast deployment. Use
@@ -91,6 +114,8 @@ skills:
   allowed_in:
   - daniels-qa-agent
   path: .agents/skills/e2e-testing-patterns/SKILL.md
+  installed_by:
+  - daniels-qa-agent
 - name: executing-plans
   description: Use when you have a written implementation plan to execute in a separate
     session with review checkpoints
@@ -98,6 +123,8 @@ skills:
   allowed_in:
   - daniels-workflow-orchestrator
   path: .agents/skills/executing-plans/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
 - name: python-fastapi-templates
   description: Create production-ready FastAPI projects with async patterns, dependency
     injection, and comprehensive error handling. Use when building new FastAPI applications
@@ -106,6 +133,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/python-fastapi-templates/SKILL.md
+  installed_by:
+  - python-dev
 - name: general-finishing-a-development-branch
   description: Use when implementation is complete, all tests pass, and you need to
     decide how to integrate the work - guides completion of development work by presenting
@@ -119,6 +148,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-finishing-a-development-branch/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: general-git-advanced-workflows
   description: Master advanced Git workflows including rebasing, cherry-picking, bisect,
     worktrees, and reflog to maintain clean history and recover from any situation.
@@ -133,6 +169,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-git-advanced-workflows/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: hugging-face-cli
   description: Execute Hugging Face Hub operations using the `hf` CLI. Use when the
     user needs to download models/datasets/spaces, upload files to Hub repositories,
@@ -142,6 +185,7 @@ skills:
   lines: 187
   allowed_in: []
   path: .agents/skills/hugging-face-cli/SKILL.md
+  installed_by: []
 - name: mcp-builder
   description: Guide for creating high-quality MCP (Model Context Protocol) servers
     that enable LLMs to interact with external services through well-designed tools.
@@ -150,6 +194,8 @@ skills:
   lines: 237
   allowed_in: []
   path: .agents/skills/mcp-builder/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: mobile-android-design
   description: Master Material Design 3 and Jetpack Compose patterns for building
     native Android apps. Use when designing Android interfaces, implementing Compose
@@ -158,6 +204,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/mobile-android-design/SKILL.md
+  installed_by:
+  - python-dev
 - name: python-async-patterns
   description: Master Python asyncio, concurrent programming, and async/await patterns
     for high-performance applications. Use when building async APIs, concurrent systems,
@@ -167,6 +215,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/python-async-patterns/SKILL.md
+  installed_by:
+  - python-dev
 - name: python-code-style
   description: Python code style, linting, formatting, naming conventions, and documentation
     standards. Use when writing new code, reviewing style, configuring linters, writing
@@ -176,6 +226,9 @@ skills:
   - code-reviewer
   - python-dev
   path: .agents/skills/python-code-style/SKILL.md
+  installed_by:
+  - python-dev
+  - daniels-qa-agent
 - name: python-configuration
   description: Python configuration management via environment variables and typed
     settings. Use when externalizing config, setting up pydantic-settings, managing
@@ -184,6 +237,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/python-configuration/SKILL.md
+  installed_by:
+  - python-dev
 - name: python-design-patterns
   description: Python design patterns including KISS, Separation of Concerns, Single
     Responsibility, and composition over inheritance. Use when making architecture
@@ -193,6 +248,9 @@ skills:
   - daniels-architect-agent
   - python-dev
   path: .agents/skills/python-design-patterns/SKILL.md
+  installed_by:
+  - python-dev
+  - daniels-architect-agent
 - name: general-python-environment
   description: 'Configure Python projects, manage dependencies with uv, and package
     code for distribution. Use when setting up new projects, managing virtual environments,
@@ -206,6 +264,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-python-environment/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: python-packaging
   description: Create distributable Python packages with proper project structure,
     setup.py/pyproject.toml, and publishing to PyPI. Use when packaging Python libraries,
@@ -215,6 +280,9 @@ skills:
   - daniels-architect-agent
   - python-dev
   path: .agents/skills/python-packaging/SKILL.md
+  installed_by:
+  - python-dev
+  - daniels-architect-agent
 - name: python-testing-uv-playwright
   description: 'Run Python Playwright E2E tests using uv package manager. Use when:
     - Running Python pytest-playwright tests - Need E2E testing for Python web applications
@@ -224,6 +292,9 @@ skills:
   allowed_in:
   - daniels-qa-agent
   path: .agents/skills/python-testing-uv-playwright/SKILL.md
+  installed_by:
+  - daniels-qa-agent
+  - python-dev
 - name: python-type-safety
   description: Python type safety with type hints, generics, protocols, and strict
     type checking. Use when adding type annotations, implementing generic classes,
@@ -232,6 +303,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/python-type-safety/SKILL.md
+  installed_by:
+  - python-dev
 - name: general-rtk-usage
   description: 'Use RTK (Rust Token Killer) CLI for token-optimized command execution.
     RTK is a high-performance CLI proxy that reduces LLM token consumption by 60-90%
@@ -248,6 +321,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-rtk-usage/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: skill-auditor
   description: Use when auditing skill quality, reviewing skills for improvements,
     or ensuring skills follow best practices. Evaluates skills against comprehensive
@@ -257,6 +337,8 @@ skills:
   allowed_in:
   - code-reviewer
   path: .agents/skills/skill-auditor/SKILL.md
+  installed_by:
+  - code-reviewer
 - name: skill-creator
   description: Guide for creating effective skills. This skill should be used when
     users want to create a new skill (or update an existing skill) that extends Claude's
@@ -265,6 +347,8 @@ skills:
   allowed_in:
   - daniels-architect-agent
   path: .agents/skills/skill-creator/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: general-solid
   description: 'Enforce SOLID principles for robust, maintainable, and flexible code.
     Use when writing, refactoring, designing architecture, or reviewing code. Explicitly
@@ -275,6 +359,11 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-solid/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-qa-agent
+  - daniels-critical-thinking-agent
+  - python-dev
 - name: subagent-driven-development
   description: Use when executing implementation plans with independent tasks in the
     current session
@@ -282,6 +371,8 @@ skills:
   allowed_in:
   - daniels-workflow-orchestrator
   path: .agents/skills/subagent-driven-development/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
 - name: general-system-design
   description: 'Diagnose design problems and guide architecture decisions for software
     projects. This skill should be used when asking to ''design the system'',
@@ -296,6 +387,11 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-system-design/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: systematic-debugging
   description: Use when encountering any bug, test failure, or unexpected behavior,
     before proposing fixes
@@ -304,12 +400,17 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/systematic-debugging/SKILL.md
+  installed_by:
+  - python-dev
+  - daniels-qa-agent
 - name: stdd-test-driven-development
   description: Apply Test-Driven Development workflow for new features and bugfixes.
   lines: 372
   allowed_in:
   - python-dev
   path: .agents/skills/stdd-test-driven-development/SKILL.md
+  installed_by:
+  - python-dev
 - name: test-driven-development
   description: Use when implementing any feature or bugfix, before writing implementation
     code
@@ -317,6 +418,8 @@ skills:
   allowed_in:
   - python-dev
   path: .agents/skills/test-driven-development/SKILL.md
+  installed_by:
+  - python-dev
 - name: general-using-git-worktrees
   description: Use when starting feature work that needs isolation from current workspace
     or before executing implementation plans - creates isolated git worktrees with
@@ -330,6 +433,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-using-git-worktrees/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: general-using-superpowers
   description: Use when starting any conversation - establishes how to find and use
     skills, requiring Skill tool invocation before ANY response including clarifying
@@ -343,6 +453,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-using-superpowers/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: general-verification-before-completion
   description: Use when about to claim work is complete, fixed, or passing, before
     committing or creating PRs - requires running verification commands and confirming
@@ -356,6 +473,13 @@ skills:
   - daniels-qa-agent
   - python-dev
   path: .agents/skills/general-verification-before-completion/SKILL.md
+  installed_by:
+  - daniels-workflow-orchestrator
+  - daniels-spec-agent
+  - daniels-critical-thinking-agent
+  - daniels-architect-agent
+  - daniels-qa-agent
+  - python-dev
 - name: webapp-testing
   description: Toolkit for interacting with and testing local web applications using
     Playwright. Supports verifying frontend functionality, debugging UI behavior,
@@ -364,6 +488,9 @@ skills:
   allowed_in:
   - daniels-qa-agent
   path: .agents/skills/webapp-testing/SKILL.md
+  installed_by:
+  - daniels-qa-agent
+  - python-dev
 - name: writing-plans
   description: Use when you have a spec or requirements for a multi-step task, before
     touching code
@@ -371,12 +498,16 @@ skills:
   allowed_in:
   - daniels-architect-agent
   path: .agents/skills/writing-plans/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: smart-docs
   description: Deepwiki-rs skill to automatically write and update docs
   lines: 96
   allowed_in:
   - daniels-architect-agent
   path: .agents/skills/smart-docs/SKILL.md
+  installed_by:
+  - daniels-architect-agent
 - name: stdd-openspec
   description: Master the OpenSpec artifact-guided workflow for AI-assisted development.
     Use this skill when proposing, designing, or implementing new features.
@@ -386,6 +517,9 @@ skills:
   - daniels-architect-agent
   - python-dev
   path: .agents/skills/stdd-openspec/SKILL.md
+  installed_by:
+  - daniels-spec-agent
+  - daniels-architect-agent
 - name: stdd-product-spec-formats
   description: Master various formats for defining product requirements and logic-heavy
     features (Job Stories, Gherkin, EARS, Planguage, Anti-Story).
@@ -393,6 +527,8 @@ skills:
   allowed_in:
   - daniels-spec-agent
   path: .agents/skills/stdd-product-spec-formats/SKILL.md
+  installed_by:
+  - daniels-spec-agent
 - name: stdd-project-summary
   description: Define and maintain the project/product summary (Goal, Tech Stack,
     Users, Scale).
@@ -400,3 +536,5 @@ skills:
   allowed_in:
   - daniels-spec-agent
   path: .agents/skills/stdd-project-summary/SKILL.md
+  installed_by:
+  - daniels-spec-agent
