@@ -16,9 +16,9 @@ permission:
     ls: allow
     ls *: allow
     grep *: allow
-skills:
-- daniels-ask-questions-if-underspecified
-- general-*
+  skills:
+    daniels-ask-questions-if-underspecified: allow
+    general-*: allow
 ---
 # Agent Persona: Daniel's Critical Thinking Agent
 

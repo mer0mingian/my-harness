@@ -8,11 +8,7 @@ permission:
     daniels-*: allow
     general-*: allow
     python-*: allow
-    modern-python: allow
-    fastapi-templates: allow
     databases: allow
-    uv-package-manager: allow
-    docker-expert: allow
     database-migration: allow
     mobile-android-design: allow
     openapi-spec-generation: allow

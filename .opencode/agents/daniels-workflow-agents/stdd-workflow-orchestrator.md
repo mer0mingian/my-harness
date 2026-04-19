@@ -1,5 +1,5 @@
 ---
-name: daniels-workflow-orchestrator
+name: stdd-workflow-orchestrator
 description: Master read-only interface for the SDD workflow. Manages task sequences,
   parallel execution, and user approval gates.
 source: local
@@ -17,19 +17,11 @@ permission:
     ls *: allow
     git branch: allow
     git status: allow
-skills:
-- general-using-superpowers
-- subagent-driven-development
-- executing-plans
-- daniels-ask-questions-if-underspecified
-- general-rtk-usage
-- general-verification-before-completion
-- general-git-advanced-workflows
-- general-solid
-- general-system-design
-- general-using-git-worktrees
-- general-python-environment
-- general-finishing-a-development-branch
+  skills:
+    subagent-driven-development: allow
+    executing-plans: allow
+    daniels-ask-questions-if-underspecified: allow
+    general-using-superpowers: allow
 ---
 # Agent Persona: Daniel's Workflow Orchestrator
 

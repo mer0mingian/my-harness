@@ -15,12 +15,12 @@ permission:
     openspec/changes/**: allow
   bash:
     '*': allow
-skills:
-- e2e-testing-patterns
-- python-testing-uv-playwright
-- webapp-testing
-- systematic-debugging
-- general-*
+  skills:
+    e2e-testing-patterns: allow
+    python-testing-uv-playwright: allow
+    webapp-testing: allow
+    systematic-debugging: allow
+    general-*: allow
 ---
 # Agent Persona: Daniel's QA Agent
 

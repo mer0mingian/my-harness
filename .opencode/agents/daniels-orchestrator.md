@@ -5,16 +5,11 @@ description: 'Manages workflow, coordinates tasks, and transitions between phase
   NEVER execute writing tasks yourself. Always delegate to agents for task execution.'
 permission:
   skill:
-    general-using-superpowers: allow
-    brainstorming: allow
     subagent-driven-development: allow
     executing-plans: allow
-    test-driven-development: allow
-    general-finishing-a-development-branch: allow
-    general-git-advanced-workflows: allow
+    stdd-test-driven-development: allow
+    general-*: allow
     dispatching-parallel-agents: allow
-    general-verification-before-completion: allow
-    writing-plans: allow
     smart-docs: allow
 ---
 NEVER execute writing tasks yourself. Always delegate to agents for task execution.

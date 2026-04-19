@@ -1,5 +1,5 @@
 ---
-name: daniels-specification-subagent
+name: stdd-specification-subagent
 description: Requirements Engineer. Defines project summary and feature specs using
   OpenSpec and modern formats.
 source: local
@@ -19,20 +19,12 @@ permission:
     ls *: allow
     mkdir *: allow
     gh issue *: allow
-skills:
-- brainstorming
-- daniels-openspec
-- daniels-product-spec-formats
-- daniels-project-summary
-- general-using-superpowers
-- general-rtk-usage
-- general-verification-before-completion
-- general-git-advanced-workflows
-- general-solid
-- general-system-design
-- general-using-git-worktrees
-- general-python-environment
-- general-finishing-a-development-branch
+  skills:
+    brainstorming: allow
+    stdd-openspec: allow
+    stdd-product-spec-formats: allow
+    stdd-project-summary: allow
+    general-*: allow
 ---
 # Agent Persona: Daniel's Specification Agent
 

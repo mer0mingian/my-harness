@@ -6,22 +6,15 @@ temperature: 0.1
 permission:
   skill:
     writing-plans: allow
-    general-using-git-worktrees: allow
-    general-system-design: allow
-    general-solid: allow
+    general-*: allow
     python-design-patterns: allow
     python-project-structure: allow
     python-packaging: allow
     api-design-principles: allow
     architecture-patterns: allow
     deployment-pipeline-design: allow
-    design-system-patterns: allow
-    microservices-patterns: allow
-    general-using-superpowers: allow
-    general-rtk-usage: allow
     python-testing-uv-playwright: allow
-    test-driven-development: allow
-    general-verification-before-completion: allow
+    stdd-test-driven-development: allow
     webapp-testing: allow
     e2e-testing-patterns: allow
     smart-docs: allow
