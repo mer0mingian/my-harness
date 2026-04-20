@@ -3,6 +3,24 @@ name: orchestrator
 description: 'Manages workflow, coordinates tasks, and transitions between phases.
   Role: Coordination & Progress Tracking. Phase: brainstorming. Tools Access: minimal.
   NEVER execute writing tasks yourself. Always delegate to agents for task execution.'
+skills:
+  - stdd-ask-questions-if-underspecified
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
+  - stdd-test-driven-development
+  - orchestrate-dispatching-parallel-agents
+  - orchestrate-executing-plans
+  - orchestrate-finishing-a-development-branch
+  - orchestrate-subagent-driven-development
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   skill:
     orchestrate-subagent-driven-development: allow
@@ -11,6 +29,10 @@ permission:
     general-*: allow
     orchestrate-dispatching-parallel-agents: allow
     arch-smart-docs: allow
+    "stdd-": allow
+    "orchestrate-": allow
+    "general-": allow
+    "": deny
 ---
 NEVER execute writing tasks yourself. Always delegate to agents for task execution.
 

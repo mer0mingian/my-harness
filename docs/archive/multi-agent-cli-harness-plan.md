@@ -1,3 +1,7 @@
+> **DEPRECATED 2026-04-21** — superseded by
+> [../harness-v1-master-plan.md](../harness-v1-master-plan.md) and
+> [../harness-v1-agent-tasks.md](../harness-v1-agent-tasks.md). Kept for historical reference only.
+
 # Unified Multi-Agent CLI Harness Implementation Plan
 
 This document outlines the implementation plan for creating a unified harness that works across OpenCode, Claude Code, and Gemini CLI. The goal is to centralize all skills, agents, commands, and configurations in a single location (`.agents/`) while maintaining backward compatibility and supporting each CLI's unique format requirements.

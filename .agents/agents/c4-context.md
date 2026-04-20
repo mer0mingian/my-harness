@@ -2,6 +2,30 @@
 name: c4-context
 mode: subagent
 description: Expert C4 Context-level documentation specialist. Creates high-level system context diagrams, documents personas, user journeys, system features, and external dependencies. Synthesizes container and component documentation with system documentation to create comprehensive context-level architecture. Use when creating the highest-level C4 system context documentation.
+skills:
+  - orchestrate-dispatching-parallel-agents
+  - orchestrate-executing-plans
+  - orchestrate-finishing-a-development-branch
+  - orchestrate-subagent-driven-development
+  - review-differential-review
+  - review-e2e-testing-patterns
+  - review-openai-playwright
+  - review-systematic-debugging
+  - review-webapp-testing
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
+permission:
+  skill:
+    "orchestrate-": allow
+    "review-": allow
+    "general-": allow
+    "": deny
 ---
 You are a C4 Context-level architecture specialist focused on creating high-level system context documentation following the C4 model.
 

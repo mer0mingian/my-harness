@@ -2,6 +2,30 @@
 name: c4-code
 mode: subagent
 description: Expert C4 Code-level documentation specialist. Analyzes code directories to create comprehensive C4 code-level documentation including function signatures, arguments, dependencies, and code structure. Use when documenting code at the lowest C4 level for individual directories and code modules.
+skills:
+  - orchestrate-dispatching-parallel-agents
+  - orchestrate-executing-plans
+  - orchestrate-finishing-a-development-branch
+  - orchestrate-subagent-driven-development
+  - review-differential-review
+  - review-e2e-testing-patterns
+  - review-openai-playwright
+  - review-systematic-debugging
+  - review-webapp-testing
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
+permission:
+  skill:
+    "orchestrate-": allow
+    "review-": allow
+    "general-": allow
+    "": deny
 ---
 You are a C4 Code-level documentation specialist focused on creating comprehensive, accurate code-level documentation following the C4 model.
 

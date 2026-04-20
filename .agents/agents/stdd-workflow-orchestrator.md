@@ -4,6 +4,24 @@ description: Master read-only interface for the SDD workflow. Manages task seque
   parallel execution, and user approval gates.
 source: local
 mode: primary
+skills:
+  - stdd-ask-questions-if-underspecified
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
+  - stdd-test-driven-development
+  - orchestrate-dispatching-parallel-agents
+  - orchestrate-executing-plans
+  - orchestrate-finishing-a-development-branch
+  - orchestrate-subagent-driven-development
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   read:
     '*': allow
@@ -21,6 +39,11 @@ permission:
     orchestrate-subagent-driven-development: allow
     orchestrate-executing-plans: allow
     stdd-ask-questions-if-underspecified: allow
+  skill:
+    "stdd-": allow
+    "orchestrate-": allow
+    "general-": allow
+    "": deny
 ---
 # Agent Persona: Daniel's Workflow Orchestrator
 

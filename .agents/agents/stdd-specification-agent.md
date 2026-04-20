@@ -4,6 +4,20 @@ description: Requirements Engineer. Defines project summary and feature specs us
   OpenSpec and modern formats.
 source: local
 mode: subagent
+skills:
+  - stdd-ask-questions-if-underspecified
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
+  - stdd-test-driven-development
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   read:
     '*': allow
@@ -25,6 +39,10 @@ permission:
     stdd-product-spec-formats: allow
     stdd-project-summary: allow
     general-*: allow
+  skill:
+    "stdd-": allow
+    "general-": allow
+    "": deny
 ---
 # Agent Persona: Daniel's Specification Agent
 

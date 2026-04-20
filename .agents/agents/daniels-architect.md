@@ -3,6 +3,24 @@ name: solution-architect
 description: 'Handles system design, architecture decisions, code structure, and complex
   engineering trade-offs. Role: Design & Planning.'
 temperature: 0.1
+skills:
+  - orchestrate-dispatching-parallel-agents
+  - orchestrate-executing-plans
+  - orchestrate-finishing-a-development-branch
+  - orchestrate-subagent-driven-development
+  - review-differential-review
+  - review-e2e-testing-patterns
+  - review-openai-playwright
+  - review-systematic-debugging
+  - review-webapp-testing
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   skill:
     arch-writing-plans: allow
@@ -19,6 +37,10 @@ permission:
     review-e2e-testing-patterns: allow
     arch-smart-docs: allow
     orchestrate-dispatching-parallel-agents: allow
+    "orchestrate-": allow
+    "review-": allow
+    "general-": allow
+    "": deny
 ---
 # Strategic Technical Advisor
 
