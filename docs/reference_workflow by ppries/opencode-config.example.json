@@ -1,0 +1,14 @@
+# Configuration File Content
+
+This is an OpenCode AI configuration file that establishes safety parameters for agent operations.
+
+**Schema and Structure:**
+The file references `https://opencode.ai/config.json` as its schema and contains three main sections: tools, permissions, and comments.
+
+**Key Permissions:**
+The bash section allows general command execution while blocking dangerous operations like recursive deletion, privilege escalation, and forced git pushes. Installation commands and docker operations require explicit approval.
+
+File access restrictions prevent reading environment variable files ("`*.env`" and variants) while permitting example versions. Lock files are marked as non-editable to preserve dependency integrity.
+
+**Purpose:**
+This configuration implements "Global safety rails" as noted in the file, establishing baseline protections that individual agent sandboxes can further customize through their own frontmatter settings.
