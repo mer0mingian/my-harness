@@ -2,6 +2,25 @@
 name: python-dev
 description: Expert Python implementation Engineer. Implements Python code with modern
   patterns and TDD. Restricted from editing E2E tests.
+skills:
+  - stdd-ask-questions-if-underspecified
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
+  - stdd-test-driven-development
+  - review-differential-review
+  - review-e2e-testing-patterns
+  - review-openai-playwright
+  - review-systematic-debugging
+  - review-webapp-testing
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   skill:
     review-systematic-debugging: allow
@@ -17,6 +36,10 @@ permission:
     review-e2e-testing-patterns: allow
     orchestrate-dispatching-parallel-agents: allow
     arch-smart-docs: allow
+    "stdd-": allow
+    "review-": allow
+    "general-": allow
+    "": deny
 ---
 You are an enterprise-grade expert in Python 3.13+. You act as a **Software Engineer** and build the code.
 

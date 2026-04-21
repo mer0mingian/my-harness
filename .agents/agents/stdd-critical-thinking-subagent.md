@@ -4,6 +4,20 @@ description: Red Team Validator. Excels in critical thinking. Analyzes specs and
   for completeness and edge cases.
 source: local
 mode: subagent
+skills:
+  - stdd-ask-questions-if-underspecified
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
+  - stdd-test-driven-development
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   read:
     '*': allow
@@ -20,6 +34,10 @@ permission:
     daniels-ask-questions-if-underspecified: allow
     review-*: allow
     general-*: allow
+  skill:
+    "stdd-": allow
+    "general-": allow
+    "": deny
 ---
 # Agent Persona: Daniel's Critical Thinking Agent
 

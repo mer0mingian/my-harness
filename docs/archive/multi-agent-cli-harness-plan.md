@@ -1,3 +1,7 @@
+> **DEPRECATED 2026-04-21** — superseded by
+> [../harness-v1-master-plan.md](../harness-v1-master-plan.md) and
+> [../harness-v1-agent-tasks.md](../harness-v1-agent-tasks.md). Kept for historical reference only.
+
 # Unified Multi-Agent CLI Harness Implementation Plan
 
 This document outlines the implementation plan for creating a unified harness that works across OpenCode, Claude Code, and Gemini CLI. The goal is to centralize all skills, agents, commands, and configurations in a single location (`.agents/`) while maintaining backward compatibility and supporting each CLI's unique format requirements.
@@ -37,6 +41,7 @@ This document outlines the implementation plan for creating a unified harness th
 ### 1.2 Existing Structure (Pre-Migration)
 
 **Current `.opencode/` structure:**
+
 ```
 .opencode/
 ├── skills/                        # 40 skill directories
@@ -72,6 +77,7 @@ This document outlines the implementation plan for creating a unified harness th
 ```
 
 **Current `.agents/` structure:**
+
 ```
 .agents/
 ├── configs/
@@ -206,11 +212,11 @@ EOF
 
 ### 3.1 Format Differences
 
-| CLI | Format | File Extension | Loading Mechanism |
-|-----|--------|-----------------|-------------------|
-| OpenCode | Markdown | `*.md` | Parses `## Usage`, `## Parameters` sections |
-| Claude Code | TOML | `*.toml` | `name`, `description`, `prompt` top-level keys |
-| Gemini CLI | TOML | `*.toml` | Similar to Claude Code with Gemini-specific fields |
+| CLI         | Format   | File Extension | Loading Mechanism                                    |
+| ----------- | -------- | -------------- | ---------------------------------------------------- |
+| OpenCode    | Markdown | `*.md`       | Parses `## Usage`, `## Parameters` sections      |
+| Claude Code | TOML     | `*.toml`     | `name`, `description`, `prompt` top-level keys |
+| Gemini CLI  | TOML     | `*.toml`     | Similar to Claude Code with Gemini-specific fields   |
 
 ### 3.2 Hybrid Approach Strategy
 
@@ -242,11 +248,11 @@ COMMANDS_DIR=".agents/commands"
 convert_md_to_toml() {
     local md_file="$1"
     local toml_file="${2:-$(echo $md_file | sed 's/\.md$/.toml/')}"
-    
+
     # Parse markdown and generate TOML
     # This is a simplified version - full implementation would parse sections
     local name=$(basename "$md_file" .md)
-    
+
     cat > "$toml_file" << EOF
 name = "$name"
 description = "Converted from markdown source"
@@ -268,6 +274,7 @@ echo "Conversion complete"
 ### 3.4 Format Specification Examples
 
 **OpenCode Markdown Format (`stdd-feat-workflow.md`):**
+
 ```markdown
 # Feature Workflow
 
@@ -285,6 +292,7 @@ Complete workflow for implementing new features.
 ```
 
 **Claude Code TOML Format (`stdd-feat-workflow.toml`):**
+
 ```toml
 name = "stdd-feat-workflow"
 description = "Complete workflow for implementing new features."
@@ -301,6 +309,7 @@ Steps:
 ```
 
 **Gemini CLI TOML Format (`stdd-feat-workflow.gemini.toml`):**
+
 ```toml
 command = "stdd-feat-workflow"
 description = "Complete workflow for implementing new features."
@@ -372,7 +381,7 @@ For custom MCP servers, create them in `.agents/mcp/`:
 ```bash
 # Check that OpenCode can see the symlinked resources
 ls -la .opencode/skills
-ls -la .opencode/agents  
+ls -la .opencode/agents
 ls -la .opencode/commands
 
 # Test skill loading (OpenCode-specific command)
@@ -479,13 +488,9 @@ rm -rf .agents/skills .agents/agents .agents/commands .agents/mcp
 ## 8. Notes and Considerations
 
 1. **Central directory already exists**: The `.agents/` directory already exists with `configs/` and `docs/` subdirectories. This plan expands it to be the central source of truth for skills, agents, commands, and MCP configurations.
-
 2. **OpenCode-specific plugin**: The `.opencode/plugin/` directory contains OpenCode-specific code (`background-agents.ts`) that should remain in `.opencode/` as it's tied to OpenCode's API.
-
 3. **Node modules**: Dependencies in `.opencode/node_modules/` should either remain in `.opencode/` or be duplicated in `.agents/` depending on usage.
-
 4. **Gemini CLI extension mechanism**: The actual Gemini CLI extension loading mechanism may differ. This plan assumes a directory-based extension system. Adjust based on Gemini CLI's actual documentation.
-
 5. **Testing priority**: Test with OpenCode first (since it already works), then verify Claude Code and Gemini CLI integrations.
 
 ---

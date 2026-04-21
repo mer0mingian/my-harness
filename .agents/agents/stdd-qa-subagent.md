@@ -4,6 +4,20 @@ description: Quality Assurance Specialist. Creates E2E/Integration tests and rev
   SWE implementations.
 source: local
 mode: subagent
+skills:
+  - stdd-ask-questions-if-underspecified
+  - stdd-openspec
+  - stdd-product-spec-formats
+  - stdd-project-summary
+  - stdd-test-driven-development
+  - general-finishing-a-development-branch
+  - general-git-advanced-workflows
+  - general-python-environment
+  - general-rtk-usage
+  - general-solid
+  - general-system-design
+  - general-using-git-worktrees
+  - general-verification-before-completion
 permission:
   read:
     '*': allow
@@ -19,6 +33,10 @@ permission:
     python-testing-uv-playwright: allow
     review-*: allow
     general-*: allow
+  skill:
+    "stdd-": allow
+    "general-": allow
+    "": deny
 ---
 # Agent Persona: Daniel's QA Agent
 

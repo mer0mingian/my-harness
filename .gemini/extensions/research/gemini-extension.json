@@ -1,0 +1,8 @@
+{
+  "name": "research",
+  "version": "0.1.0",
+  "description": "Research workflows for Gemini CLI: review, analysis, information gathering.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {},
+  "excludeTools": []
+}
