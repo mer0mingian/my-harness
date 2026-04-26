@@ -1,7 +1,7 @@
 # Mermaid sequenceDiagram Grammar Subset for Tier 1 Authoring
 **Phase R deliverable — D4 — 2026-04-23**
 This is a specification for the compiler front-end (`compiler/mermaid_sequence.py`).
-Companion: `docs/notes/workflow-runtime-baseline.md` (D1–D3), `docs/WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md` §18 Tier 1.
+Companion: `docs/research-workflow-runtime-baseline.md` (D1–D3), `docs/WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md` §18 Tier 1.
 
 ---
 

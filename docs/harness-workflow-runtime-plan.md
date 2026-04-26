@@ -172,7 +172,7 @@ Sequential; later phases depend on earlier ones. Rough effort estimates assume o
 - Confirm OpenCode hook API shape via froggy (the chosen plugin host per §13).
 - **Define the mermaid subset** we support for Tier 1 authoring (participants, messages, `par`, `loop`, notes, bracket-metadata convention). Decide whether to include zenuml in v1 or defer to v1.1.
 
-**Deliverable:** short report in `docs/notes/workflow-runtime-baseline.md` + draft of `docs/workflow-runtime-mermaid-grammar.md`. No code.
+**Deliverable:** short report in `docs/research-workflow-runtime-baseline.md` + draft of `docs/workflow-runtime-mermaid-grammar.md`. No code.
 
 ### Phase 0 — Schema (1 d)
 
@@ -319,8 +319,7 @@ my-harness/
     harness-workflow-runtime-plan.md            # THIS FILE
     WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md       # revised companion
     workflow-runtime-mermaid-grammar.md         # supported mermaid subset + examples
-    notes/
-      workflow-runtime-baseline.md              # Phase R output
+    research-workflow-runtime-baseline.md       # Phase R output
 ```
 
 Workflow plugins (e.g. `stdd-feat`) live separately under `.agents/plugins/<workflow>/` with their own `.claude-plugin/plugin.json`, a `workflow.yaml`, and their agents/skills/hooks.
