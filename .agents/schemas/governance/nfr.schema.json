@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness-tooling.local/schemas/governance/nfr.schema.json",
+  "title": "NFR Catalog",
+  "description": "Structured representation of docs/governance/NFR_CATALOG.md. NFRs use ISO/IEC 25010 categories and EARS notation.",
+  "type": "object",
+  "required": ["project", "version", "last_updated", "nfrs"],
+  "additionalProperties": false,
+  "properties": {
+    "project": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+(?:\\.\\d+)?$" },
+    "last_updated": { "type": "string", "format": "date" },
+    "nfrs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/nfr" }
+    },
+    "validation_matrix": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nfr_id", "owner"],
+        "properties": {
+          "nfr_id": { "$ref": "#/$defs/nfr_id" },
+          "automated_test": { "type": "string" },
+          "manual_test": { "type": "string" },
+          "monitoring": { "type": "string" },
+          "owner": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nfr_id": {
+      "type": "string",
+      "pattern": "^NFR-(PERF|REL|SEC|USE|MAIN|COMP|PORT|FUNC)-\\d{3}$"
+    },
+    "iso_25010_category": {
+      "type": "string",
+      "enum": [
+        "Performance Efficiency",
+        "Reliability",
+        "Security",
+        "Usability",
+        "Maintainability",
+        "Compatibility",
+        "Portability",
+        "Functional Suitability"
+      ]
+    },
+    "ears_template": {
+      "type": "string",
+      "enum": ["ubiquitous", "event-driven", "state-driven", "unwanted", "optional-feature"]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["P0", "P1", "P2"]
+    },
+    "nfr": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "category",
+        "ears_template",
+        "requirement",
+        "acceptance_criteria",
+        "test_strategy",
+        "priority"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/nfr_id" },
+        "title": { "type": "string", "minLength": 3 },
+        "category": { "$ref": "#/$defs/iso_25010_category" },
+        "subcategory": { "type": "string" },
+        "ears_template": { "$ref": "#/$defs/ears_template" },
+        "requirement": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Full EARS requirement statement. MUST contain one of: shall, when, while, where, if/then.",
+          "pattern": "(?i)\\b(shall|when|while|where|if)\\b"
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "test_strategy": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "priority": { "$ref": "#/$defs/priority" },
+        "rationale": { "type": "string" }
+      }
+    }
+  }
+}

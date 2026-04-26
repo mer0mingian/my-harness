@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness-tooling.local/schemas/governance/test-strategy.schema.json",
+  "title": "Test Strategy",
+  "description": "Structured representation of docs/governance/TEST_STRATEGY.md.",
+  "type": "object",
+  "required": [
+    "project",
+    "version",
+    "last_updated",
+    "framework",
+    "pyramid",
+    "critical_journeys",
+    "playwright_patterns",
+    "visual_regression",
+    "test_data",
+    "ci_execution",
+    "metrics",
+    "maintenance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "project": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+(?:\\.\\d+)?$" },
+    "last_updated": { "type": "string", "format": "date" },
+    "framework": {
+      "type": "string",
+      "examples": ["Playwright Python", "Playwright TS", "Cypress"]
+    },
+    "pyramid": {
+      "type": "object",
+      "required": ["unit", "integration", "e2e"],
+      "additionalProperties": false,
+      "properties": {
+        "unit": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "integration": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "e2e": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "rationale": { "type": "string" }
+      }
+    },
+    "critical_journeys": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "priority"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-\\d{3}$"
+          },
+          "description": { "type": "string", "minLength": 5 },
+          "test_count": { "type": "integer", "minimum": 1 },
+          "nfrs_validated": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^NFR-(PERF|REL|SEC|USE|MAIN|COMP|PORT|FUNC)-\\d{3}$"
+            }
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2"]
+          }
+        }
+      }
+    },
+    "playwright_patterns": {
+      "type": "object",
+      "required": ["locator_priority", "page_object_model_required", "auto_wait_required", "forbid_time_sleep"],
+      "properties": {
+        "locator_priority": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["role", "label", "placeholder", "test_id", "css", "xpath"]
+          },
+          "minItems": 1
+        },
+        "page_object_model_required": { "type": "boolean", "const": true },
+        "auto_wait_required": { "type": "boolean", "const": true },
+        "forbid_time_sleep": { "type": "boolean", "const": true },
+        "retry_max": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "visual_regression": {
+      "type": "object",
+      "required": ["public_pages", "auth_pages", "admin_pages"],
+      "properties": {
+        "public_pages": { "type": "object" },
+        "auth_pages": { "type": "object" },
+        "admin_pages": { "type": "object" },
+        "baseline_environment": {
+          "type": "string",
+          "examples": ["CI Docker image", "Percy", "Chromatic"]
+        }
+      }
+    },
+    "test_data": {
+      "type": "object",
+      "required": ["fixtures", "factories"],
+      "properties": {
+        "fixtures": { "type": "string" },
+        "factories": { "type": "string" },
+        "realistic_data_policy": { "type": "string" },
+        "isolation": { "type": "string" }
+      }
+    },
+    "ci_execution": {
+      "type": "array",
+      "minItems": 4,
+      "description": "At least pre-commit, PR, main, nightly entries.",
+      "items": {
+        "type": "object",
+        "required": ["trigger", "tests", "timeout", "workers"],
+        "properties": {
+          "trigger": {
+            "type": "string",
+            "enum": ["pre-commit", "PR", "main", "nightly", "release", "manual"]
+          },
+          "tests": { "type": "string" },
+          "timeout": { "type": "string" },
+          "workers": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["coverage_target"],
+      "properties": {
+        "coverage_target": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "flakiness_target": { "type": "number", "minimum": 0, "maximum": 100 },
+        "duration_target": { "type": "string" },
+        "e2e_pass_target": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "maintenance": {
+      "type": "object",
+      "required": ["review_cadence"],
+      "properties": {
+        "review_cadence": {
+          "type": "string",
+          "enum": ["monthly", "quarterly", "semiannual", "annual"]
+        },
+        "doc_required_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness-tooling.local/schemas/governance/constitution.schema.json",
+  "title": "Technical Constitution",
+  "description": "Structured representation of docs/governance/TECHNICAL_CONSTITUTION.md. The markdown file is canonical; this schema describes the parsed form used by validators and downstream agents.",
+  "type": "object",
+  "required": [
+    "project",
+    "version",
+    "last_updated",
+    "governance_rule",
+    "technology_preferences",
+    "solution_approach",
+    "code_quality",
+    "security_baseline",
+    "amendment_process"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "project": { "type": "string", "minLength": 1 },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(?:\\.\\d+)?$",
+      "description": "Semantic version. Bump minor for new section, patch for clarification."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO 8601 date (YYYY-MM-DD)."
+    },
+    "governance_rule": {
+      "type": "string",
+      "description": "One-line summary of who can amend the constitution."
+    },
+    "technology_preferences": {
+      "type": "object",
+      "required": ["backend", "frontend", "testing", "infrastructure"],
+      "additionalProperties": false,
+      "properties": {
+        "backend": {
+          "type": "object",
+          "required": ["language", "framework", "dep_manager"],
+          "properties": {
+            "language": { "type": "string" },
+            "framework": { "type": "string" },
+            "dep_manager": { "type": "string" },
+            "database": { "type": "string" },
+            "orm": { "type": "string" }
+          }
+        },
+        "frontend": {
+          "type": "object",
+          "properties": {
+            "rendering": { "type": "string" },
+            "reactive": { "type": "string" },
+            "css": { "type": "string" },
+            "build": { "type": "string" }
+          }
+        },
+        "testing": {
+          "type": "object",
+          "required": ["unit", "e2e"],
+          "properties": {
+            "unit": { "type": "string" },
+            "e2e": { "type": "string" },
+            "mocking": { "type": "string" },
+            "coverage_threshold": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "infrastructure": {
+          "type": "object",
+          "properties": {
+            "container": { "type": "string" },
+            "orchestration": { "type": "string" },
+            "secrets": { "type": "string" }
+          }
+        }
+      }
+    },
+    "solution_approach": {
+      "type": "object",
+      "description": "RFC-2119 rules grouped by topic.",
+      "patternProperties": {
+        "^.*$": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["keyword", "rule"],
+            "properties": {
+              "keyword": {
+                "type": "string",
+                "enum": ["MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY"]
+              },
+              "rule": { "type": "string", "minLength": 5 },
+              "rationale": { "type": "string" },
+              "approved": {
+                "type": "string",
+                "format": "date",
+                "description": "Date the rule was approved (preserves the line on amendment)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "code_quality": {
+      "type": "object",
+      "required": ["linter", "formatter", "type_checker"],
+      "properties": {
+        "naming": { "type": "object" },
+        "documentation": { "type": "array", "items": { "type": "string" } },
+        "linter": { "type": "string" },
+        "formatter": { "type": "string" },
+        "type_checker": { "type": "string" },
+        "precommit": { "type": "string" }
+      }
+    },
+    "security_baseline": {
+      "type": "object",
+      "required": ["authn", "data_protection", "dependencies"],
+      "properties": {
+        "authn": { "type": "array", "items": { "type": "object" } },
+        "data_protection": { "type": "array", "items": { "type": "object" } },
+        "dependencies": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "amendment_process": {
+      "type": "object",
+      "required": ["minor", "major"],
+      "properties": {
+        "minor": { "type": "string" },
+        "major": { "type": "string" }
+      }
+    },
+    "tooling_appendix": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["category", "tool"],
+        "properties": {
+          "category": { "type": "string" },
+          "tool": { "type": "string" },
+          "version": { "type": "string" },
+          "config_file": { "type": "string" }
+        }
+      }
+    }
+  }
+}
