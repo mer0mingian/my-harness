@@ -1,0 +1,9 @@
+{
+  "name": "harness-workflow-runtime",
+  "description": "Runtime plugin for multi-agent CLI workflows: schema validation, resolver, enforcement hooks, and the /workflow state machine. Prerequisite for per-workflow plugins (stdd-feat, arch-review, ...).",
+  "version": "0.1.0",
+  "author": {
+    "name": "Daniel Mingers"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "harness-workflow-runtime"
+version = "0.1.0"
+description = "Schema models, resolver, hooks, and slash commands for multi-agent CLI workflows (Claude Code + OpenCode)."
+readme = "README.md"
+# Sandbox target is Python 3.13 (see docs/harness-workflow-runtime-plan.md §13).
+# Dev floor is 3.11 so pre-commit / CI can run the validator outside the sandbox too.
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "Daniel Mingers" },
+]
+dependencies = [
+  "pydantic>=2.10",
+  "pyyaml>=6.0",
+  "python-frontmatter>=1.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[project.scripts]
+harness-workflow-validate = "harness_workflow.validate:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["harness_workflow"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

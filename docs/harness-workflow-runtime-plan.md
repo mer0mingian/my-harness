@@ -294,16 +294,20 @@ my-harness/
           adapters/
             claude.py
             opencode.py
-        commands/                               # symlinked into .claude/commands
-          workflow-run.md
-          workflow-advance.md
-          workflow-status.md
-          workflow-reset.md
-          new-workflow.md
+        .claude-plugin/
+          plugin.json                           # plugin manifest (name, version, author)
+        commands/                               # auto-discovered by Claude Code when plugin installed
+          workflow.md                           # Phase 1 stub; replaced by Phase 3 dispatcher
+          workflow-run.md                       # Phase 3
+          workflow-advance.md                   # Phase 3
+          workflow-status.md                    # Phase 3
+          workflow-reset.md                     # Phase 3
+          new-workflow.md                       # Phase 6
         hooks/
-          pre_tool_use.py
-          post_tool_use.py
-        settings.fragment.json                  # hook entries merged into repo settings
+          hooks.json                            # registers matchers per Claude Code format
+          noop.py                               # Phase 1 stub
+          pre_tool_use.py                       # Phase 4
+          post_tool_use.py                      # Phase 4
         tests/
           test_schemas.py
           test_resolver.py
