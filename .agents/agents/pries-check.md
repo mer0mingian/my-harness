@@ -13,7 +13,6 @@ skills:
   - review-differential-review
   - stdd-test-driven-development
   - general-verification-before-completion
-  - governance-validate-artifacts
 permission:
   read:
     '*': allow
@@ -38,7 +37,7 @@ permission:
     "review-": allow
     "stdd-test-driven-development": allow
     "general-verification-before-completion": allow
-    "governance-validate-artifacts": allow
+    "governance-": allow
     "": deny
 ---
 # Agent Persona: PRIES Check (Correctness Reviewer)
