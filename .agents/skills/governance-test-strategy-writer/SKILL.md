@@ -35,14 +35,11 @@ Rules and templates for producing `docs/governance/TEST_STRATEGY.md`.
 
 ## Pyramid defaults
 
-| Project shape           | Unit | Integration | E2E |
-| ----------------------- | ---- | ----------- | --- |
-| Backend API             | 70   | 25          | 5   |
-| Full-stack web (default)| 70   | 20          | 10  |
-| UI-heavy SPA / VTT      | 60   | 25          | 15  |
-| Microservice mesh       | 60   | 30          | 10  |
+**Company default: 70% unit, 20% integration, 10% E2E**
 
-If the user picks a non-default ratio, capture rationale in the section header.
+This ratio assumes full backend applications with typical UI complexity. It is locked across all project types to ensure consistency.
+
+If a project requires deviation (e.g., microservice mesh needing higher integration %, or a UI-heavy VTT needing higher E2E %), the user must provide explicit rationale, which you must capture in the Test Pyramid Ratios section header. Deviation requests are escalated to the Technical Lead before being accepted.
 
 ## Critical user journey table format
 

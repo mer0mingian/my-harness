@@ -11,11 +11,11 @@
 
 | Test Type      | Target % | Notes                                                                |
 | -------------- | -------- | -------------------------------------------------------------------- |
-| Unit           | 60%      | Dice roll math, NFR rules engine, character sheet validation.        |
-| Integration    | 25%      | Repositories, WebSocket envelope round-trip, Auth0 JWT validation.   |
-| E2E            | 15%      | UI-heavy multiplayer flows; slightly above baseline 70/20/10.        |
+| Unit           | 70%      | Dice roll math, NFR rules engine, character sheet validation.        |
+| Integration    | 20%      | Repositories, WebSocket envelope round-trip, Auth0 JWT validation.   |
+| E2E            | 10%      | Critical multiplayer flows, bridge station navigation.               |
 
-**Rationale:** VTT is a UI-heavy realtime app; bumping E2E to 15% trades CI duration for higher confidence on multiplayer paths.
+**Rationale:** Adheres to company standard 70/20/10 test pyramid for consistency across projects.
 
 ---
 

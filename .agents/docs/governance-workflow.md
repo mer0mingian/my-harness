@@ -115,3 +115,23 @@ If you maintain multiple project types in the same fleet, consider keeping
 - **Writing E2E tests that bypass the strategy**. The strategy is normative
   for `@test` — if you need an exception, document it in the test docstring
   with a link to a refactor ticket.
+
+---
+
+## Future Improvements
+
+### Template Syntax Enhancement
+
+Template files currently use `{{token}}` placeholder syntax filled by agents
+structurally during artifact generation. This approach is simple and works
+well for the current use cases.
+
+**Potential enhancement**: Consider migrating to a formal templating engine
+(Jinja2 or Mustache) for more complex substitution patterns, including:
+- Conditional blocks (e.g., show security baseline only if selected)
+- Iteration over lists (e.g., dynamic NFR table rows)
+- Nested variable resolution
+- Template inheritance for cross-artifact consistency
+
+This would require adding a templating library dependency and updating all
+`*-writer` skills to use the engine instead of structural string replacement.

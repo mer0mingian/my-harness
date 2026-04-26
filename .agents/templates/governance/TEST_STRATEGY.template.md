@@ -11,11 +11,11 @@
 
 | Test Type      | Target % | Notes                                                  |
 | -------------- | -------- | ------------------------------------------------------ |
-| Unit           | {{unit_pct}}%      | Fast feedback, pinpoint failures, low maintenance.     |
-| Integration    | {{integration_pct}}%      | Service boundaries, DB, external APIs.                 |
-| E2E            | {{e2e_pct}}%      | Critical user journeys.                                |
+| Unit           | 70%      | Fast feedback, pinpoint failures, low maintenance.     |
+| Integration    | 20%      | Service boundaries, DB, external APIs.                 |
+| E2E            | 10%      | Critical user journeys.                                |
 
-**Rationale for chosen ratios:** {{ratio_rationale}}
+**Rationale for chosen ratios:** Company standard 70/20/10 test pyramid ensures consistency across projects.
 
 ---
 
