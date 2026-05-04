@@ -45,7 +45,7 @@ C4Context
     System(harness, "harness (my-harness + harness-sandbox)", "Multi-agent CLI environment with workflow runtime")
     System_Ext(linear, "Linear", "Issue tracker")
     System_Ext(git, "Git forge", "GitHub / Bitbucket")
-    System_Ext(mcp, "Local MCP servers", "Haft, CodeGraphContext, optional Graphiti")
+    System_Ext(mcp, "Local MCP servers", "CodeGraphContext (Haft / Graphiti are out of scope for v1)")
     Rel(dev, harness, "Runs /workflow run <id>")
     Rel(harness, linear, "Fetches issue specs (per-workflow)")
     Rel(harness, git, "Creates branches / commits / PRs")

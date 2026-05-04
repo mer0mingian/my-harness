@@ -38,7 +38,7 @@ This workspace contains two sibling repositories with distinct responsibilities:
 
 **harness-sandbox**:
 - Base: NVIDIA OpenShell-Community + Claude Code, OpenCode, Chloe, rtk
-- Services: Haft MCP, CodeGraphContext MCP, optional Graphiti memory
+- Services: CodeGraphContext MCP (external `cgc` compose service). [Superseded — Haft and Graphiti dropped from v1]
 - Not a monorepo — code bind-mounted from host, never baked into image
 
 ---

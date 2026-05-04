@@ -23,7 +23,7 @@
 
 1. [ ] Create Dockerfile
 2. [ ] Create a description to install all repo content globally in container
-3. [ ] Describe how to use deepwiki, graphiti, graph-code-context, haft in containerised version
+3. [ ] Describe how to use deepwiki, codegraphcontext (CGC), haft in containerised version
 4. [ ] Add rtk,
 5. [ ] Add OpenSpecs
 6. [ ] Warp in container?

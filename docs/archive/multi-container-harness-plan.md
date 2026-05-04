@@ -22,7 +22,7 @@ I want to build an automated software engineering harness. It not only depends o
 8. Special reflection hooks inside the workflows to improve code usage and create PRs on the plugin marketplace
    1. [claude-reflect-system](https://github.com/haddock-development/claude-reflect-system)
    2. [opencode-skill-evolution](https://github.com/bigknoxy/opencode-skill-evolution)
-9. Project-overlapping business knowledge ([graphiti](https://github.com/getzep/graphiti))
+9. Project-overlapping business knowledge (originally Graphiti) — **[Superseded — see CGC integration]** Graphiti was dropped from v1. CGC fulfils the structural code-graph role only and does not provide cross-project episodic memory. This bullet remains as a v2 placeholder for a future memory layer.
    1. requires independent db management, it needs to run outside of the sandbox and be available via mcp/web api
    2. This can be my personal setup, i.e. dbs can run on my machine
 10. token monitoring for the sandbox, e.g. by [CodeBurn](https://github.com/getagentseal/codeburn)

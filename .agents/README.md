@@ -129,19 +129,6 @@ codeburn status
 npm update -g codeburn
 ```
 
-### 10. Graphiti (Knowledge Graph MCP)
-
-```bash
-# Install via npx (installer)
-npx @hexmos/ipm i getzep/graphiti
-# Or manually via pip
-pip install graphiti
-# Requires: Docker + Neo4j or FalkorDB
-# See: https://github.com/getzep/graphiti
-# Update
-pip install --upgrade graphiti
-```
-
 ---
 
 ## One-Line Update All
@@ -150,8 +137,8 @@ pip install --upgrade graphiti
 # npm tools
 npm update -g @anthropic-ai/claude-code @google/gemini-cli @fission-ai/openspec opencode-ai skills codeburn
 
-# pip tools  
-pip install --upgrade codegraphcontext graphiti
+# pip tools
+pip install --upgrade codegraphcontext
 
 # RTK (install script)
 curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/master/install.sh | sh

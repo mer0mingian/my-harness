@@ -23,7 +23,7 @@ Deliver a working **v1** of Daniel's multi-agent-cli harness: a reproducible doc
 - `Dockerfile` extending the pinned NVIDIA OpenShell-Community Gemini sandbox, layering in Claude Code, OpenCode, Chloe, rtk.
 - `docker-compose.yml` — agent container, long-running, one per project, bind-mounts marketplace + project source + host `~/.claude`, `~/.opencode`, `~/.gemini`.
 - `docker-compose.services.yml` — shared services stack: Haft MCP + CodeGraphContext MCP + their required DBs + `litho` (deepwiki-rs) gated behind the `docs` Compose profile so it only starts on `docker compose --profile docs run --rm litho ...`.
-- `docker-compose.graphiti.yml` — optional personal memory; separate file so `docker compose -f docker-compose.yml up` never starts it accidentally.
+- ~~`docker-compose.graphiti.yml` — optional personal memory; separate file so `docker compose -f docker-compose.yml up` never starts it accidentally.~~ **[Superseded — see CGC integration]** Graphiti was dropped from v1; CGC now runs as the external `cgc` service in `docker-compose.yml` and provides only the structural code graph (no episodic memory).
 - `.env.example` — placeholders for every API key and service config referenced by any compose file.
 - `bin/harness` — host-side entry script: `harness up`, `harness shell`, `harness down`, `harness services up/down`.
 - Short docs for quickstart and common attach patterns.
@@ -114,8 +114,8 @@ The older `multi-agent-cli-harness-plan.md` contained several factual errors. Th
 └── harness-sandbox/                            (git, sandbox stack)
     ├── Dockerfile
     ├── docker-compose.yml
-    ├── docker-compose.services.yml             (Haft + CGC always-on; litho gated by profile `docs`)
-    ├── docker-compose.graphiti.yml
+    ├── docker-compose.services.yml             (Haft + CGC always-on; litho gated by profile `docs`)  [SUPERSEDED — CGC now lives in docker-compose.yml; no separate services file]
+    ├── docker-compose.graphiti.yml             [SUPERSEDED — file deleted; Graphiti dropped from v1]
     ├── .env.example
     ├── bin/harness
     ├── README.md                               (already exists; extend)

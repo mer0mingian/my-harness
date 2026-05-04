@@ -260,6 +260,9 @@ Rules:
 
 ## R4 — Graphiti MCP server + DB stack
 
+> **[Superseded — see CGC integration]** Graphiti as a separate personal-memory stack was dropped from v1; the corresponding `docker-compose.graphiti.yml` was deleted. CGC fulfils the structural code-graph role only — it does not replace Graphiti's long-term episodic memory. Section preserved for historical context.
+
+
 - **Agent:** Explore · **Model:** sonnet
 - **Writes files:** No
 - **Depends on:** nothing · **Parallel with:** R1, R2, R3
@@ -494,6 +497,9 @@ Cap: 200 words.
 ---
 
 ## S4 — docker-compose.graphiti.yml (optional)
+
+> **[Superseded — see CGC integration]** The Graphiti compose file was deleted in a later revision; CGC runs as the external `cgc` service in `docker-compose.yml` and does not provide episodic memory. Section preserved for historical context.
+
 
 - **Agent:** general-purpose · **Model:** sonnet
 - **Writes files:** Yes — `/mnt/c/memory/harness-sandbox/docker-compose.graphiti.yml`
