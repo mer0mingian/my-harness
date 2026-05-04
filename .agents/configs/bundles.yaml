@@ -1,0 +1,63 @@
+# bundles.yaml — marketplace-blessed named bundles for the harness manifest.
+#
+# Referenced from a project's .harness.yaml (or .harness.local.yaml) by name,
+# e.g.:
+#
+#   bundles: [pries-core, essentials]
+#
+# Resolution rules (handled by harness-sandbox/bin/harness-resolve):
+#   - Each entry under skills/agents/commands/plugins is a directory or file
+#     name relative to harness-tooling/.agents/{skills,agents,commands,plugins}/.
+#   - Bundle entries are unioned; duplicates collapse.
+#   - The manifest's top-level `exclude:` block can subtract individual items
+#     even if they were pulled in via a bundle.
+#
+# Bundle entries here MUST refer to assets that actually exist in
+# harness-tooling/.agents/. The resolver fails loudly on missing items.
+
+bundles:
+
+  # PRIES-aligned subagents and commands (PM → Make → Test → Review →
+  # Simplify). Pulls in the workflow's core agents, slash commands, and the
+  # complexity-review skill the simplify step relies on.
+  pries-core:
+    skills:
+      - review-simplify-complexity
+      - review-check-correctness
+      - review-differential-review
+      - review-orchestrate-dual-review
+      - orchestrate-executing-plans
+      - orchestrate-subagent-driven-development
+      - general-verification-before-completion
+    agents:
+      - pries-pm
+      - pries-make
+      - pries-test
+      - pries-check
+      - pries-simplify
+    commands:
+      - pries-implement
+      - pries-validate
+      - pries-review-only
+      - pries-test-only
+    plugins:
+      - harness-workflow-runtime
+
+  # General-purpose review/simplify/security skills used outside the strict
+  # PRIES loop. Note: there is no `init` skill in this marketplace — Claude
+  # Code's `/init` is a CLI builtin, not a skill — and there is no
+  # standalone `security-review` skill yet. The closest current equivalents
+  # are listed below.
+  essentials:
+    skills:
+      - review-simplify-complexity
+      - review-check-correctness
+      - review-differential-review
+      - review-systematic-debugging
+      - general-verification-before-completion
+      - general-finishing-a-development-branch
+      - general-git-guardrails-claude-code
+    agents:
+      - tdd-code-reviewer
+    commands: []
+    plugins: []
