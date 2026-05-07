@@ -20,6 +20,53 @@ from parse_test_evidence import (
 )
 
 
+@pytest.fixture
+def patterns():
+    """Shared patterns fixture for all test classes."""
+    return {
+        "failure_codes": {
+            "MISSING_BEHAVIOR": [
+                r"(?i)not implemented",
+                r"(?i)notimplementederror",
+                r"(?i)abstractmethod",
+                r"(?i)function.*has no implementation",
+            ],
+            "ASSERTION_MISMATCH": [
+                r"(?i)assert.*failed",
+                r"(?i)assertionerror",
+                r"(?i)expected.*but.*got",
+                r"(?i)AssertionError:",
+            ],
+            "TEST_BROKEN": [
+                r"(?i)syntaxerror",
+                r"(?i)indentationerror",
+                r"(?i)nameerror",
+                r"(?i)importerror",
+                r"(?i)attributeerror.*test",
+            ],
+            "ENV_BROKEN": [
+                r"(?i)modulenotfounderror",
+                r"(?i)connection.*refused",
+                r"(?i)permission denied",
+                r"(?i)no such file or directory",
+                r"(?i)timeout",
+            ],
+        },
+        "pytest_patterns": {
+            "test_line": r"^(.+\.py)::(\w+)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
+            "test_line_no_class": r"^(.+\.py)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
+            "summary_line": r"^=+ (\d+) (passed|failed|errors?|skipped)",
+            "final_summary": r"^=+\s+(.+)\s+in\s+[\d\.]+s\s*=+$",
+            "failure_start": r"^_+ (.+) _+$",
+            "error_section": r"^=+ ERRORS =+$",
+            "failure_section": r"^=+ FAILURES =+$",
+            "error_message": r"^E\s+(.*)$",
+            "location_line": r"^(.+\.py):(\d+):\s*(\w+)$",
+            "collected": r"^collected (\d+) items?",
+        },
+    }
+
+
 # Sample pytest outputs for testing
 PYTEST_OUTPUT_GREEN = """============================= test session starts ==============================
 platform linux -- Python 3.11.0, pytest-7.4.0
@@ -144,40 +191,6 @@ ERROR tests/test_api.py::test_create_user - ModuleNotFoundError: No module named
 
 class TestClassifyFailure:
     """Test failure classification logic."""
-
-    @pytest.fixture
-    def patterns(self):
-        """Load test patterns."""
-        return {
-            "failure_codes": {
-                "MISSING_BEHAVIOR": [
-                    r"(?i)not implemented",
-                    r"(?i)notimplementederror",
-                    r"(?i)abstractmethod",
-                    r"(?i)function.*has no implementation",
-                ],
-                "ASSERTION_MISMATCH": [
-                    r"(?i)assert.*failed",
-                    r"(?i)assertionerror",
-                    r"(?i)expected.*but.*got",
-                    r"(?i)AssertionError:",
-                ],
-                "TEST_BROKEN": [
-                    r"(?i)syntaxerror",
-                    r"(?i)indentationerror",
-                    r"(?i)nameerror",
-                    r"(?i)importerror",
-                    r"(?i)attributeerror.*test",
-                ],
-                "ENV_BROKEN": [
-                    r"(?i)modulenotfounderror",
-                    r"(?i)connection.*refused",
-                    r"(?i)permission denied",
-                    r"(?i)no such file or directory",
-                    r"(?i)timeout",
-                ],
-            }
-        }
 
     def test_classify_missing_behavior(self, patterns):
         """Test classification of MISSING_BEHAVIOR failures."""
@@ -318,52 +331,6 @@ class TestDetectState:
 class TestParsePytestOutput:
     """Test pytest output parsing."""
 
-    @pytest.fixture
-    def patterns(self):
-        """Load test patterns."""
-        return {
-            "failure_codes": {
-                "MISSING_BEHAVIOR": [
-                    r"(?i)not implemented",
-                    r"(?i)notimplementederror",
-                    r"(?i)abstractmethod",
-                    r"(?i)function.*has no implementation",
-                ],
-                "ASSERTION_MISMATCH": [
-                    r"(?i)assert.*failed",
-                    r"(?i)assertionerror",
-                    r"(?i)expected.*but.*got",
-                    r"(?i)AssertionError:",
-                ],
-                "TEST_BROKEN": [
-                    r"(?i)syntaxerror",
-                    r"(?i)indentationerror",
-                    r"(?i)nameerror",
-                    r"(?i)importerror",
-                    r"(?i)attributeerror.*test",
-                ],
-                "ENV_BROKEN": [
-                    r"(?i)modulenotfounderror",
-                    r"(?i)connection.*refused",
-                    r"(?i)permission denied",
-                    r"(?i)no such file or directory",
-                    r"(?i)timeout",
-                ],
-            },
-            "pytest_patterns": {
-                "test_line": r"^(.+\.py)::(\w+)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
-                "test_line_no_class": r"^(.+\.py)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
-                "summary_line": r"^=+ (\d+) (passed|failed|error|skipped)",
-                "final_summary": r"^=+\s+(.+)\s+in\s+[\d\.]+s\s*=+$",
-                "failure_start": r"^_+ (.+) _+$",
-                "error_section": r"^=+ ERRORS =+$",
-                "failure_section": r"^=+ FAILURES =+$",
-                "error_message": r"^E\s+(.*)$",
-                "location_line": r"^(.+\.py):(\d+):\s*(\w+)$",
-                "collected": r"^collected (\d+) items?",
-            },
-        }
-
     def test_parse_green_output(self, patterns):
         """Test parsing of GREEN (all pass) output."""
         evidence = parse_pytest_output(PYTEST_OUTPUT_GREEN, patterns)
@@ -483,52 +450,6 @@ class TestDataClasses:
 
 class TestIntegration:
     """Integration tests with real pytest outputs."""
-
-    @pytest.fixture
-    def patterns(self):
-        """Load test patterns."""
-        return {
-            "failure_codes": {
-                "MISSING_BEHAVIOR": [
-                    r"(?i)not implemented",
-                    r"(?i)notimplementederror",
-                    r"(?i)abstractmethod",
-                    r"(?i)function.*has no implementation",
-                ],
-                "ASSERTION_MISMATCH": [
-                    r"(?i)assert.*failed",
-                    r"(?i)assertionerror",
-                    r"(?i)expected.*but.*got",
-                    r"(?i)AssertionError:",
-                ],
-                "TEST_BROKEN": [
-                    r"(?i)syntaxerror",
-                    r"(?i)indentationerror",
-                    r"(?i)nameerror",
-                    r"(?i)importerror",
-                    r"(?i)attributeerror.*test",
-                ],
-                "ENV_BROKEN": [
-                    r"(?i)modulenotfounderror",
-                    r"(?i)connection.*refused",
-                    r"(?i)permission denied",
-                    r"(?i)no such file or directory",
-                    r"(?i)timeout",
-                ],
-            },
-            "pytest_patterns": {
-                "test_line": r"^(.+\.py)::(\w+)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
-                "test_line_no_class": r"^(.+\.py)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
-                "summary_line": r"^=+ (\d+) (passed|failed|error|skipped)",
-                "final_summary": r"^=+\s+(.+)\s+in\s+[\d\.]+s\s*=+$",
-                "failure_start": r"^_+ (.+) _+$",
-                "error_section": r"^=+ ERRORS =+$",
-                "failure_section": r"^=+ FAILURES =+$",
-                "error_message": r"^E\s+(.*)$",
-                "location_line": r"^(.+\.py):(\d+):\s*(\w+)$",
-                "collected": r"^collected (\d+) items?",
-            },
-        }
 
     def test_end_to_end_green(self, patterns):
         """End-to-end test: GREEN state workflow."""

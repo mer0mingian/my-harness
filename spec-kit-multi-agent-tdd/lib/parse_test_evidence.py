@@ -29,6 +29,8 @@ except ImportError:
 class TestResult:
     """Individual test result with classification."""
 
+    __test__ = False  # Prevent pytest from collecting this as a test class
+
     name: str
     status: str  # "passed", "failed", "error", "skipped"
     failure_code: Optional[str]  # Classification code or None
@@ -40,6 +42,8 @@ class TestResult:
 @dataclass
 class TestEvidence:
     """Complete test evidence with state classification."""
+
+    __test__ = False  # Prevent pytest from collecting this as a test class
 
     state: str  # "RED", "GREEN", "BROKEN"
     total_tests: int
@@ -117,7 +121,7 @@ def get_default_patterns() -> Dict:
         "pytest_patterns": {
             "test_line": r"^(.+\.py)::(\w+)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
             "test_line_no_class": r"^(.+\.py)::(\w+)\s+(PASSED|FAILED|ERROR|SKIPPED)",
-            "summary_line": r"^=+ (\d+) (passed|failed|error|skipped)",
+            "summary_line": r"^=+ (\d+) (passed|failed|errors?|skipped)",
             "final_summary": r"^=+\s+(.+)\s+in\s+[\d\.]+s\s*=+$",
             "failure_start": r"^_+ (.+) _+$",
             "error_section": r"^=+ ERRORS =+$",
@@ -203,7 +207,7 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
     """
     lines = output.split("\n")
     results: List[TestResult] = []
-    counts = {"passed": 0, "failed": 0, "error": 0, "skipped": 0}
+    counts = {"passed": 0, "failed": 0, "errors": 0, "skipped": 0}
     total_tests = 0
 
     # Extract test patterns
@@ -318,13 +322,16 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
                 continue
 
         # Track failure sections
-        if re.match(r"^=+ (FAILURES|ERRORS) =+$", line):
+        section_pattern = pytest_patterns.get('failure_section', r"^=+ FAILURES =+$")
+        error_section_pattern = pytest_patterns.get('error_section', r"^=+ ERRORS =+$")
+        if re.match(section_pattern, line) or re.match(error_section_pattern, line):
             in_failure_section = True
             in_summary_section = False
             continue
 
         # Detect failure/error section start
-        if in_failure_section and re.match(r"^_+ .+ _+$", line):
+        failure_start_pattern = pytest_patterns.get('failure_start', r"^_+ .+ _+$")
+        if in_failure_section and re.match(failure_start_pattern, line):
             # Save previous failure if any
             if current_failure and failure_lines:
                 _process_failure(current_failure, failure_lines, results, patterns)
@@ -341,7 +348,7 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
         # Parse final summary line (more flexible matching)
         if final_summary_pattern and re.match(final_summary_pattern, line):
             match = re.match(final_summary_pattern, line)
-            if match and match.lastindex >= 1:
+            if match and match.groups():
                 summary_text = match.group(1)
                 _parse_summary_counts(summary_text, counts)
 
@@ -361,7 +368,7 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
             elif status == "failed":
                 counts["failed"] += 1
             elif status == "error":
-                counts["error"] += 1
+                counts["errors"] += 1
             elif status == "skipped":
                 counts["skipped"] += 1
         total_tests = len(results)
@@ -372,7 +379,7 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
         total_tests=total_tests,
         passed=counts["passed"],
         failed=counts["failed"],
-        errors=counts["error"],
+        errors=counts["errors"],
         skipped=counts["skipped"],
         results=results,
         summary="",  # Will be generated
@@ -387,8 +394,8 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
         parts.append(f"{counts['passed']} passed")
     if counts["failed"] > 0:
         parts.append(f"{counts['failed']} failed")
-    if counts["error"] > 0:
-        parts.append(f"{counts['error']} error")
+    if counts["errors"] > 0:
+        parts.append(f"{counts['errors']} error")
     if counts["skipped"] > 0:
         parts.append(f"{counts['skipped']} skipped")
 
@@ -400,9 +407,14 @@ def parse_pytest_output(output: str, patterns: Dict) -> TestEvidence:
 def _parse_summary_counts(summary_text: str, counts: Dict[str, int]):
     """Parse summary line and update counts dictionary."""
     # Match patterns like "3 passed, 1 failed, 1 error in 0.12s"
-    for match in re.finditer(r"(\d+)\s+(passed|failed|error|skipped)", summary_text):
+    # Note: pytest emits plural "errors" but we store as "errors" key
+    for match in re.finditer(r"(\d+)\s+(passed|failed|errors?|skipped)", summary_text):
         count, status = match.groups()
-        counts[status] = int(count)
+        # Normalize "error" or "errors" to "errors" key
+        if status in ("error", "errors"):
+            counts["errors"] = int(count)
+        else:
+            counts[status] = int(count)
 
 
 def _process_failure(
@@ -419,7 +431,8 @@ def _process_failure(
     # Find matching result
     result = None
     for r in results:
-        if test_name in r.name or r.name in test_name:
+        # Use exact match first, then suffix match (::test_name)
+        if r.name == test_name or r.name.endswith(f"::{test_name}"):
             result = r
             break
 

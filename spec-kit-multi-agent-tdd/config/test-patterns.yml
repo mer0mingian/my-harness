@@ -48,7 +48,7 @@ pytest_patterns:
   test_line_no_class: "^(.+\\.py)::(\\w+)\\s+(PASSED|FAILED|ERROR|SKIPPED)"
 
   # Summary line format: === 3 passed, 1 failed in 0.12s ===
-  summary_line: "^=+ (\\d+) (passed|failed|error|skipped)"
+  summary_line: "^=+ (\\d+) (passed|failed|errors?|skipped)"
 
   # Final summary line: === 1 passed, 1 failed, 1 error in 0.12s ===
   final_summary: "^=+\\s+(.+)\\s+in\\s+[\\d\\.]+s\\s*=+$"
