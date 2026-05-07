@@ -12,7 +12,7 @@ import tempfile
 import re
 from pathlib import Path
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 
 try:
     import yaml
@@ -214,6 +214,56 @@ def extract_acceptance_criteria(spec_content: str) -> List[str]:
     return criteria
 
 
+def validate_test_file_pattern(file_path: Path, config: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    """
+    Validate if file path matches configured test file patterns.
+
+    Uses Path.match() to check if the file matches any of the test patterns
+    configured in test_framework.file_patterns. Supports glob patterns including
+    ** for recursive directory matching.
+
+    Args:
+        file_path: Path to file being validated (can be relative or absolute)
+        config: Configuration dictionary containing test_framework.file_patterns
+
+    Returns:
+        Tuple of (is_valid, error_message):
+        - is_valid: True if file matches any test pattern, False otherwise
+        - error_message: None if valid, detailed error message if invalid
+
+    Examples:
+        >>> config = {'test_framework': {'file_patterns': ['tests/**/*.py']}}
+        >>> validate_test_file_pattern(Path('tests/test_foo.py'), config)
+        (True, None)
+        >>> validate_test_file_pattern(Path('src/main.py'), config)
+        (False, 'File src/main.py does not match any test patterns...')
+    """
+    # Extract test patterns from config
+    patterns = config.get('test_framework', {}).get('file_patterns', [])
+
+    if not patterns:
+        # No patterns configured - accept all files (fail-open for backwards compatibility)
+        return (True, None)
+
+    # Ensure file_path is a Path object
+    if not isinstance(file_path, Path):
+        file_path = Path(file_path)
+
+    # Check each pattern using Path.match() which supports ** wildcards
+    for pattern in patterns:
+        if file_path.match(pattern):
+            return (True, None)
+
+    # No patterns matched
+    patterns_str = ', '.join(patterns)
+    error_msg = (
+        f"File {file_path} does not match any configured test file patterns.\n"
+        f"Allowed patterns: {patterns_str}\n"
+        f"Use --allow-non-test-files with --justification to bypass this restriction."
+    )
+    return (False, error_msg)
+
+
 def build_agent_context(feature_id: str, spec_content: str, config: Dict[str, Any]) -> Dict[str, Any]:
     """
     Build structured context for @test-specialist agent.
@@ -245,7 +295,9 @@ def spawn_test_agent(
     feature_id: str,
     spec_content: str,
     config: Dict[str, Any],
-    project_root: Optional[Path] = None
+    project_root: Optional[Path] = None,
+    allow_non_test_files: bool = False,
+    bypass_justification: Optional[str] = None
 ) -> int:
     """
     Spawn @test-specialist agent to write tests.
@@ -265,6 +317,8 @@ def spawn_test_agent(
         spec_content: Full spec content
         config: Configuration dictionary
         project_root: Project root directory (defaults to CWD)
+        allow_non_test_files: Whether to allow non-test file modifications
+        bypass_justification: Justification for bypassing file gate (required if allow_non_test_files=True)
 
     Returns:
         Exit code (0 for success)
@@ -274,6 +328,18 @@ def spawn_test_agent(
 
     # Build agent context
     context = build_agent_context(feature_id, spec_content, config)
+
+    # Build file gate restrictions section
+    file_gate_section = "\nFILE GATE RESTRICTIONS:\n"
+    if allow_non_test_files and bypass_justification:
+        file_gate_section += f"⚠️  BYPASS ACTIVE: Non-test files allowed\n"
+        file_gate_section += f"Justification: {bypass_justification}\n"
+        file_gate_section += "\nYou may create/modify files outside test patterns if necessary.\n"
+    else:
+        file_gate_section += "You MUST only create/modify files matching these patterns:\n"
+        file_gate_section += chr(10).join('- ' + p for p in context['test_patterns'])
+        file_gate_section += "\n\nFiles not matching these patterns will be rejected.\n"
+        file_gate_section += "If you need to modify non-test files, request --allow-non-test-files flag.\n"
 
     # Format prompt
     prompt = f"""
@@ -290,16 +356,18 @@ TEST PATTERNS:
 
 VALID FAILURE CODES:
 {', '.join(context['valid_failure_codes'])}
-
+{file_gate_section}
 TASK:
 1. Write failing tests (RED state) for all acceptance criteria
 2. Use test patterns from config
 3. Tests MUST fail initially (MISSING_BEHAVIOR or ASSERTION_MISMATCH)
 4. DO NOT write implementation code
+5. RESPECT file gate restrictions (see above)
 
 DELIVERABLES:
 - Test files in tests/ directory
 - Tests that fail with valid RED state codes
+- All files matching configured test patterns
 """
 
     # Write context file to temp directory (portable, secure)
@@ -325,7 +393,8 @@ def generate_test_design_artifact(
     feature_id: str,
     feature_name: str,
     output_path: Path,
-    template_dir: Optional[Path] = None
+    template_dir: Optional[Path] = None,
+    bypass_info: Optional[Dict[str, Any]] = None
 ) -> Path:
     """
     Generate test design artifact from template.
@@ -335,6 +404,7 @@ def generate_test_design_artifact(
         feature_name: Human-readable feature name
         output_path: Where to write artifact
         template_dir: Custom template directory (optional)
+        bypass_info: File gate bypass information (optional)
 
     Returns:
         Path to generated artifact
@@ -364,6 +434,7 @@ def generate_test_design_artifact(
         "feature_name": feature_name,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": "draft",
+        "bypass_info": bypass_info,
     }
     content = template.render(**variables)
 
@@ -374,13 +445,20 @@ def generate_test_design_artifact(
     return output_path
 
 
-def execute_test_command(feature_id: str, project_root: Optional[Path] = None) -> Dict[str, Any]:
+def execute_test_command(
+    feature_id: str,
+    project_root: Optional[Path] = None,
+    allow_non_test_files: bool = False,
+    bypass_justification: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Execute /speckit.multi-agent.test command end-to-end.
 
     Args:
         feature_id: Feature identifier
         project_root: Project root directory (defaults to CWD)
+        allow_non_test_files: Whether to allow non-test file modifications
+        bypass_justification: Justification for bypassing file gate
 
     Returns:
         Result dictionary with status and artifact path
@@ -409,7 +487,14 @@ def execute_test_command(feature_id: str, project_root: Optional[Path] = None) -
     output_path = get_artifact_path(feature_id, config, project_root)
 
     # Step 4: Spawn test agent
-    spawn_test_agent(feature_id, spec_content, config, project_root)
+    spawn_test_agent(
+        feature_id,
+        spec_content,
+        config,
+        project_root,
+        allow_non_test_files,
+        bypass_justification
+    )
 
     # Step 5: Generate test design artifact
     # Check for custom template
@@ -417,11 +502,21 @@ def execute_test_command(feature_id: str, project_root: Optional[Path] = None) -
     if not custom_template_dir.exists():
         custom_template_dir = None
 
+    # Build bypass info for artifact
+    bypass_info = None
+    if allow_non_test_files:
+        bypass_info = {
+            "enabled": True,
+            "justification": bypass_justification,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
     artifact_path = generate_test_design_artifact(
         feature_id=feature_id,
         feature_name=feature_name,
         output_path=output_path,
-        template_dir=custom_template_dir
+        template_dir=custom_template_dir,
+        bypass_info=bypass_info
     )
 
     return {
@@ -429,6 +524,7 @@ def execute_test_command(feature_id: str, project_root: Optional[Path] = None) -
         "feature_id": feature_id,
         "spec_path": str(spec_path),
         "artifact_path": str(artifact_path),
+        "bypass_info": bypass_info,
     }
 
 
@@ -449,11 +545,33 @@ def main():
         default=None,
         help="Project root directory (default: current directory)"
     )
+    parser.add_argument(
+        "--allow-non-test-files",
+        action="store_true",
+        help="Allow modifications to non-test files (requires --justification)"
+    )
+    parser.add_argument(
+        "--justification",
+        type=str,
+        default=None,
+        help="Justification for bypassing file gate (required with --allow-non-test-files)"
+    )
 
     args = parser.parse_args()
 
+    # Validate bypass parameters
+    if args.allow_non_test_files and not args.justification:
+        print("\n✗ Error: --justification is required when using --allow-non-test-files", file=sys.stderr)
+        print("  Example: --allow-non-test-files --justification 'Need to create test fixtures in src/'", file=sys.stderr)
+        return 1
+
     try:
-        result = execute_test_command(args.feature_id, args.project_root)
+        result = execute_test_command(
+            args.feature_id,
+            args.project_root,
+            args.allow_non_test_files,
+            args.justification
+        )
         print(f"\n✓ Success!")
         print(f"  Spec: {result['spec_path']}")
         print(f"  Artifact: {result['artifact_path']}")
