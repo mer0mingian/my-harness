@@ -12,7 +12,7 @@ if str(script_dir) not in sys.path:
     sys.path.insert(0, str(script_dir))
 
 import pytest
-from lib.test_runner import run_tests, validate_red_state
+from lib.test_runner import run_tests, validate_red_state, validate_green_state, extract_coverage_metrics
 from lib.parse_test_evidence import TestEvidence, TestResult
 
 
@@ -318,3 +318,263 @@ class TestValidateRedState:
 
             # Message should truncate to first 3 and add "and N more"
             assert 'and 7 more' in result['message']
+
+
+class TestValidateGreenState:
+    """Tests for validate_green_state function."""
+
+    @pytest.fixture
+    def mock_config(self):
+        """Standard config fixture."""
+        return {
+            'test_framework': {
+                'type': 'pytest',
+                'file_patterns': ['tests/**/*.py'],
+            }
+        }
+
+    @pytest.fixture
+    def green_evidence(self):
+        """GREEN state test evidence."""
+        return TestEvidence(
+            state='GREEN',
+            total_tests=3,
+            passed=3,
+            failed=0,
+            errors=0,
+            skipped=0,
+            results=[
+                TestResult(
+                    name='test_login',
+                    status='passed',
+                    failure_code=None,
+                    error_message=None,
+                    file_path='tests/test_auth.py',
+                    line_number=10
+                ),
+                TestResult(
+                    name='test_logout',
+                    status='passed',
+                    failure_code=None,
+                    error_message=None,
+                    file_path='tests/test_auth.py',
+                    line_number=20
+                ),
+                TestResult(
+                    name='test_password_reset',
+                    status='passed',
+                    failure_code=None,
+                    error_message=None,
+                    file_path='tests/test_auth.py',
+                    line_number=30
+                ),
+            ],
+            summary='3 tests: 3 passed (state: GREEN)'
+        )
+
+    @pytest.fixture
+    def red_evidence(self):
+        """RED state test evidence."""
+        return TestEvidence(
+            state='RED',
+            total_tests=3,
+            passed=0,
+            failed=3,
+            errors=0,
+            skipped=0,
+            results=[
+                TestResult(
+                    name='test_login',
+                    status='failed',
+                    failure_code='MISSING_BEHAVIOR',
+                    error_message='NotImplementedError: login not implemented',
+                    file_path='tests/test_auth.py',
+                    line_number=10
+                ),
+                TestResult(
+                    name='test_logout',
+                    status='failed',
+                    failure_code='ASSERTION_MISMATCH',
+                    error_message='AssertionError: expected 200, got 404',
+                    file_path='tests/test_auth.py',
+                    line_number=20
+                ),
+                TestResult(
+                    name='test_password_reset',
+                    status='failed',
+                    failure_code='MISSING_BEHAVIOR',
+                    error_message='NotImplementedError',
+                    file_path='tests/test_auth.py',
+                    line_number=30
+                ),
+            ],
+            summary='3 tests: 3 failed (state: RED)'
+        )
+
+    @pytest.fixture
+    def broken_evidence(self):
+        """BROKEN state test evidence."""
+        return TestEvidence(
+            state='BROKEN',
+            total_tests=3,
+            passed=0,
+            failed=0,
+            errors=3,
+            skipped=0,
+            results=[
+                TestResult(
+                    name='test_login',
+                    status='error',
+                    failure_code='TEST_BROKEN',
+                    error_message='SyntaxError: invalid syntax',
+                    file_path='tests/test_auth.py',
+                    line_number=10
+                ),
+                TestResult(
+                    name='test_logout',
+                    status='error',
+                    failure_code='ENV_BROKEN',
+                    error_message='ModuleNotFoundError: No module named pytest',
+                    file_path='tests/test_auth.py',
+                    line_number=20
+                ),
+                TestResult(
+                    name='test_password_reset',
+                    status='error',
+                    failure_code='TEST_BROKEN',
+                    error_message='IndentationError: unexpected indent',
+                    file_path='tests/test_auth.py',
+                    line_number=30
+                ),
+            ],
+            summary='3 tests: 3 errors (state: BROKEN)'
+        )
+
+    def test_validate_green_state_success(self, tmp_path, mock_config, green_evidence):
+        """Test successful GREEN state validation."""
+        with patch('lib.test_runner.run_tests') as mock_run, \
+             patch('lib.test_runner.parse_pytest_output') as mock_parse, \
+             patch('lib.test_runner.load_patterns') as mock_load:
+
+            mock_run.return_value = (0, "test output", "")
+            mock_parse.return_value = green_evidence
+            mock_load.return_value = {}
+
+            result = validate_green_state(tmp_path, mock_config, 'feat-auth')
+
+            assert result['state'] == 'GREEN'
+            assert result['validation_passed'] is True
+            assert 'Implementation complete' in result['message']
+            assert result['evidence'] == green_evidence
+            assert 'timestamp' in result
+            assert 'output' in result
+            assert 'coverage' in result
+
+    def test_validate_green_state_with_baseline(self, tmp_path, mock_config, green_evidence):
+        """Test GREEN state validation with baseline test count."""
+        with patch('lib.test_runner.run_tests') as mock_run, \
+             patch('lib.test_runner.parse_pytest_output') as mock_parse, \
+             patch('lib.test_runner.load_patterns') as mock_load:
+
+            mock_run.return_value = (0, "test output", "")
+            mock_parse.return_value = green_evidence
+            mock_load.return_value = {}
+
+            result = validate_green_state(tmp_path, mock_config, 'feat-auth', baseline_test_count=3)
+
+            assert result['state'] == 'GREEN'
+            assert result['validation_passed'] is True
+            assert 'baseline: 3 tests' in result['message']
+
+    def test_validate_green_state_red_failure(self, tmp_path, mock_config, red_evidence):
+        """Test validation failure when tests are still RED."""
+        with patch('lib.test_runner.run_tests') as mock_run, \
+             patch('lib.test_runner.parse_pytest_output') as mock_parse, \
+             patch('lib.test_runner.load_patterns') as mock_load:
+
+            mock_run.return_value = (1, "test output", "")
+            mock_parse.return_value = red_evidence
+            mock_load.return_value = {}
+
+            result = validate_green_state(tmp_path, mock_config, 'feat-auth')
+
+            assert result['state'] == 'RED'
+            assert result['validation_passed'] is False
+            assert 'Implementation incomplete' in result['message']
+            assert '3 failures' in result['message']
+
+    def test_validate_green_state_broken_failure(self, tmp_path, mock_config, broken_evidence):
+        """Test validation failure when tests are BROKEN."""
+        with patch('lib.test_runner.run_tests') as mock_run, \
+             patch('lib.test_runner.parse_pytest_output') as mock_parse, \
+             patch('lib.test_runner.load_patterns') as mock_load:
+
+            mock_run.return_value = (2, "test output", "")
+            mock_parse.return_value = broken_evidence
+            mock_load.return_value = {}
+
+            result = validate_green_state(tmp_path, mock_config, 'feat-auth')
+
+            assert result['state'] == 'BROKEN'
+            assert result['validation_passed'] is False
+            assert 'broken' in result['message'].lower()
+            assert 'Fix test issues' in result['message']
+
+    def test_validate_green_state_baseline_diff(self, tmp_path, mock_config, green_evidence):
+        """Test GREEN validation when test count differs from baseline."""
+        with patch('lib.test_runner.run_tests') as mock_run, \
+             patch('lib.test_runner.parse_pytest_output') as mock_parse, \
+             patch('lib.test_runner.load_patterns') as mock_load:
+
+            mock_run.return_value = (0, "test output", "")
+            mock_parse.return_value = green_evidence
+            mock_load.return_value = {}
+
+            # Baseline was 2, but now we have 3 tests
+            result = validate_green_state(tmp_path, mock_config, 'feat-auth', baseline_test_count=2)
+
+            assert result['state'] == 'GREEN'
+            assert result['validation_passed'] is True
+            assert 'baseline: 2 tests, now: 3' in result['message']
+
+
+class TestExtractCoverageMetrics:
+    """Tests for extract_coverage_metrics function."""
+
+    def test_extract_coverage_with_cov_output(self):
+        """Test extracting coverage from pytest-cov output."""
+        test_output = """
+        collected 10 tests
+
+        TOTAL                                     120     18    85%
+
+        ====== 10 passed in 0.5s ======
+        """
+
+        result = extract_coverage_metrics(test_output)
+
+        assert result is not None
+        assert result['percentage'] == 85
+        assert result['statements'] == 120
+        assert result['missing'] == 18
+        assert result['found'] is True
+
+    def test_extract_coverage_no_cov_output(self):
+        """Test extracting coverage when no coverage data present."""
+        test_output = """
+        collected 10 tests
+
+        ====== 10 passed in 0.5s ======
+        """
+
+        result = extract_coverage_metrics(test_output)
+
+        assert result is None
+
+    def test_extract_coverage_empty_output(self):
+        """Test extracting coverage from empty output."""
+        result = extract_coverage_metrics("")
+        assert result is None
+
+        result = extract_coverage_metrics(None)
+        assert result is None

@@ -8,6 +8,7 @@ Part of the Multi-Agent TDD workflow Phase 2.
 
 import sys
 import argparse
+import re
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
@@ -276,6 +277,92 @@ def create_implementation_notes(
     return output_path
 
 
+def update_impl_notes_with_green_evidence(
+    artifact_path: Path,
+    validation_result: Dict
+) -> None:
+    """
+    Update implementation notes artifact with GREEN state evidence.
+
+    Updates the existing artifact to mark it as complete and adds GREEN state
+    evidence section with passing test results.
+
+    Args:
+        artifact_path: Path to impl notes artifact
+        validation_result: GREEN validation result dict from validate_green_state
+
+    Raises:
+        FileNotFoundError: If artifact_path does not exist
+        OSError: If cannot read or write artifact file
+    """
+    content = artifact_path.read_text(encoding='utf-8')
+
+    # Update status line from 'draft' to 'complete'
+    content = re.sub(
+        r'\*\*Status:\*\* .*',
+        '**Status:** complete',
+        content
+    )
+
+    # Build GREEN evidence section
+    evidence = validation_result['evidence']
+    output_snippet = validation_result['output'][:500] if validation_result['output'] else ""
+
+    green_evidence = f"""
+### GREEN State (After Implementation)
+
+**Test Success Output:**
+```
+{output_snippet}
+```
+
+**Passing Tests:**
+- Total: {evidence.total_tests}
+- Passed: {evidence.passed}
+- Failed: {evidence.failed}
+- Errors: {evidence.errors}
+
+**Timestamp:** {validation_result['timestamp']}
+
+**GREEN Validation:** YES
+"""
+
+    # Add coverage section if available
+    coverage = validation_result.get('coverage')
+    if coverage and coverage.get('found'):
+        green_evidence += f"""
+**Coverage Metrics:**
+- Percentage: {coverage['percentage']}%
+- Statements: {coverage['statements']}
+- Missing: {coverage['missing']}
+"""
+
+    # Insert after RED State section (before next ### heading or end of file)
+    # Find the RED State section and insert GREEN after it
+    red_section_pattern = r'(### RED State.*?)(\n### |\Z)'
+    match = re.search(red_section_pattern, content, re.DOTALL)
+
+    if match:
+        # Insert GREEN evidence after RED State section
+        content = re.sub(
+            red_section_pattern,
+            rf'\1{green_evidence}\n\2',
+            content,
+            flags=re.DOTALL
+        )
+    else:
+        # Fallback: append at end of RED→GREEN Evidence section
+        evidence_pattern = r'(## RED→GREEN Evidence.*?)(\n## |\Z)'
+        content = re.sub(
+            evidence_pattern,
+            rf'\1{green_evidence}\n\2',
+            content,
+            flags=re.DOTALL
+        )
+
+    artifact_path.write_text(content, encoding='utf-8')
+
+
 def main():
     """
     CLI entry point for /speckit.multi-agent.implement command.
@@ -306,6 +393,11 @@ def main():
         default=None,
         help="Project root directory (default: current directory)"
     )
+    parser.add_argument(
+        "--validate-green",
+        action="store_true",
+        help="Validate GREEN state after implementation (skips RED validation)"
+    )
 
     args = parser.parse_args()
     project_root = args.project_root or Path.cwd()
@@ -315,6 +407,70 @@ def main():
         config = load_config(project_root)
         agent_name = config.get('agents', {}).get('implementation_agent', DEFAULT_IMPLEMENTATION_AGENT)
 
+        # GREEN validation phase (Phase 2)
+        if args.validate_green:
+            print(f"\n{'='*60}")
+            print("GREEN STATE VALIDATION")
+            print(f"{'='*60}\n")
+
+            from lib.test_runner import validate_green_state
+
+            # Find existing impl notes to get baseline test count
+            impl_notes_path = artifact_paths.find_existing(
+                args.feature_id, 'impl_notes', config, project_root
+            )
+
+            if not impl_notes_path:
+                print(f"✗ Implementation notes not found", file=sys.stderr)
+                print(f"  Run without --validate-green first", file=sys.stderr)
+                return 1
+
+            # Extract baseline test count from impl notes (if available)
+            baseline_test_count = None
+            try:
+                impl_content = impl_notes_path.read_text(encoding='utf-8')
+                # Look for "Total tests: N" in RED State section
+                match = re.search(r'### RED State.*?Total tests: (\d+)', impl_content, re.DOTALL)
+                if match:
+                    baseline_test_count = int(match.group(1))
+            except Exception:
+                pass  # baseline_test_count stays None
+
+            # Validate GREEN state
+            validation_result = validate_green_state(
+                project_root, config, args.feature_id, baseline_test_count
+            )
+
+            print(f"Test State: {validation_result['state']}")
+            print(f"Timestamp: {validation_result['timestamp']}")
+            print(f"\n{validation_result['message']}\n")
+
+            if not validation_result['validation_passed']:
+                print(f"✗ GREEN state validation failed", file=sys.stderr)
+                print(f"  State: {validation_result['state']}", file=sys.stderr)
+                print(f"  All tests must PASS (GREEN state) after implementation", file=sys.stderr)
+                print(f"\n  Evidence:", file=sys.stderr)
+                print(f"    Total tests: {validation_result['evidence'].total_tests}", file=sys.stderr)
+                print(f"    Passed: {validation_result['evidence'].passed}", file=sys.stderr)
+                print(f"    Failed: {validation_result['evidence'].failed}", file=sys.stderr)
+                print(f"    Errors: {validation_result['evidence'].errors}", file=sys.stderr)
+
+                if validation_result['state'] == 'BROKEN':
+                    return 2  # Escalation
+                else:
+                    return 1  # Validation failure (still RED)
+
+            print("✓ GREEN state confirmed - implementation verified\n")
+
+            # Update impl notes artifact with GREEN evidence
+            update_impl_notes_with_green_evidence(
+                impl_notes_path, validation_result
+            )
+
+            print(f"✓ Updated implementation notes: {impl_notes_path}\n")
+            return 0
+
+        # RED validation phase (Phase 1 - existing logic)
         print(f"Implementation workflow for: {args.feature_id}")
         print(f"Agent: {agent_name}\n")
 
