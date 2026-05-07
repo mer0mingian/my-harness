@@ -3,13 +3,32 @@
   "version": "1.0.0",
   "description": "Multi-agent TDD workflow commands and artifact templates for SpecKit",
   "author": "Harness Sandbox Team",
-  "commands": [
-    "test",
-    "implement",
-    "review",
-    "commit",
-    "plan"
-  ],
+  "commands": {
+    "test": {
+      "file": "commands/test.py",
+      "description": "Spawn @test-specialist agent to write failing tests for a feature",
+      "usage": "/speckit.multi-agent.test <feature-id>",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        }
+      ]
+    },
+    "implement": {
+      "description": "Spawn @dev-specialist agent to implement feature (Phase 3)"
+    },
+    "review": {
+      "description": "Spawn review agents for code and architecture review (Phase 3)"
+    },
+    "commit": {
+      "description": "Create Git commit with TDD workflow metadata (Phase 3)"
+    },
+    "plan": {
+      "description": "Generate multi-agent execution plan for feature (Phase 3)"
+    }
+  },
   "templates": {
     "directory": "templates/"
   },
