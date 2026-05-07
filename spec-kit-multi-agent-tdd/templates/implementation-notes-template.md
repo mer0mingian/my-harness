@@ -5,18 +5,19 @@
 **Status:** {{status|default("draft")}}  
 **Created:** {{timestamp}}
 
-## Implementation Summary
+## Implementation Approach
 
 _High-level overview of what was implemented:_
 - Key components modified/created
 - Architectural approach taken
 - Design patterns applied
 
-## Implementation Details
+## Files Modified
 
-### Files Changed
 - `path/to/file1.py` - _description of changes_
 - `path/to/file2.py` - _description of changes_
+
+## Implementation Details
 
 ### Key Decisions
 _Document important implementation decisions:_
@@ -107,7 +108,7 @@ _Verification that the implementation integrates properly with existing codebase
 - [ ] Logging/monitoring integration complete
 - [ ] Performance impact assessment: _negligible/acceptable/needs review_
 
-## Technical Debt / Future Work
+## Notes
 
 _Note any shortcuts taken or follow-up work needed:_
 - [ ] _Item description_ (priority: low/medium/high)
