@@ -40,7 +40,7 @@ This section documents the complete TDD cycle for test-driven development verifi
 
 ### RED State (Initial/Before Implementation)
 
-{% if red_state_evidence %}
+{% if red_state_evidence is defined and red_state_evidence %}
 **TDD Entry Validation:** ✓ Passed  
 **Timestamp:** {{ red_state_evidence.timestamp }}  
 **State:** {{ red_state_evidence.state }}  
