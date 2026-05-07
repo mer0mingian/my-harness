@@ -10,7 +10,7 @@ import sys
 import argparse
 from pathlib import Path
 from datetime import datetime, timezone
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 # Add project root to sys.path for lib imports
 # This allows 'from lib import artifact_paths' to work when running from commands/
@@ -42,6 +42,25 @@ except ImportError:
     sys.exit(1)
 
 
+# Module-level constants
+DEFAULT_IMPLEMENTATION_AGENT = 'dev-specialist'
+
+DEFAULT_CONFIG = {
+    'agents': {'implementation_agent': DEFAULT_IMPLEMENTATION_AGENT},
+    'artifacts': {
+        'root': 'docs/features',
+        'types': {
+            'test_design': 'test-design',
+            'impl_notes': 'impl-notes',
+        }
+    },
+    'test_framework': {
+        'type': 'pytest',
+        'file_patterns': ['tests/**/*.py'],
+    }
+}
+
+
 def load_config(project_root: Path) -> dict:
     """
     Load harness-tdd-config.yml from project root.
@@ -58,58 +77,19 @@ def load_config(project_root: Path) -> dict:
 
     if not config_path.exists():
         # Return sensible defaults
-        return {
-            'agents': {'implementation_agent': 'dev-specialist'},
-            'artifacts': {
-                'root': 'docs/features',
-                'types': {
-                    'test_design': 'test-design',
-                    'impl_notes': 'impl-notes',
-                }
-            },
-            'test_framework': {
-                'type': 'pytest',
-                'file_patterns': ['tests/**/*.py'],
-            }
-        }
+        return DEFAULT_CONFIG.copy()
 
     if yaml is None:
         print("Warning: PyYAML not installed, using default config", file=sys.stderr)
-        return {
-            'agents': {'implementation_agent': 'dev-specialist'},
-            'artifacts': {
-                'root': 'docs/features',
-                'types': {
-                    'test_design': 'test-design',
-                    'impl_notes': 'impl-notes',
-                }
-            },
-            'test_framework': {
-                'type': 'pytest',
-                'file_patterns': ['tests/**/*.py'],
-            }
-        }
+        return DEFAULT_CONFIG.copy()
 
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = yaml.safe_load(f)
-            return config or {}
+            return config or DEFAULT_CONFIG.copy()
     except yaml.YAMLError as e:
         print(f"Warning: Config malformed at {config_path}: {e}, using defaults", file=sys.stderr)
-        return {
-            'agents': {'implementation_agent': 'dev-specialist'},
-            'artifacts': {
-                'root': 'docs/features',
-                'types': {
-                    'test_design': 'test-design',
-                    'impl_notes': 'impl-notes',
-                }
-            },
-            'test_framework': {
-                'type': 'pytest',
-                'file_patterns': ['tests/**/*.py'],
-            }
-        }
+        return DEFAULT_CONFIG.copy()
 
 
 def find_test_design_artifact(
@@ -179,7 +159,7 @@ def prepare_agent_context(
     spec_artifact: Optional[Path],
     config: dict,
     project_root: Path
-) -> Dict[str, str]:
+) -> Dict[str, Any]:
     """
     Prepare context bundle for implementation agent.
 
@@ -330,7 +310,7 @@ def main():
     try:
         # Step 1: Load config
         config = load_config(project_root)
-        agent_name = config.get('agents', {}).get('implementation_agent', 'dev-specialist')
+        agent_name = config.get('agents', {}).get('implementation_agent', DEFAULT_IMPLEMENTATION_AGENT)
 
         print(f"Implementation workflow for: {args.feature_id}")
         print(f"Agent: {agent_name}\n")
