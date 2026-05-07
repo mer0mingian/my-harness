@@ -18,6 +18,11 @@ script_dir = Path(__file__).parent.parent
 if str(script_dir) not in sys.path:
     sys.path.insert(0, str(script_dir))
 
+
+class EscalationError(Exception):
+    """Raised for system-level issues that require escalation (exit code 2)."""
+    pass
+
 try:
     import yaml
 except ImportError:
@@ -231,7 +236,9 @@ def create_implementation_notes(
         Path to created implementation notes artifact
 
     Raises:
-        FileNotFoundError: If template file not found
+        EscalationError: If template file not found or corrupted (system issue)
+        PermissionError: If cannot create output directory (escalation)
+        OSError: If cannot write artifact file (escalation)
     """
     # Get template path relative to commands directory
     # commands/implement.py -> spec-kit-multi-agent-tdd/templates/
@@ -239,11 +246,14 @@ def create_implementation_notes(
     template_file = templates_dir / "implementation-notes-template.md"
 
     if not template_file.exists():
-        raise FileNotFoundError(f"Template not found: {template_file}")
+        raise EscalationError(f"Template not found: {template_file}")
 
     # Setup Jinja2 environment
-    env = Environment(loader=FileSystemLoader(str(templates_dir)))
-    template = env.get_template("implementation-notes-template.md")
+    try:
+        env = Environment(loader=FileSystemLoader(str(templates_dir)))
+        template = env.get_template("implementation-notes-template.md")
+    except Exception as e:
+        raise EscalationError(f"Cannot load template: {e}")
 
     # Render template with variables
     feature_name = feature_id.replace('-', ' ').title()
@@ -260,11 +270,25 @@ def create_implementation_notes(
         feature_id, 'impl_notes', config, project_root
     )
 
-    # Ensure parent directory exists
-    artifact_paths.ensure_directory(output_path)
+    # Ensure parent directory exists (permission errors are escalation)
+    try:
+        artifact_paths.ensure_directory(output_path)
+    except PermissionError as e:
+        raise PermissionError(
+            f"Cannot create output directory {output_path.parent}: {e}"
+        )
 
     # Write artifact
-    output_path.write_text(content, encoding='utf-8')
+    try:
+        output_path.write_text(content, encoding='utf-8')
+    except PermissionError as e:
+        raise PermissionError(
+            f"Cannot write artifact to {output_path}: {e}"
+        )
+    except OSError as e:
+        raise OSError(
+            f"Cannot write artifact to {output_path}: {e}"
+        )
 
     return output_path
 
@@ -283,7 +307,8 @@ def main():
 
     Exit codes:
         0: Success - context prepared, artifact created
-        1: Error - test artifact not found or other failure
+        1: Validation error - test artifact not found, invalid feature-id
+        2: Blocked/escalation - system issues (corrupt config, missing template, permission errors)
     """
     parser = argparse.ArgumentParser(
         description="Prepare implementation step of TDD workflow"
@@ -358,14 +383,26 @@ def main():
         return 0
 
     except FileNotFoundError as e:
+        # Test artifact not found = validation error (exit 1)
         print(f"✗ Error: {e}", file=sys.stderr)
         return 1
 
+    except EscalationError as e:
+        # Escalation errors = system issues (exit 2)
+        print(f"✗ Escalation: {e}", file=sys.stderr)
+        return 2
+
+    except (PermissionError, OSError) as e:
+        # Permission/filesystem errors = escalation (exit 2)
+        print(f"✗ Escalation: {e}", file=sys.stderr)
+        return 2
+
     except Exception as e:
-        print(f"✗ Unexpected error: {e}", file=sys.stderr)
+        # Unexpected errors = escalation (exit 2)
+        print(f"✗ Escalation: {e}", file=sys.stderr)
         import traceback
-        traceback.print_exc()
-        return 1
+        traceback.print_exc(file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":
