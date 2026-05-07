@@ -2,7 +2,7 @@
 
 **Feature ID:** {{feature_id}}  
 **Reviewer:** @arch  
-**Status:** {{status}}  
+**Status:** {{status|default("draft")}}  
 **Created:** {{timestamp}}
 
 ## Review Scope
@@ -83,7 +83,7 @@ _Suggested improvements (optional, can be future work):_
 
 ## Review Cycle
 
-**Cycle:** {{cycle_number}} / {{max_cycles}}
+**Cycle:** {{cycle_number|default(1)}} / {{max_cycles|default(3)}}
 
 **Previous Findings:** _(if cycle > 1)_
 - _List findings from previous cycle_

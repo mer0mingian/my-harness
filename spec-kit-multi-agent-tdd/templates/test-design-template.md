@@ -2,7 +2,7 @@
 
 **Feature ID:** {{feature_id}}  
 **Agent:** @test  
-**Status:** {{status}}  
+**Status:** {{status|default("draft")}}  
 **Created:** {{timestamp}}
 
 ## Test Strategy

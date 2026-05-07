@@ -123,21 +123,33 @@ def render_template(
         raise
 
 
-def validate_output_path(output_path: Path) -> Path:
+def validate_output_path(output_path: Path, config: Optional[Dict[str, Any]] = None) -> Path:
     """
-    Validate and prepare output path, creating directories as needed.
+    Validate output path and create directory if needed.
 
     Args:
-        output_path: Path where artifact will be written
+        output_path: Path to output file
+        config: Optional config dict with artifacts_dir constraint
 
     Returns:
-        Validated output path
+        Resolved absolute path
 
     Raises:
-        ValueError: If path validation fails
+        ValueError: If path is outside allowed directory
     """
-    # Convert to Path object if string
-    output_path = Path(output_path)
+    # Convert to Path object and resolve to absolute path
+    output_path = Path(output_path).resolve()
+
+    # Validate against config if provided
+    if config and 'artifacts_dir' in config:
+        allowed_dir = Path(config['artifacts_dir']).resolve()
+        try:
+            output_path.relative_to(allowed_dir)
+        except ValueError:
+            raise ValueError(
+                f"Output path {output_path} is outside configured "
+                f"artifacts directory {allowed_dir}"
+            )
 
     # Create parent directories if they don't exist
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -358,7 +370,7 @@ def main() -> int:
             output_path = output_dir / f"{args.feature_id}-{args.template_name}.md"
 
         # Validate output path
-        output_path = validate_output_path(output_path)
+        output_path = validate_output_path(output_path, config)
 
         # Check if file exists
         if not check_file_exists(output_path, args.force):

@@ -125,6 +125,37 @@ class TestValidateOutputPath:
 
         assert validated_path == output_path
 
+    def test_validate_output_path_with_config_valid(self, tmp_path):
+        """Accepts path within configured artifacts directory."""
+        artifacts_dir = tmp_path / "artifacts"
+        config = {"artifacts_dir": str(artifacts_dir)}
+        output_path = artifacts_dir / "test" / "test-design.md"
+
+        validated_path = validate_output_path(output_path, config)
+
+        assert validated_path.is_absolute()
+        assert output_path.parent.exists()
+
+    def test_validate_output_path_with_config_invalid(self, tmp_path):
+        """Rejects path outside configured artifacts directory."""
+        artifacts_dir = tmp_path / "artifacts"
+        config = {"artifacts_dir": str(artifacts_dir)}
+        outside_path = tmp_path / "other" / "test-design.md"
+
+        with pytest.raises(ValueError) as exc_info:
+            validate_output_path(outside_path, config)
+
+        assert "outside configured" in str(exc_info.value).lower()
+
+    def test_validate_output_path_no_config(self, tmp_path):
+        """Works without config (no validation constraint)."""
+        output_path = tmp_path / "anywhere" / "test-design.md"
+
+        validated_path = validate_output_path(output_path)
+
+        assert validated_path.is_absolute()
+        assert output_path.parent.exists()
+
 
 class TestGetAvailableTemplates:
     """Test template discovery."""
@@ -342,6 +373,47 @@ class TestCLIIntegration:
         assert exit_code == 0
         assert "test-design" in captured.out
         assert "arch-review" in captured.out
+
+    def test_cli_minimal_args(self, tmp_path, monkeypatch):
+        """Run with ONLY required args (feat-id, feat-name) - tests default filters in templates."""
+        # Create template with optional variables that have defaults
+        template_dir = tmp_path / "templates"
+        template_dir.mkdir()
+        test_template = template_dir / "test-design-template.md"
+        test_template.write_text(
+            "# Test Design: {{feature_name}}\n"
+            "**Feature ID:** {{feature_id}}\n"
+            "**Status:** {{status|default('draft')}}\n"
+            "**Agent:** {{agent_name}}\n"
+            "**Created:** {{timestamp}}\n"
+        )
+
+        output_dir = tmp_path / "artifacts"
+        output_path = output_dir / "feat-999-test-design-template.md"
+
+        from generate_artifact import main
+
+        # Only provide template, feature_id, feature_name (no --var flags)
+        monkeypatch.setattr(sys, "argv", [
+            "generate_artifact.py",
+            "test-design-template",
+            "feat-999",
+            "Test Feature",
+            "--agent", "test-specialist",
+            "--output", str(output_path),
+            "--template-dir", str(template_dir),
+        ])
+
+        exit_code = main()
+
+        assert exit_code == 0
+        assert output_path.exists()
+        content = output_path.read_text()
+        assert "Test Feature" in content
+        assert "feat-999" in content
+        # Status should default to 'draft' via Jinja filter
+        assert "Status:** draft" in content
+        assert "test-specialist" in content
 
 
 class TestRealTemplates:

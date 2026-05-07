@@ -2,7 +2,7 @@
 
 **Feature ID:** {{feature_id}}  
 **Agent:** @implement  
-**Status:** {{status}}  
+**Status:** {{status|default("draft")}}  
 **Created:** {{timestamp}}
 
 ## Implementation Summary

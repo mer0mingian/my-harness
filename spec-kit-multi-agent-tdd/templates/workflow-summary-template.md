@@ -1,9 +1,9 @@
 # Workflow Summary: {{feature_name}}
 
 **Feature ID:** {{feature_id}}  
-**Status:** {{status}}  
+**Status:** {{status|default("draft")}}  
 **Created:** {{timestamp}}  
-**Completed:** {{completion_timestamp}}
+**Completed:** {{completion_timestamp|default("N/A")}}
 
 ## Workflow Overview
 
@@ -39,28 +39,28 @@ _Links to all artifacts created during workflow:_
 - **Path:** `docs/reviews/arch-review/{{feature_id}}-arch-review.md`
 - **Reviewer:** @arch
 - **Status:** APPROVED
-- **Cycles:** {{arch_review_cycles}}
+- **Cycles:** {{arch_review_cycles|default(1)}}
 - **Final Verdict:** APPROVED
 
 ### Code Review (Step 9)
 - **Path:** `docs/reviews/code-review/{{feature_id}}-code-review.md`
 - **Reviewer:** @review
 - **Status:** APPROVED
-- **Cycles:** {{code_review_cycles}}
+- **Cycles:** {{code_review_cycles|default(1)}}
 - **Final Verdict:** APPROVED
 
 ## Review Metrics
 
 **Architecture Review:**
-- Total cycles: {{arch_review_cycles}}
-- Blockers identified: {{arch_blockers_count}}
-- Concerns raised: {{arch_concerns_count}}
+- Total cycles: {{arch_review_cycles|default(1)}}
+- Blockers identified: {{arch_blockers_count|default(0)}}
+- Concerns raised: {{arch_concerns_count|default(0)}}
 - Final status: APPROVED
 
 **Code Review:**
-- Total cycles: {{code_review_cycles}}
-- Blockers identified: {{code_blockers_count}}
-- Concerns raised: {{code_concerns_count}}
+- Total cycles: {{code_review_cycles|default(1)}}
+- Blockers identified: {{code_blockers_count|default(0)}}
+- Concerns raised: {{code_concerns_count|default(0)}}
 - Final status: APPROVED
 
 **Convergence:**
@@ -70,14 +70,14 @@ _Links to all artifacts created during workflow:_
 ## Implementation Summary
 
 **Files Changed:**
-- Modified: {{files_modified_count}}
-- Created: {{files_created_count}}
-- Deleted: {{files_deleted_count}}
+- Modified: {{files_modified_count|default(0)}}
+- Created: {{files_created_count|default(0)}}
+- Deleted: {{files_deleted_count|default(0)}}
 
 **Test Coverage:**
-- Total tests: {{test_count}}
-- Test files: {{test_file_count}}
-- Coverage: {{coverage_percentage}}%
+- Total tests: {{test_count|default(0)}}
+- Test files: {{test_file_count|default(0)}}
+- Coverage: {{coverage_percentage|default(0)}}%
 
 **Key Components:**
 - _Component1_ - _brief description_
@@ -112,16 +112,16 @@ _Any issues escalated to humans:_
 
 ## Commit Information
 
-**Commit Hash:** {{commit_hash}}
+**Commit Hash:** {{commit_hash|default("N/A")}}
 
 **Commit Message:**
 ```
-{{commit_message}}
+{{commit_message|default("N/A")}}
 ```
 
-**Branch:** {{branch_name}}
+**Branch:** {{branch_name|default("N/A")}}
 
-**Pull Request:** {{pr_url}} _(if applicable)_
+**Pull Request:** {{pr_url|default("N/A")}} _(if applicable)_
 
 ## Lessons Learned
 
@@ -140,8 +140,8 @@ _Recommended follow-up actions:_
 
 ---
 
-**Workflow Duration:** {{duration_minutes}} minutes  
-**Review Efficiency:** {{review_efficiency_score}}/10  
-**Agent Coordination:** {{coordination_score}}/10
+**Workflow Duration:** {{duration_minutes|default(0)}} minutes  
+**Review Efficiency:** {{review_efficiency_score|default(0)}}/10  
+**Agent Coordination:** {{coordination_score|default(0)}}/10
 
 **Workflow Status:** `[COMPLETED | ESCALATED | FAILED]`
