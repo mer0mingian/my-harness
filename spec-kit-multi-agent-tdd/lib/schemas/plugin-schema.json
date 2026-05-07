@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["name", "version", "description", "agents"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\.md$"
+      },
+      "minItems": 1
+    },
+    "installation": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
