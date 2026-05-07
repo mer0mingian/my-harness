@@ -27,22 +27,37 @@ class TestPluginManifestValidation:
 
     def test_valid_plugin_manifest(self):
         """Valid plugin.json passes validation."""
-        valid_manifest = {
-            "name": "test-plugin",
-            "version": "1.0.0",
-            "description": "Test plugin",
-            "agents": ["agents/test.md"]
-        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            plugin_dir = Path(tmpdir)
+            agents_dir = plugin_dir / "agents"
+            agents_dir.mkdir()
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
-            json.dump(valid_manifest, f)
-            f.flush()
+            # Create the agent file
+            agent_file = agents_dir / "test.md"
+            agent_file.write_text("""---
+name: test-agent
+description: Test agent
+mode: subagent
+---
 
-            result = validate_plugin_manifest(Path(f.name))
+# Test Agent
+""")
+
+            # Create plugin.json
+            plugin_json = plugin_dir / "plugin.json"
+            valid_manifest = {
+                "name": "test-plugin",
+                "version": "1.0.0",
+                "description": "Test plugin",
+                "agents": ["agents/test.md"]
+            }
+
+            with open(plugin_json, 'w') as f:
+                json.dump(valid_manifest, f)
+
+            result = validate_plugin_manifest(plugin_json)
             assert result["valid"] is True
             assert result["errors"] == []
-
-            Path(f.name).unlink()
 
     def test_missing_required_fields(self):
         """Plugin manifest missing required fields fails validation."""
@@ -100,6 +115,60 @@ class TestPluginManifestValidation:
 
             Path(f.name).unlink()
 
+    def test_plugin_with_missing_agent_file(self):
+        """Plugin with non-existent agent file should fail."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            plugin_dir = Path(tmpdir)
+            plugin_json = plugin_dir / "plugin.json"
+
+            manifest = {
+                "name": "test-plugin",
+                "version": "1.0.0",
+                "description": "Test plugin",
+                "agents": ["agents/missing.md"]  # This file doesn't exist
+            }
+
+            with open(plugin_json, 'w') as f:
+                json.dump(manifest, f)
+
+            result = validate_plugin_manifest(plugin_json)
+            assert result["valid"] is False
+            assert any("Agent file not found" in e for e in result["errors"])
+
+    def test_plugin_with_existing_agent_file(self):
+        """Plugin with existing agent file should pass."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            plugin_dir = Path(tmpdir)
+            agents_dir = plugin_dir / "agents"
+            agents_dir.mkdir()
+
+            # Create the agent file
+            agent_file = agents_dir / "test.md"
+            agent_file.write_text("""---
+name: test-agent
+description: Test agent
+mode: subagent
+---
+
+# Test Agent
+""")
+
+            # Create plugin.json
+            plugin_json = plugin_dir / "plugin.json"
+            manifest = {
+                "name": "test-plugin",
+                "version": "1.0.0",
+                "description": "Test plugin",
+                "agents": ["agents/test.md"]
+            }
+
+            with open(plugin_json, 'w') as f:
+                json.dump(manifest, f)
+
+            result = validate_plugin_manifest(plugin_json)
+            assert result["valid"] is True
+            assert result["errors"] == []
+
 
 class TestExtensionManifestValidation:
     """Test extension.json validation."""
@@ -125,32 +194,36 @@ class TestExtensionManifestValidation:
 
     def test_extension_with_optional_fields(self):
         """Extension manifest with all optional fields passes validation."""
-        valid_manifest = {
-            "name": "test-extension",
-            "version": "1.0.0",
-            "description": "Test extension",
-            "author": "Test Author",
-            "commands": ["test", "implement"],
-            "templates": {
-                "directory": "templates/"
-            },
-            "config": {
-                "file": "config.yml",
-                "schema": "schema.json"
-            },
-            "hooks": {
-                "install": "hooks/install.sh"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            extension_dir = Path(tmpdir)
+            templates_dir = extension_dir / "templates"
+            templates_dir.mkdir()
+
+            # Create extension.json
+            extension_json = extension_dir / "extension.json"
+            valid_manifest = {
+                "name": "test-extension",
+                "version": "1.0.0",
+                "description": "Test extension",
+                "author": "Test Author",
+                "commands": ["test", "implement"],
+                "templates": {
+                    "directory": "templates/"
+                },
+                "config": {
+                    "file": "config.yml",
+                    "schema": "schema.json"
+                },
+                "hooks": {
+                    "install": "hooks/install.sh"
+                }
             }
-        }
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
-            json.dump(valid_manifest, f)
-            f.flush()
+            with open(extension_json, 'w') as f:
+                json.dump(valid_manifest, f)
 
-            result = validate_extension_manifest(Path(f.name))
+            result = validate_extension_manifest(extension_json)
             assert result["valid"] is True
-
-            Path(f.name).unlink()
 
     def test_missing_commands(self):
         """Extension manifest missing commands fails validation."""
@@ -170,6 +243,51 @@ class TestExtensionManifestValidation:
             assert any("required" in err.lower() for err in result["errors"])
 
             Path(f.name).unlink()
+
+    def test_extension_with_missing_template_directory(self):
+        """Extension with non-existent template directory should fail."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            extension_dir = Path(tmpdir)
+            extension_json = extension_dir / "extension.json"
+
+            manifest = {
+                "name": "test-extension",
+                "version": "1.0.0",
+                "description": "Test extension",
+                "commands": ["test"],
+                "templates": {"directory": "missing_templates/"}  # This doesn't exist
+            }
+
+            with open(extension_json, 'w') as f:
+                json.dump(manifest, f)
+
+            result = validate_extension_manifest(extension_json)
+            assert result["valid"] is False
+            assert any("Template directory not found" in e for e in result["errors"])
+
+    def test_extension_with_existing_template_directory(self):
+        """Extension with existing template directory should pass."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            extension_dir = Path(tmpdir)
+            templates_dir = extension_dir / "templates"
+            templates_dir.mkdir()
+
+            # Create extension.json
+            extension_json = extension_dir / "extension.json"
+            manifest = {
+                "name": "test-extension",
+                "version": "1.0.0",
+                "description": "Test extension",
+                "commands": ["test"],
+                "templates": {"directory": "templates/"}
+            }
+
+            with open(extension_json, 'w') as f:
+                json.dump(manifest, f)
+
+            result = validate_extension_manifest(extension_json)
+            assert result["valid"] is True
+            assert result["errors"] == []
 
 
 class TestAgentDefinitionValidation:

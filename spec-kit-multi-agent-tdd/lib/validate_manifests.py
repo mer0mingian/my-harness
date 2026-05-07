@@ -94,6 +94,14 @@ def validate_plugin_manifest(path: Path) -> Dict[str, Any]:
         result["valid"] = False
         result["errors"].append(f"Schema error: {e.message}")
 
+    # Verify agent paths exist
+    plugin_dir = path.parent
+    for agent_path in manifest.get("agents", []):
+        agent_file = plugin_dir / agent_path
+        if not agent_file.exists():
+            result["valid"] = False
+            result["errors"].append(f"Agent file not found: {agent_path}")
+
     return result
 
 
@@ -139,6 +147,16 @@ def validate_extension_manifest(path: Path) -> Dict[str, Any]:
     except SchemaError as e:
         result["valid"] = False
         result["errors"].append(f"Schema error: {e.message}")
+
+    # Verify template directory exists (if specified)
+    if "templates" in manifest:
+        template_dir = manifest["templates"].get("directory")
+        if template_dir:
+            extension_dir = path.parent
+            template_path = extension_dir / template_dir
+            if not template_path.exists():
+                result["valid"] = False
+                result["errors"].append(f"Template directory not found: {template_dir}")
 
     return result
 
