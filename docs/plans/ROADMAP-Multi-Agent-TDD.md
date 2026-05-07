@@ -1,19 +1,21 @@
 # Roadmap: Multi-Agent TDD Workflow Implementation
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Date:** 2026-05-07  
 **Status:** Planning  
-**Derived From:** PLAN-Multi-Agent-TDD-Implementation.md, TASK-LIST-Multi-Agent-TDD.md
+**Derived From:** PLAN-Multi-Agent-TDD-Implementation.md, TASK-LIST-Multi-Agent-TDD.md, PHASE2-UPDATED-Execute-Command.md
 
 ---
 
 ## Executive Summary
 
-This roadmap organizes 61 implementation tasks into 11 vertical slices, showing dependencies, parallel execution opportunities, and timeline estimates. The critical path runs through Slices 1 → 3 → 4 → 5 → 6 (TDD workflow core), with supporting slices running in parallel.
+This roadmap organizes 66 implementation tasks into 12 vertical slices, showing dependencies, parallel execution opportunities, and timeline estimates. The critical path runs through Slices 1 → 3 → 3.5 → 4 → 5 → 6 (TDD workflow core), with supporting slices running in parallel.
 
-**Total Estimated Effort**: 35-42 hours (single developer)  
-**Real Duration with Parallelization**: 25-30 hours (2-3 developers)  
-**Critical Path Duration**: 18-20 hours
+**Key Update (v1.1):** Added Slice 3.5 for `/speckit.multi-agent.execute` orchestrator command, which provides streamlined single-command workflow invocation.
+
+**Total Estimated Effort**: 38-46 hours (single developer)  
+**Real Duration with Parallelization**: 28-34 hours (2-3 developers)  
+**Critical Path Duration**: 21-24 hours
 
 ---
 
@@ -22,7 +24,7 @@ This roadmap organizes 61 implementation tasks into 11 vertical slices, showing 
 | Phase | Slices | Effort | Dependencies | Parallelizable |
 |-------|--------|--------|--------------|----------------|
 | **Phase 1**: Foundation | Slice 1-2 | 7-8 hrs | None | Yes (both slices parallel) |
-| **Phase 2**: Core Workflow | Slice 3-6 | 17-20 hrs | Phase 1 | Sequential (3→4→5→6) |
+| **Phase 2**: Core Workflow | Slice 3-3.5-4-5-6 | 20-24 hrs | Phase 1 | Sequential (3→3.5→4→5→6) |
 | **Phase 3**: Enhancements | Slice 7-8 | 7-9 hrs | Phase 2 | Yes (both slices parallel) |
 | **Phase 4**: Migration | Slice 9-11 | 7-10 hrs | Phase 3 | Sequential (9→10→11) |
 
@@ -39,6 +41,7 @@ graph TD
     
     subgraph Phase 2: Core Workflow
         S3[Slice 3: Write Tests]
+        S3.5[Slice 3.5: Execute Command]
         S4[Slice 4: Implement]
         S5[Slice 5: Review]
         S6[Slice 6: Commit]
@@ -57,7 +60,8 @@ graph TD
     
     S1 --> S3
     S2 --> S3
-    S3 --> S4
+    S3 --> S3.5
+    S3.5 --> S4
     S4 --> S5
     S5 --> S6
     S6 --> S7
@@ -69,6 +73,7 @@ graph TD
     style S1 fill:#e1f5ff
     style S2 fill:#e1f5ff
     style S3 fill:#fff4e6
+    style S3.5 fill:#fff4e6
     style S4 fill:#fff4e6
     style S5 fill:#fff4e6
     style S6 fill:#fff4e6
@@ -152,13 +157,15 @@ graph TD
 
 ---
 
-## Phase 2: Core Workflow (17-20 hours)
+## Phase 2: Core Workflow (20-24 hours)
 
-**Goal:** Implement complete TDD workflow (steps 7-10).
+**Goal:** Implement complete TDD workflow (steps 7-10) with streamlined orchestration.
 
-**Slices:** 3-6  
+**Slices:** 3, 3.5, 4, 5, 6  
 **Parallelization:** None (sequential workflow dependencies)  
 **Dependencies:** Phase 1 (both Slice 1 and Slice 2 complete)
+
+**Key Addition (v1.1):** Slice 3.5 adds `/speckit.multi-agent.execute` orchestrator command for single-command workflow invocation.
 
 ### Slice 3: Step 7 - Write Tests (4-5 hours)
 
@@ -193,6 +200,66 @@ graph TD
 - [ ] @test agent writes failing tests
 - [ ] File gate blocks implementation files
 - [ ] Structured failure codes validated
+
+---
+
+### Slice 3.5: Orchestrator - Execute Command (NEW, 3-4 hours)
+
+**Command:** `/speckit.multi-agent.execute <feature-id> [--mode=auto|interactive]`
+
+**Purpose:** Streamlined invocation of full TDD workflow (steps 7-10). Orchestrates all 4 subcommands sequentially while maintaining specialist agent delegation.
+
+**Tasks (5):**
+- S3.5-001: Create execute command scaffold (1 hr)
+- S3.5-002: Implement subcommand orchestration (2 hrs) — **Longest task in slice**
+- S3.5-003: Error handling and gate enforcement (1.5 hrs)
+- S3.5-004: Interactive mode integration (1 hr)
+- S3.5-005: End-to-end testing (1 hr)
+
+**Dependencies:**
+- S3-006 (test command functional)
+- S2-002 (configuration template exists)
+
+**Parallelization within Slice:**
+- S3.5-001 can start immediately
+- S3.5-002 depends on S3.5-001
+- S3.5-003 depends on S3.5-002
+- S3.5-004 can run in parallel with S3.5-003
+- S3.5-005 waits for all tasks
+
+**Critical Path:** S3.5-001 → S3.5-002 → S3.5-003 → S3.5-005
+
+**Workflow Logic:**
+- **Step 7:** Invoke `/speckit.multi-agent.test` → halt on BLOCKED
+- **Step 8:** Invoke `/speckit.multi-agent.implement` → halt on RED_FAILED or GREEN_FAILED
+- **Step 9:** Invoke `/speckit.multi-agent.review` → halt on BLOCKED or cycles_exceeded
+- **Step 10:** Invoke `/speckit.multi-agent.commit` → halt on VALIDATION_FAILED
+
+**Modes:**
+- **`auto` (default):** Run all 4 steps sequentially, halt on failures
+- **`interactive`:** Prompt user between steps (grill-me integration)
+- **`--gate-mode=manual`:** Require human approval at configured gates
+
+**Deliverables:**
+- `/speckit.multi-agent.execute` command
+- Subcommand orchestration logic
+- Error handling and escalation
+- Workflow summary generation
+- Interactive mode support
+
+**Acceptance Criteria:**
+- [ ] Command invokes all 4 subcommands sequentially
+- [ ] Halts on first gate failure with clear diagnostics
+- [ ] Escalates to human with reason and recommended action
+- [ ] Workflow summary created on success
+- [ ] Interactive mode prompts between steps (if enabled)
+- [ ] Manual gate mode waits for approval
+- [ ] All quality gates enforced (non-bypassable)
+
+**Benefits:**
+- **For Users:** One command instead of four, automatic error handling, progress visibility
+- **For Orchestrator:** Maintains specialist delegation, constitutional compliance, clear escalation paths
+- **For Teams:** Easier onboarding, consistent workflows, CI/CD integration
 
 ---
 
@@ -315,16 +382,24 @@ graph TD
 **Phase 2 Execution Strategy:**
 
 **Sequential Only (Critical Path):**
-- Slice 3 must complete before Slice 4 (tests before implementation)
+- Slice 3 must complete before Slice 3.5 (test command before orchestrator)
+- Slice 3.5 must complete before Slice 4 (orchestrator before implementation command)
 - Slice 4 must complete before Slice 5 (implementation before review)
 - Slice 5 must complete before Slice 6 (reviews before commit)
-- **Duration**: 17-20 hours (single or multiple developers)
+- **Duration**: 20-24 hours (single or multiple developers)
+
+**Command Invocation Patterns:**
+- **Original (Still Supported):** Users run 4 separate commands: `test → implement → review → commit`
+- **New (Recommended):** Users run 1 command: `execute` (internally orchestrates the 4 subcommands)
+- **Benefits:** Simplified UX, automatic error handling, consistent workflows, CI/CD integration
 
 **Optimization Opportunities:**
 - Within slices: Parallel tasks noted above
-- **Developer 1**: Focus on command implementation (S3-002, S4-002, S5-003, S6-002)
-- **Developer 2**: Focus on validation logic (S3-003/004, S4-003/004, S5-004/005, S6-003/004)
-- **Duration with 2 devs**: ~12-14 hours (30% time savings)
+- **Developer 1**: Focus on command implementation (S3-002, S3.5-002, S4-002, S5-003, S6-002)
+- **Developer 2**: Focus on validation logic (S3-003/004, S3.5-003, S4-003/004, S5-004/005, S6-003/004)
+- **Developer 3** (if available): Focus on interactive features (S3.5-004, S7-002/003)
+- **Duration with 2 devs**: ~14-17 hours (30% time savings)
+- **Duration with 3 devs**: ~12-15 hours (40% time savings)
 
 ---
 
@@ -511,21 +586,27 @@ graph TD
 ```
 Phase 1: Slice 1 OR Slice 2 (parallel, 3-4 hrs each)
   ↓
-Phase 2: Slice 3 → Slice 4 → Slice 5 → Slice 6 (17-20 hrs sequential)
+Phase 2: Slice 3 → Slice 3.5 → Slice 4 → Slice 5 → Slice 6 (20-24 hrs sequential)
   ↓
 Phase 3: Slice 7 OR Slice 8 (parallel, 3-4 hrs each)
   ↓
 Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 ```
 
-**Critical Path Duration:** ~28-34 hours (single developer, no parallelization within slices)
+**Critical Path Duration:** ~31-38 hours (single developer, no parallelization within slices)
 
 **Optimized Duration (2-3 developers):**
 - Phase 1: 3-4 hrs (parallel)
-- Phase 2: 12-14 hrs (parallel within slices)
+- Phase 2: 14-17 hrs (parallel within slices)
 - Phase 3: 3-4 hrs (parallel)
 - Phase 4: 6-8 hrs (parallel within Slice 10)
-- **Total**: ~25-30 hours
+- **Total**: ~28-34 hours
+
+**Key Impact of Slice 3.5:**
+- Adds 3-4 hours to critical path
+- Provides significant UX improvement (single command vs four)
+- Enables consistent workflows and CI/CD integration
+- ROI: Time investment pays off in deployment phase and ongoing usage
 
 ---
 
@@ -634,15 +715,18 @@ Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 ### Milestone 2: Core Workflow Complete (After Phase 2)
 **Deliverables:**
 - `/speckit.multi-agent.test` command functional
+- `/speckit.multi-agent.execute` command functional ✨ NEW
 - `/speckit.multi-agent.implement` command functional
 - `/speckit.multi-agent.review` command functional
 - `/speckit.multi-agent.commit` command functional
 - All 5 artifact templates created
 
 **Acceptance:**
-- [ ] Full workflow executes end-to-end
+- [ ] Full workflow executes end-to-end (both individual commands and orchestrated)
+- [ ] Execute command invokes all 4 subcommands sequentially
 - [ ] All quality gates enforce (TDD, evidence, review)
 - [ ] All 5 artifacts created correctly
+- [ ] Execute command halts on gate failures with clear diagnostics
 
 ---
 
@@ -698,22 +782,24 @@ Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 
 Implementation is successful when:
 
-1. **All 61 tasks complete:**
+1. **All 66 tasks complete:**
    - [ ] Phase 1: 13/13 tasks (Slices 1-2)
-   - [ ] Phase 2: 25/25 tasks (Slices 3-6)
+   - [ ] Phase 2: 30/30 tasks (Slices 3, 3.5, 4, 5, 6) — includes new Slice 3.5
    - [ ] Phase 3: 8/8 tasks (Slices 7-8)
    - [ ] Phase 4: 15/15 tasks (Slices 9-11)
 
 2. **All 4 milestones achieved:**
    - [ ] Milestone 1: Foundation
-   - [ ] Milestone 2: Core Workflow
+   - [ ] Milestone 2: Core Workflow (including execute orchestrator)
    - [ ] Milestone 3: Enhancements
    - [ ] Milestone 4: Migration
 
-3. **Full workflow functional:**
-   - [ ] `/speckit.multi-agent.test` → `/speckit.multi-agent.implement` → `/speckit.multi-agent.review` → `/speckit.multi-agent.commit` executes end-to-end
+3. **Full workflow functional (two patterns):**
+   - [ ] **Individual commands:** `/speckit.multi-agent.test` → `/speckit.multi-agent.implement` → `/speckit.multi-agent.review` → `/speckit.multi-agent.commit` executes end-to-end
+   - [ ] **Orchestrated command:** `/speckit.multi-agent.execute` invokes all 4 subcommands and completes successfully
    - [ ] All 5 artifacts created correctly
    - [ ] Quality gates enforce (TDD, evidence, review)
+   - [ ] Execute command halts on gate failures with clear diagnostics
 
 4. **Configuration works:**
    - [ ] Teams can toggle artifact mandatory flags
@@ -731,19 +817,27 @@ Implementation is successful when:
 ## Timeline Estimates
 
 ### Conservative Timeline (Single Developer, Sequential)
-- **Week 1**: Phase 1-2 (foundation + core workflow, 24-28 hrs)
+- **Week 1**: Phase 1-2 (foundation + core workflow, 27-32 hrs)
 - **Week 2**: Phase 3-4 (enhancements + migration, 14-19 hrs)
-- **Total**: 2 weeks (38-47 hours including buffer)
+- **Total**: 2 weeks (41-51 hours including buffer)
 
 ### Aggressive Timeline (Dual Developers, Parallel)
-- **Week 1**: Phase 1-3 (foundation + core + enhancements, 23-28 hrs)
+- **Week 1**: Phase 1-3 (foundation + core + enhancements, 26-32 hrs)
 - **Week 2**: Phase 4 (migration, 7-10 hrs)
-- **Total**: 1.5 weeks (30-38 hours including buffer)
+- **Total**: 1.5 weeks (33-42 hours including buffer)
 
 ### Recommended Timeline (Hybrid Approach)
-- **Week 1**: Phase 1-2 (foundation + core, 24-28 hrs)
+- **Week 1**: Phase 1-2 (foundation + core, 27-32 hrs)
 - **Week 2**: Phase 3-4 (enhancements + migration, 14-19 hrs)
-- **Total**: 2 weeks (38-47 hours including buffer)
+- **Total**: 2 weeks (41-51 hours including buffer)
+
+**Note on Slice 3.5 Impact:**
+The addition of the execute orchestrator command adds 3-4 hours to Phase 2 but provides:
+- Significant UX improvement for end users (1 command vs 4)
+- Easier CI/CD integration
+- Consistent workflow enforcement
+- Better error handling and diagnostics
+This investment pays off immediately in deployment and ongoing usage.
 
 ---
 
@@ -751,17 +845,24 @@ Implementation is successful when:
 
 **Phase Completion:**
 - [ ] **Phase 1**: Foundation (0/13 tasks)
-- [ ] **Phase 2**: Core Workflow (0/25 tasks)
+- [ ] **Phase 2**: Core Workflow (0/30 tasks) — includes new Slice 3.5 (5 tasks)
 - [ ] **Phase 3**: Enhancements (0/8 tasks)
 - [ ] **Phase 4**: Migration (0/15 tasks)
 
+**Slice 3.5 Tasks (NEW):**
+- [ ] S3.5-001: Create execute command scaffold
+- [ ] S3.5-002: Implement subcommand orchestration
+- [ ] S3.5-003: Error handling and gate enforcement
+- [ ] S3.5-004: Interactive mode integration
+- [ ] S3.5-005: End-to-end testing
+
 **Milestone Completion:**
 - [ ] **Milestone 1**: Foundation Complete
-- [ ] **Milestone 2**: Core Workflow Complete
+- [ ] **Milestone 2**: Core Workflow Complete (includes execute command)
 - [ ] **Milestone 3**: Enhancements Complete
 - [ ] **Milestone 4**: Migration Complete
 
-**Overall Progress**: 0/61 tasks (0%)
+**Overall Progress**: 0/66 tasks (0%)
 
 ---
 
@@ -792,7 +893,25 @@ Implementation is successful when:
 ## Related Documents
 
 - [PLAN-Multi-Agent-TDD-Implementation.md](PLAN-Multi-Agent-TDD-Implementation.md) — Implementation plan (vertical slices)
+- [PHASE2-UPDATED-Execute-Command.md](PHASE2-UPDATED-Execute-Command.md) — Phase 2 update with Slice 3.5 details ✨ NEW
 - [TASK-LIST-Multi-Agent-TDD.md](TASK-LIST-Multi-Agent-TDD.md) — Granular task breakdown
 - [PRD-Multi-Agent-TDD-Workflow.md](../harness-tooling/docs/PRD-Multi-Agent-TDD-Workflow.md) — Product requirements
 - [CONSTITUTION-Multi-Agent-TDD.md](CONSTITUTION-Multi-Agent-TDD.md) — Constitutional principles
 - [ARTIFACT-SUMMARY.md](ARTIFACT-SUMMARY.md) — Artifact details and configuration
+
+---
+
+## Version History
+
+**v1.1 (2026-05-07):**
+- Added Slice 3.5: Execute Command orchestrator
+- Updated Phase 2 effort: 20-24 hours (was 17-20 hours)
+- Updated total tasks: 66 (was 61)
+- Updated critical path duration: 21-24 hours (was 18-20 hours)
+- Added streamlined workflow invocation pattern
+- Updated all timeline estimates and success criteria
+
+**v1.0 (2026-05-07):**
+- Initial roadmap with 11 vertical slices
+- 61 tasks across 4 phases
+- Dual-plugin architecture (harness-agents + harness-tdd-workflow)
