@@ -286,6 +286,28 @@ Maximum 3 review cycles (Step 9). Fourth iteration escalates to human.
 
 **Rationale:** Prevents infinite loops, forces human decision on persistent issues.
 
+**Implementation:** Review command loops internally up to 3 times, then exits and requires manual re-invocation.
+
+**Conflict Resolution:** When @check (architecture) and @simplify (code quality) provide contradicting recommendations:
+- Workflow escalates to user with exit code 2
+- Presents both recommendations with context
+- Provides at least 2 resolution options
+- Includes orchestrator's recommendation
+- Requires explicit human decision
+
+**Example Conflict:**
+```
+@check: Add abstraction layer for database access
+@simplify: Keep implementation inline, complexity low
+
+Options:
+1. Follow @check (prioritize architecture/safety)
+2. Follow @simplify (prioritize simplicity/readability)
+3. Hybrid approach: [orchestrator recommendation]
+
+Recommendation: Option 1 - Safety constraints take precedence in this context
+```
+
 ### Invariant 3: File Gate Enforcement
 
 Step 7 output MUST match test file patterns. Non-test files → abort.
@@ -295,15 +317,28 @@ Step 7 output MUST match test file patterns. Non-test files → abort.
 - `**/*_test.py`
 - `**/conftest.py`
 
-### Invariant 4: Evidence Before Merge
+### Invariant 4: Evidence Before Commit/Merge
 
-PR creation (Step 10) blocked until all evidence artifacts exist.
+Git commit and PR creation (Step 10) blocked until all evidence artifacts exist and validate.
 
 **Required Artifacts:**
-- Test design (Step 7)
-- Arch review (Step 9)
-- Code review (Step 9)
-- Workflow summary (Step 10)
+- Test design (Step 7) with RED state evidence
+- Implementation notes (Step 8) with GREEN state evidence
+- Arch review (Step 9) with verdict
+- Code review (Step 9) with verdict
+- Workflow summary (Step 10) with complete evidence chain
+
+**Git Commit Execution Model:**
+
+Commit command (`/speckit.multi-agent.commit`) performs actual git operations:
+1. Validates all evidence using `lib/evidence_validator.validate_all()`
+2. Halts if validation fails (exit code 1) with detailed error message
+3. Generates commit message from workflow summary
+4. Executes `git commit -m "<message>"` with Co-Authored-By trailer
+5. Updates local Jira story state to "Done" (simple stories only)
+6. Reports commit SHA and success
+
+**Note:** PR creation deferred to Phase 3 (larger stories/epics). Phase 2 commits directly to current branch.
 
 ---
 
@@ -342,6 +377,61 @@ PR creation (Step 10) blocked until all evidence artifacts exist.
 **Validation:** Template sections present, no missing headers.
 
 **Threshold:** 100% template compliance (mandatory sections).
+
+### QS-5: Evidence Validation Before Commit
+
+**Requirement:** Commit command (Step 10) MUST validate all constitutional evidence before executing git commit.
+
+**Validation:** Uses `lib/evidence_validator.validate_all()` to check:
+- Test design artifact exists with RED state evidence
+- Implementation notes exist with GREEN state evidence  
+- Architecture review artifact exists with verdict
+- Code review artifact exists with verdict
+- Workflow summary exists with complete evidence
+
+**Enforcement:**
+- Validation failure → exit code 1 (halt workflow)
+- Missing artifacts → detailed error message listing gaps
+- Cannot proceed to git commit without complete evidence
+
+**Implementation:** `commands/commit.py` calls validation before any git operations.
+
+---
+
+## Local Jira State Machine
+
+**Purpose:** Track workflow progress through local story files (`.specify/epics/` structure) until Jira API integration in Phase 3.
+
+**State Transitions:**
+
+```
+To Do → Creating Tests → Implementing → Reviewing → Done/Cancelled
+```
+
+**State Definitions:**
+
+| State | Trigger | Actions |
+|-------|---------|---------|
+| **To Do** | Story created | Initialize story file |
+| **Creating Tests** | `test` command invoked | Update state, timestamp |
+| **Implementing** | `implement` command invoked (RED validated) | Update state, timestamp |
+| **Reviewing** | `review` command invoked | Update state, timestamp |
+| **Done** | `commit` command success (simple story) | Update state, link artifacts, set completion timestamp |
+| **Cancelled** | User cancellation | Update state, add reason |
+
+**Hooks:**
+
+- **Agent Invocation Hook:** Triggered when command starts, updates story state to reflect active phase
+- **Agent Response Hook:** Triggered when command completes successfully, advances story state
+
+**Commit Rules:**
+
+- **Simple Stories:** Git commit after individual story completes (Done state)
+- **Bigger Stories/Epics:** PR creation after all child stories complete (handled by execute orchestrator in Phase 3)
+
+**Implementation:** Uses `lib/jira_local.py` functions:
+- `update_story_status(story_id, status, project_root, jira_root)`
+- `link_artifacts_to_story(story_id, artifacts, project_root, jira_root)`
 
 ---
 
