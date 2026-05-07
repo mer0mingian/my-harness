@@ -46,7 +46,19 @@ class TestExitCodes:
             template_file = templates_dir / "implementation-notes-template.md"
             template_file.write_text("# {{ feature_name }}\nAgent: {{ agent_name }}")
 
-            with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root)]):
+            # Mock validate_red_state to return RED state
+            mock_validation = {
+                'state': 'RED',
+                'validation_passed': True,
+                'message': 'RED state validated',
+                'timestamp': '2024-01-01T00:00:00Z',
+                'exit_code': 1,
+                'output': 'test output',
+                'evidence': MagicMock(total_tests=3, passed=0, failed=3, errors=0)
+            }
+
+            with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root)]), \
+                 patch('lib.test_runner.validate_red_state', return_value=mock_validation):
                 exit_code = main()
 
             assert exit_code == 0, f"Expected exit code 0, got {exit_code}"
@@ -73,8 +85,29 @@ class TestExitCodes:
             test_design_path = project_root / "docs" / "features" / "feat-123-test-design.md"
             test_design_path.write_text("# Test Design")
 
-            # Do NOT create template file
-            with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root)]):
+            # Mock validate_red_state to return RED state
+            mock_validation = {
+                'state': 'RED',
+                'validation_passed': True,
+                'message': 'RED state validated',
+                'timestamp': '2024-01-01T00:00:00Z',
+                'exit_code': 1,
+                'output': 'test output',
+                'evidence': MagicMock(total_tests=3, passed=0, failed=3, errors=0)
+            }
+
+            # Mock Path.exists() to return False for template file
+            original_exists = Path.exists
+            def mock_exists(self):
+                # Return False only for template files, True for others
+                if 'implementation-notes-template.md' in str(self):
+                    return False
+                return original_exists(self)
+
+            # Do NOT create template file and mock its existence check
+            with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root)]), \
+                 patch('lib.test_runner.validate_red_state', return_value=mock_validation), \
+                 patch('pathlib.Path.exists', mock_exists):
                 exit_code = main()
 
             assert exit_code == 2, f"Expected exit code 2 for missing template, got {exit_code}"
@@ -97,10 +130,22 @@ class TestExitCodes:
             template_file = templates_dir / "implementation-notes-template.md"
             template_file.write_text("# {{ feature_name }}")
 
+            # Mock validate_red_state to return RED state
+            mock_validation = {
+                'state': 'RED',
+                'validation_passed': True,
+                'message': 'RED state validated',
+                'timestamp': '2024-01-01T00:00:00Z',
+                'exit_code': 1,
+                'output': 'test output',
+                'evidence': MagicMock(total_tests=3, passed=0, failed=3, errors=0)
+            }
+
             # Mock write_text to raise PermissionError
-            with patch('pathlib.Path.write_text', side_effect=PermissionError("Permission denied")):
-                with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root)]):
-                    exit_code = main()
+            with patch('pathlib.Path.write_text', side_effect=PermissionError("Permission denied")), \
+                 patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root)]), \
+                 patch('lib.test_runner.validate_red_state', return_value=mock_validation):
+                exit_code = main()
 
             assert exit_code == 2, f"Expected exit code 2 for permission error, got {exit_code}"
 
@@ -136,7 +181,9 @@ class TestCreateImplementationNotes:
             assert 'test-agent' in content  # agent_name rendered
 
     def test_create_notes_template_missing_raises_fnf(self):
-        """Missing template raises FileNotFoundError."""
+        """Missing template raises EscalationError."""
+        from commands.implement import EscalationError
+
         with tempfile.TemporaryDirectory() as tmpdir:
             project_root = Path(tmpdir)
             (project_root / "docs" / "features").mkdir(parents=True)
@@ -149,7 +196,15 @@ class TestCreateImplementationNotes:
                 }
             }
 
-            with pytest.raises(FileNotFoundError) as exc_info:
+            # Mock Path.exists() to return False for template file
+            original_exists = Path.exists
+            def mock_exists(self):
+                if 'implementation-notes-template.md' in str(self):
+                    return False
+                return original_exists(self)
+
+            with patch('pathlib.Path.exists', mock_exists), \
+                 pytest.raises(EscalationError) as exc_info:
                 create_implementation_notes('feat-123', 'test-agent', config, project_root)
 
             assert 'Template not found' in str(exc_info.value)
