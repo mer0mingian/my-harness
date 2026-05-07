@@ -1,0 +1,72 @@
+# Test Evidence Parser Configuration
+# Regex patterns for failure code classification and pytest output parsing
+
+failure_codes:
+  # Valid RED states - expected during TDD workflow
+  MISSING_BEHAVIOR:
+    - "(?i)not implemented"
+    - "(?i)notimplementederror"
+    - "(?i)abstractmethod"
+    - "(?i)function.*has no implementation"
+    - "(?i)method.*not implemented"
+    - "(?i)stub.*not implemented"
+
+  ASSERTION_MISMATCH:
+    - "(?i)assert.*failed"
+    - "(?i)assertionerror"
+    - "(?i)expected.*but.*got"
+    - "(?i)AssertionError:"
+    - "(?i)assertion.*failed"
+    - "(?i)assert .* == .*"
+
+  # Invalid RED states - escalate to human
+  TEST_BROKEN:
+    - "(?i)syntaxerror"
+    - "(?i)indentationerror"
+    - "(?i)nameerror"
+    - "(?i)importerror"
+    - "(?i)attributeerror.*test"
+    - "(?i)typeerror.*test"
+    - "(?i)valueerror.*test"
+
+  ENV_BROKEN:
+    - "(?i)modulenotfounderror"
+    - "(?i)connection.*refused"
+    - "(?i)permission denied"
+    - "(?i)no such file or directory"
+    - "(?i)timeout"
+    - "(?i)cannot import"
+    - "(?i)fixture.*not found"
+    - "(?i)database.*not.*available"
+
+# Pytest output parsing patterns
+pytest_patterns:
+  # Test line format: tests/test_file.py::TestClass::test_name PASSED
+  test_line: "^(.+\\.py)::(\\w+)::(\\w+)\\s+(PASSED|FAILED|ERROR|SKIPPED)"
+
+  # Alternative format without class: tests/test_file.py::test_name PASSED
+  test_line_no_class: "^(.+\\.py)::(\\w+)\\s+(PASSED|FAILED|ERROR|SKIPPED)"
+
+  # Summary line format: === 3 passed, 1 failed in 0.12s ===
+  summary_line: "^=+ (\\d+) (passed|failed|error|skipped)"
+
+  # Final summary line: === 1 passed, 1 failed, 1 error in 0.12s ===
+  final_summary: "^=+\\s+(.+)\\s+in\\s+[\\d\\.]+s\\s*=+$"
+
+  # Failure section header: ___ test_name ___
+  failure_start: "^_+ (.+) _+$"
+
+  # Error section header: ==== ERRORS ====
+  error_section: "^=+ ERRORS =+$"
+
+  # Failure section header: ==== FAILURES ====
+  failure_section: "^=+ FAILURES =+$"
+
+  # Error message line: E   AssertionError: ...
+  error_message: "^E\\s+(.*)$"
+
+  # File location line: tests/test_auth.py:15: AssertionError
+  location_line: "^(.+\\.py):(\\d+):\\s*(\\w+)$"
+
+  # Collected tests line: collected 3 items
+  collected: "^collected (\\d+) items?"

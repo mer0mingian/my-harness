@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-7.4.0
+collected 1 items
+
+tests/test_api.py E                                                      [100%]
+
+==================================== ERRORS ====================================
+_______________________________ test_create_user _______________________________
+
+    def test_create_user():
+>       from api.users import create_user
+E       ModuleNotFoundError: No module named 'api.users'
+
+tests/test_api.py:5: ModuleNotFoundError
+=========================== short test summary info ============================
+ERROR tests/test_api.py::test_create_user - ModuleNotFoundError: No module named 'api.users'
+============================== 1 error in 0.12s =================================
