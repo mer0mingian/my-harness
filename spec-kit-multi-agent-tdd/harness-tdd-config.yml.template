@@ -1,0 +1,114 @@
+# harness-tdd-workflow Configuration Template
+# Copy this file to .specify/harness-tdd-config.yml in your workspace
+
+version: "1.0"
+
+# Agent assignments (maps workflow roles to Claude Code agent names)
+# These agent names must match agent definitions in your .claude-plugin/plugin.json
+agents:
+  test_agent: "test-specialist"        # Agent for Step 7: Write Tests
+  implementation_agent: "dev-specialist"  # Agent for Step 8: Implement
+  qa_agent: "qa-specialist"            # Agent for acceptance validation
+  arch_reviewer: "arch-specialist"     # Agent for architecture review
+  code_reviewer: "review-specialist"   # Agent for code review
+
+# Artifact configuration (paths, templates, mandatory flags)
+# Paths support template variables: {feature_id}, {feature_name}, {timestamp}
+artifacts:
+  # Test Design (Step 7) - MANDATORY
+  # Constitutional requirement: Cannot be disabled
+  test_design:
+    path: "docs/tests/test-design/{feature_id}-test-design.md"
+    template: ".specify/templates/test-design-template.md"
+    mandatory: true  # Cannot be disabled (constitutional requirement)
+
+  # Implementation Notes (Step 8) - OPTIONAL
+  # Teams can disable this artifact if they find it redundant
+  implementation_notes:
+    path: "docs/implementation/{feature_id}-implementation-notes.md"
+    template: ".specify/templates/implementation-notes-template.md"
+    mandatory: false  # Can be toggled by teams
+
+  # Architecture Review (Step 9) - MANDATORY
+  # Constitutional requirement: Cannot be disabled
+  arch_review:
+    path: "docs/reviews/arch-review/{feature_id}-arch-review.md"
+    template: ".specify/templates/arch-review-template.md"
+    mandatory: true  # Cannot be disabled
+
+  # Code Review (Step 9) - MANDATORY
+  # Constitutional requirement: Cannot be disabled
+  code_review:
+    path: "docs/reviews/code-review/{feature_id}-code-review.md"
+    template: ".specify/templates/code-review-template.md"
+    mandatory: true  # Cannot be disabled
+
+  # Workflow Summary (Step 10) - MANDATORY
+  # Constitutional requirement: Cannot be disabled
+  workflow_summary:
+    path: "docs/workflow/{feature_id}-workflow-summary.md"
+    template: ".specify/templates/workflow-summary-template.md"
+    mandatory: true  # Cannot be disabled
+
+# Quality gates configuration
+# Gates enforce constitutional principles (RED state validation, review enforcement)
+gates:
+  default_mode: "auto"  # auto | manual
+  # List gates requiring human approval (e.g., ["arch_review", "code_review"])
+  manual_gates: []
+  # Max iterations for Step 9 review loop (prevents infinite cycles)
+  max_review_cycles: 3
+  # Stop early if same findings repeat (convergence detection)
+  convergence_detection: true
+
+# Planning configuration (Step 0: Interactive Planning)
+# Optional: Integrate Matt Pocock's grill-me skill for interactive planning
+planning:
+  skill: "grill-me"  # Optional: Matt Pocock's grill-me skill for interactive planning
+  skill_path: ".claude/marketplace-skills/grill-me/"  # Path to skill (if installed)
+  interactive_by_default: true  # Use interactive mode by default
+  fallback_mode: "standard"  # Fallback if grill-me unavailable (standard | skip)
+
+# Test framework configuration (for failure code detection)
+# Used to detect valid RED states vs. broken tests
+test_framework:
+  type: "pytest"  # pytest | jest | go | rspec | junit
+  # File patterns to identify test files
+  file_patterns:
+    - "tests/**/*.py"
+    - "**/test_*.py"
+    - "**/*_test.py"
+  # Failure codes for RED state validation
+  failure_codes:
+    # Valid RED states (behavior missing, assertions mismatched)
+    valid_red:
+      - "MISSING_BEHAVIOR"
+      - "ASSERTION_MISMATCH"
+      - "AssertionError"
+      - "NameError"
+      - "AttributeError"
+    # Invalid states requiring escalation (test broken, env broken)
+    invalid_escalate:
+      - "TEST_BROKEN"
+      - "ENV_BROKEN"
+      - "SyntaxError"
+      - "ImportError"
+      - "ModuleNotFoundError"
+
+# Workflow execution configuration
+execution:
+  # Enable parallel execution for independent steps (Phase 3 feature)
+  parallel_enabled: false
+  # Timeout for agent tasks (in minutes)
+  agent_timeout: 30
+  # Enable artifact validation (check templates match outputs)
+  validate_artifacts: true
+
+# Logging and observability
+logging:
+  # Log level: debug | info | warn | error
+  level: "info"
+  # Log workflow steps to dedicated file
+  workflow_log: "docs/workflow/{feature_id}-workflow.log"
+  # Include agent responses in logs
+  include_agent_responses: false
