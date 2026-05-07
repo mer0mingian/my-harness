@@ -16,6 +16,23 @@
         }
       ]
     },
+    "execute": {
+      "file": "commands/execute.py",
+      "description": "Execute full TDD workflow (test → implement → review → commit)",
+      "usage": "/speckit.multi-agent.execute <feature-id> [--mode=auto|interactive]",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        },
+        {
+          "name": "--mode",
+          "required": false,
+          "description": "Execution mode: auto (default) or interactive"
+        }
+      ]
+    },
     "implement": {
       "description": "Spawn @dev-specialist agent to implement feature (Phase 3)"
     },
