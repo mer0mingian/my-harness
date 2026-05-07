@@ -25,6 +25,28 @@ _Map each acceptance criterion from the spec to test cases:_
 
 _Document the expected RED state before implementation:_
 
+{% if evidence is defined and evidence %}
+**Test Output:**
+```
+Total: {{ evidence.total_tests }} tests
+Passed: {{ evidence.passed }}
+Failed: {{ evidence.failed }}
+Errors: {{ evidence.errors }}
+Skipped: {{ evidence.skipped }}
+```
+
+**Failure Analysis:**
+{% for result in evidence.results %}
+{% if result.status == "failed" or result.status == "error" %}
+- {{ result.name }} ({{ result.file_path }}{% if result.line_number %}:{{ result.line_number }}{% endif %})
+  - Failure code: `{{ result.failure_code }}`
+  - Message: {{ result.error_message }}
+{% endif %}
+{% endfor %}
+
+**Valid RED:** {{ 'YES' if valid_red else 'NO' }}  
+**State:** {{ evidence.state }}
+{% else %}
 **Test Output:**
 ```
 # Paste failing test output here
@@ -36,6 +58,7 @@ _Document the expected RED state before implementation:_
 - Expected behavior: _what should happen_
 - Current state: _what actually happens_
 - Valid RED: `[YES | NO]`
+{% endif %}
 
 ## Test Implementation Details
 

@@ -72,7 +72,7 @@ planning:
 # Test framework configuration (for failure code detection)
 # Used to detect valid RED states vs. broken tests
 test_framework:
-  type: "pytest"  # pytest | jest | go | rspec | junit
+  type: "pytest"  # Test framework type (pytest only for Phase 2)
   # File patterns to identify test files
   file_patterns:
     - "tests/**/*.py"

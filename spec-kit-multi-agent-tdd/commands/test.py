@@ -10,6 +10,7 @@ import sys
 import os
 import tempfile
 import re
+import subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional, Tuple
@@ -24,6 +25,15 @@ try:
 except ImportError:
     print("Error: jinja2 not installed. Run: pip install jinja2", file=sys.stderr)
     sys.exit(1)
+
+# Import test evidence parser
+try:
+    from lib.parse_test_evidence import parse_pytest_output, TestEvidence, load_patterns
+except ImportError:
+    # Parser not available - will be caught at runtime if needed
+    parse_pytest_output = None
+    TestEvidence = None
+    load_patterns = None
 
 
 # Default configuration when .specify/harness-tdd-config.yml not found
@@ -394,7 +404,9 @@ def generate_test_design_artifact(
     feature_name: str,
     output_path: Path,
     template_dir: Optional[Path] = None,
-    bypass_info: Optional[Dict[str, Any]] = None
+    bypass_info: Optional[Dict[str, Any]] = None,
+    evidence: Optional[TestEvidence] = None,
+    valid_red: Optional[bool] = None
 ) -> Path:
     """
     Generate test design artifact from template.
@@ -405,6 +417,8 @@ def generate_test_design_artifact(
         output_path: Where to write artifact
         template_dir: Custom template directory (optional)
         bypass_info: File gate bypass information (optional)
+        evidence: Test evidence from detect_test_failures (optional)
+        valid_red: Whether RED state is valid (optional)
 
     Returns:
         Path to generated artifact
@@ -435,6 +449,8 @@ def generate_test_design_artifact(
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": "draft",
         "bypass_info": bypass_info,
+        "evidence": evidence,
+        "valid_red": valid_red,
     }
     content = template.render(**variables)
 
@@ -445,11 +461,97 @@ def generate_test_design_artifact(
     return output_path
 
 
+def detect_test_failures(project_root: Path, config: Dict[str, Any]) -> TestEvidence:
+    """
+    Run tests and parse output for failure classification.
+
+    Executes pytest to run tests written by agent, captures output,
+    and parses using existing parse_test_evidence library to classify
+    failures as valid RED or invalid (broken).
+
+    Args:
+        project_root: Project root directory
+        config: Configuration dictionary with test_framework settings
+
+    Returns:
+        TestEvidence with classified failures
+
+    Raises:
+        RuntimeError: If parse_test_evidence not available
+        subprocess.CalledProcessError: If pytest execution fails critically
+    """
+    # Check if parser is available
+    if parse_pytest_output is None:
+        raise RuntimeError(
+            "parse_test_evidence module not available. "
+            "Ensure lib/parse_test_evidence.py is in the path."
+        )
+
+    # Get test patterns from config
+    test_patterns = config.get('test_framework', {}).get('file_patterns', ['tests/'])
+
+    # Build pytest command
+    # Use -v for verbose output, --tb=short for shorter tracebacks
+    cmd = ['pytest'] + test_patterns + ['-v', '--tb=short']
+
+    # Run pytest
+    result = subprocess.run(
+        cmd,
+        cwd=project_root,
+        capture_output=True,
+        text=True
+    )
+
+    # Load patterns for parsing
+    patterns_file = Path(__file__).parent.parent / 'config' / 'test-patterns.yml'
+    patterns = load_patterns(str(patterns_file) if patterns_file.exists() else None)
+
+    # Parse output using existing library
+    evidence = parse_pytest_output(result.stdout, patterns)
+
+    return evidence
+
+
+def validate_red_state(evidence: TestEvidence) -> Tuple[bool, str]:
+    """
+    Validate that tests are in valid RED state.
+
+    Valid RED: At least one test failed with MISSING_BEHAVIOR or ASSERTION_MISMATCH
+    Invalid: All passing (GREEN), or any TEST_BROKEN/ENV_BROKEN
+
+    Args:
+        evidence: TestEvidence object from detect_test_failures
+
+    Returns:
+        (is_valid, reason) tuple
+        - is_valid: True if valid RED state, False otherwise
+        - reason: Human-readable explanation
+    """
+    if evidence.state == "GREEN":
+        return (False, "Tests are passing (GREEN) - expected RED state")
+
+    if evidence.state == "BROKEN":
+        return (False, "Tests are broken (TEST_BROKEN or ENV_BROKEN)")
+
+    # Check for at least one valid RED failure
+    valid_red_codes = ["MISSING_BEHAVIOR", "ASSERTION_MISMATCH"]
+    has_valid_red = any(
+        r.failure_code in valid_red_codes
+        for r in evidence.results if r.status == "failed"
+    )
+
+    if not has_valid_red:
+        return (False, "No valid RED failures detected")
+
+    return (True, "Valid RED state confirmed")
+
+
 def execute_test_command(
     feature_id: str,
     project_root: Optional[Path] = None,
     allow_non_test_files: bool = False,
-    bypass_justification: Optional[str] = None
+    bypass_justification: Optional[str] = None,
+    run_tests: bool = False
 ) -> Dict[str, Any]:
     """
     Execute /speckit.multi-agent.test command end-to-end.
@@ -459,6 +561,7 @@ def execute_test_command(
         project_root: Project root directory (defaults to CWD)
         allow_non_test_files: Whether to allow non-test file modifications
         bypass_justification: Justification for bypassing file gate
+        run_tests: Whether to run tests and validate RED state after agent
 
     Returns:
         Result dictionary with status and artifact path
@@ -511,21 +614,48 @@ def execute_test_command(
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
+    # Step 6: Run tests and validate RED state (if requested)
+    evidence = None
+    valid_red = None
+    red_state_message = None
+
+    if run_tests:
+        try:
+            evidence = detect_test_failures(project_root, config)
+            valid_red, red_state_message = validate_red_state(evidence)
+        except Exception as e:
+            # Log error but don't fail the command
+            print(f"Warning: Failed to detect test failures: {e}", file=sys.stderr)
+            red_state_message = f"Test detection failed: {e}"
+
+    # Step 7: Generate test design artifact
     artifact_path = generate_test_design_artifact(
         feature_id=feature_id,
         feature_name=feature_name,
         output_path=output_path,
         template_dir=custom_template_dir,
-        bypass_info=bypass_info
+        bypass_info=bypass_info,
+        evidence=evidence,
+        valid_red=valid_red
     )
 
-    return {
+    result = {
         "status": "success",
         "feature_id": feature_id,
         "spec_path": str(spec_path),
         "artifact_path": str(artifact_path),
         "bypass_info": bypass_info,
     }
+
+    # Add RED state info if tests were run
+    if run_tests:
+        result["red_state"] = {
+            "valid": valid_red,
+            "message": red_state_message,
+            "state": evidence.state if evidence else "UNKNOWN",
+        }
+
+    return result
 
 
 def main():
@@ -556,6 +686,11 @@ def main():
         default=None,
         help="Justification for bypassing file gate (required with --allow-non-test-files)"
     )
+    parser.add_argument(
+        "--run-tests",
+        action="store_true",
+        help="Run tests and validate RED state after agent completes"
+    )
 
     args = parser.parse_args()
 
@@ -570,15 +705,29 @@ def main():
             args.feature_id,
             args.project_root,
             args.allow_non_test_files,
-            args.justification
+            args.justification,
+            args.run_tests
         )
         print(f"\n✓ Success!")
         print(f"  Spec: {result['spec_path']}")
         print(f"  Artifact: {result['artifact_path']}")
+
+        # Show RED state info if tests were run
+        if args.run_tests and "red_state" in result:
+            red_state = result["red_state"]
+            print(f"\n✓ RED State Validation:")
+            print(f"  State: {red_state['state']}")
+            print(f"  Valid RED: {'YES' if red_state['valid'] else 'NO'}")
+            print(f"  Message: {red_state['message']}")
+
         print(f"\nNext steps:")
-        print(f"  1. Invoke @test-specialist agent with context file")
-        print(f"  2. Review test design artifact")
-        print(f"  3. Run tests to verify RED state")
+        if not args.run_tests:
+            print(f"  1. Invoke @test-specialist agent with context file")
+            print(f"  2. Review test design artifact")
+            print(f"  3. Run tests to verify RED state")
+        else:
+            print(f"  1. Review test design artifact with RED state validation")
+            print(f"  2. Proceed to implementation if RED state is valid")
         return 0
     except FileNotFoundError as e:
         print(f"\n✗ Error: {e}", file=sys.stderr)

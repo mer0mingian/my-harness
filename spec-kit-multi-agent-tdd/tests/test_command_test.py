@@ -20,6 +20,8 @@ from commands.test import (
     spawn_test_agent,
     generate_test_design_artifact,
     execute_test_command,
+    detect_test_failures,
+    validate_red_state,
 )
 
 
@@ -462,3 +464,283 @@ class TestExecuteTestCommand:
         artifact_path = Path(result["artifact_path"])
         content = artifact_path.read_text()
         assert "CUSTOM: feat-123" in content
+
+
+class TestDetectTestFailures:
+    """Test test failure detection and classification."""
+
+    def test_detect_test_failures_with_valid_red(self, tmp_path, monkeypatch):
+        """Detects valid RED state with MISSING_BEHAVIOR."""
+        # Create mock pytest output with MISSING_BEHAVIOR
+        pytest_output = """
+============================= test session starts ==============================
+collected 2 items
+
+tests/test_auth.py::test_login FAILED                                    [ 50%]
+tests/test_auth.py::test_logout PASSED                                   [100%]
+
+=================================== FAILURES ===================================
+______________________________ test_login ______________________________________
+
+    def test_login():
+>       result = login_user("user", "pass")
+E       NotImplementedError: login_user not implemented
+
+tests/test_auth.py:10: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/test_auth.py::test_login - NotImplementedError: login_user not implemented
+========================= 1 failed, 1 passed in 0.12s ==========================
+"""
+
+        # Mock subprocess to return this output
+        import subprocess
+        from unittest.mock import Mock
+
+        mock_result = Mock()
+        mock_result.stdout = pytest_output
+        mock_result.stderr = ""
+        mock_result.returncode = 1
+
+        def mock_run(*args, **kwargs):
+            return mock_result
+
+        monkeypatch.setattr(subprocess, "run", mock_run)
+
+        # Setup config
+        config = load_config()
+
+        # Execute
+        evidence = detect_test_failures(tmp_path, config)
+
+        # Verify evidence structure
+        assert evidence.state == "RED"
+        assert evidence.total_tests == 2
+        assert evidence.passed == 1
+        assert evidence.failed == 1
+
+        # Check for MISSING_BEHAVIOR classification
+        failed_tests = [r for r in evidence.results if r.status == "failed"]
+        assert len(failed_tests) == 1
+        assert failed_tests[0].failure_code == "MISSING_BEHAVIOR"
+
+    def test_detect_test_failures_with_broken_tests(self, tmp_path, monkeypatch):
+        """Detects broken tests with TEST_BROKEN."""
+        # Create mock pytest output with syntax error
+        pytest_output = """
+============================= test session starts ==============================
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_________________________ ERROR collecting tests/test_api.py __________________
+tests/test_api.py:5: in <module>
+    def test_create_user(
+E   SyntaxError: invalid syntax
+
+=========================== short test summary info ============================
+ERROR tests/test_api.py - SyntaxError: invalid syntax
+============================ 1 error in 0.05s ===================================
+"""
+
+        # Mock subprocess
+        import subprocess
+        from unittest.mock import Mock
+
+        mock_result = Mock()
+        mock_result.stdout = pytest_output
+        mock_result.stderr = ""
+        mock_result.returncode = 2
+
+        def mock_run(*args, **kwargs):
+            return mock_result
+
+        monkeypatch.setattr(subprocess, "run", mock_run)
+
+        # Setup config
+        config = load_config()
+
+        # Execute
+        evidence = detect_test_failures(tmp_path, config)
+
+        # Verify BROKEN state
+        assert evidence.state == "BROKEN"
+        assert evidence.errors == 1
+
+        # Check for TEST_BROKEN classification
+        error_tests = [r for r in evidence.results if r.status == "error"]
+        assert len(error_tests) == 1
+        assert error_tests[0].failure_code == "TEST_BROKEN"
+
+    def test_detect_test_failures_all_passing(self, tmp_path, monkeypatch):
+        """Detects GREEN state when all tests pass."""
+        # Create mock pytest output with all passing
+        pytest_output = """
+============================= test session starts ==============================
+collected 2 items
+
+tests/test_auth.py::test_login PASSED                                    [ 50%]
+tests/test_auth.py::test_logout PASSED                                   [100%]
+
+============================== 2 passed in 0.10s ===============================
+"""
+
+        # Mock subprocess
+        import subprocess
+        from unittest.mock import Mock
+
+        mock_result = Mock()
+        mock_result.stdout = pytest_output
+        mock_result.stderr = ""
+        mock_result.returncode = 0
+
+        def mock_run(*args, **kwargs):
+            return mock_result
+
+        monkeypatch.setattr(subprocess, "run", mock_run)
+
+        # Setup config
+        config = load_config()
+
+        # Execute
+        evidence = detect_test_failures(tmp_path, config)
+
+        # Verify GREEN state
+        assert evidence.state == "GREEN"
+        assert evidence.total_tests == 2
+        assert evidence.passed == 2
+        assert evidence.failed == 0
+
+
+class TestValidateRedState:
+    """Test RED state validation logic."""
+
+    def test_validate_red_state_valid(self):
+        """Valid RED state with MISSING_BEHAVIOR."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+
+        evidence = TestEvidence(
+            state="RED",
+            total_tests=2,
+            passed=1,
+            failed=1,
+            errors=0,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_login",
+                    status="failed",
+                    failure_code="MISSING_BEHAVIOR",
+                    error_message="NotImplementedError: login_user not implemented",
+                    file_path="tests/test_auth.py",
+                    line_number=10
+                ),
+                TestResult(
+                    name="test_logout",
+                    status="passed",
+                    failure_code=None,
+                    error_message=None,
+                    file_path="tests/test_auth.py",
+                    line_number=20
+                )
+            ],
+            summary="1 failed, 1 passed"
+        )
+
+        is_valid, reason = validate_red_state(evidence)
+
+        assert is_valid is True
+        assert "Valid RED state confirmed" in reason
+
+    def test_validate_red_state_all_passing(self):
+        """Invalid RED state when all tests pass (GREEN)."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+
+        evidence = TestEvidence(
+            state="GREEN",
+            total_tests=2,
+            passed=2,
+            failed=0,
+            errors=0,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_login",
+                    status="passed",
+                    failure_code=None,
+                    error_message=None,
+                    file_path="tests/test_auth.py",
+                    line_number=10
+                ),
+                TestResult(
+                    name="test_logout",
+                    status="passed",
+                    failure_code=None,
+                    error_message=None,
+                    file_path="tests/test_auth.py",
+                    line_number=20
+                )
+            ],
+            summary="2 passed"
+        )
+
+        is_valid, reason = validate_red_state(evidence)
+
+        assert is_valid is False
+        assert "Tests are passing (GREEN)" in reason
+
+    def test_validate_red_state_broken(self):
+        """Invalid RED state when tests are broken (TEST_BROKEN)."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+
+        evidence = TestEvidence(
+            state="BROKEN",
+            total_tests=1,
+            passed=0,
+            failed=0,
+            errors=1,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_create_user",
+                    status="error",
+                    failure_code="TEST_BROKEN",
+                    error_message="SyntaxError: invalid syntax",
+                    file_path="tests/test_api.py",
+                    line_number=5
+                )
+            ],
+            summary="1 error"
+        )
+
+        is_valid, reason = validate_red_state(evidence)
+
+        assert is_valid is False
+        assert "Tests are broken" in reason
+
+    def test_validate_red_state_no_valid_red_failures(self):
+        """Invalid RED state with no MISSING_BEHAVIOR or ASSERTION_MISMATCH."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+
+        evidence = TestEvidence(
+            state="RED",  # State shows RED but no valid codes
+            total_tests=1,
+            passed=0,
+            failed=1,
+            errors=0,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_login",
+                    status="failed",
+                    failure_code="UNKNOWN",  # Invalid code
+                    error_message="Something weird happened",
+                    file_path="tests/test_auth.py",
+                    line_number=10
+                )
+            ],
+            summary="1 failed"
+        )
+
+        is_valid, reason = validate_red_state(evidence)
+
+        assert is_valid is False
+        assert "No valid RED failures detected" in reason
