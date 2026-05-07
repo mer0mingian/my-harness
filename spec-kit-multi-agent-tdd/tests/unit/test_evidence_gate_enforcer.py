@@ -275,7 +275,7 @@ class TestValidateAndRespond:
         mock_run.assert_called_once()
         call_args = mock_run.call_args[0][0]
         assert "python3" in call_args[0]
-        assert any("validate_artifacts.py" in str(arg) for arg in call_args)
+        assert any("validate_feature_artifacts.py" in str(arg) for arg in call_args)
         assert "feat-123" in call_args
         assert "--format" in call_args
         assert "json" in call_args

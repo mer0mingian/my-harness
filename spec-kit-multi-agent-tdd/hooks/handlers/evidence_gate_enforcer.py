@@ -139,7 +139,7 @@ def validate_and_respond(hook_data: Dict[str, Any]) -> Tuple[Dict[str, Any], int
 
     # Find validation script
     script_dir = Path(__file__).parent.parent.parent
-    validation_script = script_dir / "lib" / "validate_artifacts.py"
+    validation_script = script_dir / "scripts" / "validate_feature_artifacts.py"
 
     if not validation_script.exists():
         response = {
