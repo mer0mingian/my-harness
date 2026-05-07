@@ -70,8 +70,22 @@ _Technical details about test implementation:_
 
 ## Escalations
 
-_Note any blockers, concerns, or architectural questions:_
-- [ ] _Issue description_ (assigned to: @agent-name)
+{% if escalation is defined and escalation and escalation.escalated %}
+**Escalation Required:** YES  
+**Reason:** {{ escalation.count }} broken test(s) detected
+
+{% for failure in escalation.failures %}
+### {{ failure.failure_type }}: {{ failure.test_name }}
+
+- **Location:** {{ failure.location }}
+- **Error:** {{ failure.error_message }}
+- **Root Cause:** {{ failure.root_cause }}
+- **Recommended Action:** {{ failure.recommended_action }}
+
+{% endfor %}
+{% else %}
+_No escalations required_
+{% endif %}
 
 ## Decision
 

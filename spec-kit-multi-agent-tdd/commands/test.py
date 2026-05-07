@@ -406,7 +406,8 @@ def generate_test_design_artifact(
     template_dir: Optional[Path] = None,
     bypass_info: Optional[Dict[str, Any]] = None,
     evidence: Optional[TestEvidence] = None,
-    valid_red: Optional[bool] = None
+    valid_red: Optional[bool] = None,
+    escalation: Optional[Dict[str, Any]] = None
 ) -> Path:
     """
     Generate test design artifact from template.
@@ -419,6 +420,7 @@ def generate_test_design_artifact(
         bypass_info: File gate bypass information (optional)
         evidence: Test evidence from detect_test_failures (optional)
         valid_red: Whether RED state is valid (optional)
+        escalation: Escalation details for broken tests (optional)
 
     Returns:
         Path to generated artifact
@@ -451,6 +453,7 @@ def generate_test_design_artifact(
         "bypass_info": bypass_info,
         "evidence": evidence,
         "valid_red": valid_red,
+        "escalation": escalation,
     }
     content = template.render(**variables)
 
@@ -546,13 +549,95 @@ def validate_red_state(evidence: TestEvidence) -> Tuple[bool, str]:
     return (True, "Valid RED state confirmed")
 
 
+def diagnose_root_cause(result) -> str:
+    """
+    Diagnose root cause based on failure code.
+
+    Args:
+        result: TestResult object with failure information
+
+    Returns:
+        Human-readable root cause description
+    """
+    if result.failure_code == 'TEST_BROKEN':
+        return "Test code has syntax errors or invalid test structure"
+    elif result.failure_code == 'ENV_BROKEN':
+        return "Test environment missing dependencies or misconfigured"
+    return "Unknown"
+
+
+def recommend_action(result) -> str:
+    """
+    Recommend action based on failure code and error message.
+
+    Args:
+        result: TestResult object with failure information
+
+    Returns:
+        Actionable recommendation for fixing the issue
+    """
+    if result.failure_code == 'TEST_BROKEN':
+        if 'SyntaxError' in result.error_message:
+            return "Fix syntax errors in test code"
+        elif 'ImportError' in result.error_message or 'ModuleNotFoundError' in result.error_message:
+            return "Install missing test dependencies"
+        return "Review test code for structural issues"
+    elif result.failure_code == 'ENV_BROKEN':
+        return "Check test environment setup (dependencies, fixtures, config)"
+    return "Review test output for details"
+
+
+def escalate_broken_tests(evidence: TestEvidence) -> Dict[str, Any]:
+    """
+    Generate escalation details for broken tests.
+
+    Analyzes test evidence and creates structured escalation information
+    for tests that are broken (TEST_BROKEN or ENV_BROKEN) rather than
+    in valid RED state.
+
+    Args:
+        evidence: TestEvidence object from detect_test_failures
+
+    Returns:
+        Escalation dict with:
+        - escalated (bool): True if escalation required
+        - count (int): Number of broken test failures
+        - failures (List[Dict]): Details for each broken test including:
+            - failure_type: TEST_BROKEN or ENV_BROKEN
+            - test_name: Name of the test
+            - location: File path and line number
+            - error_message: Full error message
+            - root_cause: Diagnosed root cause
+            - recommended_action: Suggested fix
+    """
+    escalations = []
+
+    for result in evidence.results:
+        if result.failure_code in ['TEST_BROKEN', 'ENV_BROKEN']:
+            escalation = {
+                'failure_type': result.failure_code,
+                'test_name': result.name,
+                'location': f"{result.file_path}:{result.line_number}" if result.line_number else result.file_path,
+                'error_message': result.error_message,
+                'root_cause': diagnose_root_cause(result),
+                'recommended_action': recommend_action(result)
+            }
+            escalations.append(escalation)
+
+    return {
+        'escalated': True if escalations else False,
+        'count': len(escalations),
+        'failures': escalations
+    }
+
+
 def execute_test_command(
     feature_id: str,
     project_root: Optional[Path] = None,
     allow_non_test_files: bool = False,
     bypass_justification: Optional[str] = None,
     run_tests: bool = False
-) -> Dict[str, Any]:
+) -> int:
     """
     Execute /speckit.multi-agent.test command end-to-end.
 
@@ -564,7 +649,10 @@ def execute_test_command(
         run_tests: Whether to run tests and validate RED state after agent
 
     Returns:
-        Result dictionary with status and artifact path
+        Exit code:
+        - 0: Success (valid RED state or agent spawned without running tests)
+        - 1: Validation failure (GREEN state or no valid RED failures)
+        - 2: Escalation required (TEST_BROKEN or ENV_BROKEN)
 
     Raises:
         FileNotFoundError: If spec not found
@@ -618,17 +706,33 @@ def execute_test_command(
     evidence = None
     valid_red = None
     red_state_message = None
+    escalation = None
 
     if run_tests:
         try:
             evidence = detect_test_failures(project_root, config)
             valid_red, red_state_message = validate_red_state(evidence)
+
+            # Check for BROKEN state and escalate
+            if not valid_red and evidence.state == "BROKEN":
+                escalation = escalate_broken_tests(evidence)
+
+                # Print escalation to stderr
+                print(f"\n⚠ ESCALATION REQUIRED\n", file=sys.stderr)
+                print(f"Test execution failed: {escalation['count']} broken test(s)\n", file=sys.stderr)
+
+                for failure in escalation['failures']:
+                    print(f"  {failure['failure_type']}: {failure['test_name']}", file=sys.stderr)
+                    print(f"    Location: {failure['location']}", file=sys.stderr)
+                    print(f"    Root cause: {failure['root_cause']}", file=sys.stderr)
+                    print(f"    Action: {failure['recommended_action']}\n", file=sys.stderr)
+
         except Exception as e:
             # Log error but don't fail the command
             print(f"Warning: Failed to detect test failures: {e}", file=sys.stderr)
             red_state_message = f"Test detection failed: {e}"
 
-    # Step 7: Generate test design artifact
+    # Step 7: Generate test design artifact with escalation info
     artifact_path = generate_test_design_artifact(
         feature_id=feature_id,
         feature_name=feature_name,
@@ -636,26 +740,18 @@ def execute_test_command(
         template_dir=custom_template_dir,
         bypass_info=bypass_info,
         evidence=evidence,
-        valid_red=valid_red
+        valid_red=valid_red,
+        escalation=escalation
     )
 
-    result = {
-        "status": "success",
-        "feature_id": feature_id,
-        "spec_path": str(spec_path),
-        "artifact_path": str(artifact_path),
-        "bypass_info": bypass_info,
-    }
+    # Return appropriate exit code
+    if run_tests and evidence:
+        if escalation and escalation['escalated']:
+            return 2  # Escalation required
+        elif not valid_red:
+            return 1  # Validation failure
 
-    # Add RED state info if tests were run
-    if run_tests:
-        result["red_state"] = {
-            "valid": valid_red,
-            "message": red_state_message,
-            "state": evidence.state if evidence else "UNKNOWN",
-        }
-
-    return result
+    return 0  # Success
 
 
 def main():
@@ -701,34 +797,42 @@ def main():
         return 1
 
     try:
-        result = execute_test_command(
+        exit_code = execute_test_command(
             args.feature_id,
             args.project_root,
             args.allow_non_test_files,
             args.justification,
             args.run_tests
         )
-        print(f"\n✓ Success!")
-        print(f"  Spec: {result['spec_path']}")
-        print(f"  Artifact: {result['artifact_path']}")
 
-        # Show RED state info if tests were run
-        if args.run_tests and "red_state" in result:
-            red_state = result["red_state"]
-            print(f"\n✓ RED State Validation:")
-            print(f"  State: {red_state['state']}")
-            print(f"  Valid RED: {'YES' if red_state['valid'] else 'NO'}")
-            print(f"  Message: {red_state['message']}")
+        # Determine output path for showing artifact location
+        config = load_config(args.project_root)
+        artifact_path = get_artifact_path(args.feature_id, config, args.project_root)
+        spec_path = find_spec_artifact(args.feature_id, args.project_root)
 
-        print(f"\nNext steps:")
-        if not args.run_tests:
-            print(f"  1. Invoke @test-specialist agent with context file")
-            print(f"  2. Review test design artifact")
-            print(f"  3. Run tests to verify RED state")
-        else:
-            print(f"  1. Review test design artifact with RED state validation")
-            print(f"  2. Proceed to implementation if RED state is valid")
-        return 0
+        if exit_code == 0:
+            print(f"\n✓ Success!")
+            print(f"  Spec: {spec_path}")
+            print(f"  Artifact: {artifact_path}")
+
+            print(f"\nNext steps:")
+            if not args.run_tests:
+                print(f"  1. Invoke @test-specialist agent with context file")
+                print(f"  2. Review test design artifact")
+                print(f"  3. Run tests to verify RED state")
+            else:
+                print(f"  1. Review test design artifact with RED state validation")
+                print(f"  2. Proceed to implementation if RED state is valid")
+        elif exit_code == 1:
+            print(f"\n✗ Validation failure: Tests not in valid RED state", file=sys.stderr)
+            print(f"  Artifact: {artifact_path}", file=sys.stderr)
+            print(f"\nReview the test design artifact for details.", file=sys.stderr)
+        elif exit_code == 2:
+            print(f"\n✗ Escalation required: Tests are broken", file=sys.stderr)
+            print(f"  Artifact: {artifact_path}", file=sys.stderr)
+            print(f"\nReview the test design artifact for escalation details.", file=sys.stderr)
+
+        return exit_code
     except FileNotFoundError as e:
         print(f"\n✗ Error: {e}", file=sys.stderr)
         return 1

@@ -423,8 +423,8 @@ class TestExecuteTestCommand:
         }
         config_path.write_text(yaml.dump(config_data))
 
-        # Execute command
-        result = execute_test_command("feat-123", project_root=tmp_path)
+        # Execute command (without run_tests, so it returns 0)
+        exit_code = execute_test_command("feat-123", project_root=tmp_path)
 
         # Verify: artifact created
         artifact_path = tmp_path / "docs" / "tests" / "feat-123-test-design.md"
@@ -434,8 +434,8 @@ class TestExecuteTestCommand:
         # We cannot predict the exact path, but it exists until manually cleaned up
         # This is acceptable for MVP (Phase 2) behavior
 
-        assert result["status"] == "success"
-        assert result["artifact_path"] == str(artifact_path)
+        # Execute command now returns exit code (0 = success)
+        assert exit_code == 0
 
     def test_execute_test_command_spec_not_found(self, tmp_path):
         """Fails gracefully when spec not found."""
@@ -458,12 +458,13 @@ class TestExecuteTestCommand:
         template_file.write_text("CUSTOM: {{feature_id}}")
 
         # Execute
-        result = execute_test_command("feat-123", project_root=tmp_path)
+        exit_code = execute_test_command("feat-123", project_root=tmp_path)
 
         # Verify custom template was used
-        artifact_path = Path(result["artifact_path"])
+        artifact_path = tmp_path / "docs" / "tests" / "test-design" / "feat-123-test-design.md"
         content = artifact_path.read_text()
         assert "CUSTOM: feat-123" in content
+        assert exit_code == 0
 
 
 class TestDetectTestFailures:
@@ -744,3 +745,348 @@ class TestValidateRedState:
 
         assert is_valid is False
         assert "No valid RED failures detected" in reason
+
+
+class TestEscalateBrokenTests:
+    """Test escalation logic for broken tests."""
+
+    def test_escalate_broken_tests_test_broken(self):
+        """Escalates TEST_BROKEN failures with syntax error diagnosis."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+        from commands.test import escalate_broken_tests
+
+        evidence = TestEvidence(
+            state="BROKEN",
+            total_tests=1,
+            passed=0,
+            failed=0,
+            errors=1,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_create_user",
+                    status="error",
+                    failure_code="TEST_BROKEN",
+                    error_message="SyntaxError: invalid syntax",
+                    file_path="tests/test_api.py",
+                    line_number=5
+                )
+            ],
+            summary="1 error"
+        )
+
+        escalation = escalate_broken_tests(evidence)
+
+        assert escalation['escalated'] is True
+        assert escalation['count'] == 1
+        assert len(escalation['failures']) == 1
+
+        failure = escalation['failures'][0]
+        assert failure['failure_type'] == 'TEST_BROKEN'
+        assert failure['test_name'] == 'test_create_user'
+        assert failure['location'] == 'tests/test_api.py:5'
+        assert 'SyntaxError' in failure['error_message']
+        assert 'syntax errors' in failure['root_cause']
+        assert 'Fix syntax errors' in failure['recommended_action']
+
+    def test_escalate_broken_tests_env_broken(self):
+        """Escalates ENV_BROKEN failures with dependency diagnosis."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+        from commands.test import escalate_broken_tests
+
+        evidence = TestEvidence(
+            state="BROKEN",
+            total_tests=1,
+            passed=0,
+            failed=0,
+            errors=1,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_database_connection",
+                    status="error",
+                    failure_code="ENV_BROKEN",
+                    error_message="ModuleNotFoundError: No module named 'psycopg2'",
+                    file_path="tests/test_db.py",
+                    line_number=12
+                )
+            ],
+            summary="1 error"
+        )
+
+        escalation = escalate_broken_tests(evidence)
+
+        assert escalation['escalated'] is True
+        assert escalation['count'] == 1
+        assert len(escalation['failures']) == 1
+
+        failure = escalation['failures'][0]
+        assert failure['failure_type'] == 'ENV_BROKEN'
+        assert failure['test_name'] == 'test_database_connection'
+        assert failure['location'] == 'tests/test_db.py:12'
+        assert 'ModuleNotFoundError' in failure['error_message']
+        assert 'environment' in failure['root_cause']
+        assert 'Check test environment' in failure['recommended_action']
+
+    def test_escalate_broken_tests_multiple_failures(self):
+        """Escalates multiple broken test failures."""
+        from lib.parse_test_evidence import TestEvidence, TestResult
+        from commands.test import escalate_broken_tests
+
+        evidence = TestEvidence(
+            state="BROKEN",
+            total_tests=3,
+            passed=0,
+            failed=0,
+            errors=3,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_syntax_error",
+                    status="error",
+                    failure_code="TEST_BROKEN",
+                    error_message="SyntaxError: invalid syntax",
+                    file_path="tests/test_a.py",
+                    line_number=10
+                ),
+                TestResult(
+                    name="test_import_error",
+                    status="error",
+                    failure_code="TEST_BROKEN",
+                    error_message="ImportError: cannot import name 'User'",
+                    file_path="tests/test_b.py",
+                    line_number=5
+                ),
+                TestResult(
+                    name="test_module_error",
+                    status="error",
+                    failure_code="ENV_BROKEN",
+                    error_message="ModuleNotFoundError: No module named 'requests'",
+                    file_path="tests/test_c.py",
+                    line_number=8
+                )
+            ],
+            summary="3 errors"
+        )
+
+        escalation = escalate_broken_tests(evidence)
+
+        assert escalation['escalated'] is True
+        assert escalation['count'] == 3
+        assert len(escalation['failures']) == 3
+
+        # Check all failures are included
+        failure_types = [f['failure_type'] for f in escalation['failures']]
+        assert 'TEST_BROKEN' in failure_types
+        assert 'ENV_BROKEN' in failure_types
+
+
+class TestDiagnoseRootCause:
+    """Test root cause diagnosis."""
+
+    def test_diagnose_root_cause_test_broken(self):
+        """Diagnoses TEST_BROKEN as test code issue."""
+        from lib.parse_test_evidence import TestResult
+        from commands.test import diagnose_root_cause
+
+        result = TestResult(
+            name="test_foo",
+            status="error",
+            failure_code="TEST_BROKEN",
+            error_message="SyntaxError: invalid syntax",
+            file_path="tests/test.py",
+            line_number=10
+        )
+
+        diagnosis = diagnose_root_cause(result)
+        assert 'test code' in diagnosis.lower()
+        assert 'syntax' in diagnosis.lower() or 'structure' in diagnosis.lower()
+
+    def test_diagnose_root_cause_env_broken(self):
+        """Diagnoses ENV_BROKEN as environment issue."""
+        from lib.parse_test_evidence import TestResult
+        from commands.test import diagnose_root_cause
+
+        result = TestResult(
+            name="test_bar",
+            status="error",
+            failure_code="ENV_BROKEN",
+            error_message="ModuleNotFoundError: No module named 'pytest'",
+            file_path="tests/test.py",
+            line_number=5
+        )
+
+        diagnosis = diagnose_root_cause(result)
+        assert 'environment' in diagnosis.lower()
+        assert 'dependencies' in diagnosis.lower() or 'misconfigured' in diagnosis.lower()
+
+
+class TestRecommendAction:
+    """Test action recommendations."""
+
+    def test_recommend_action_syntax_error(self):
+        """Recommends fixing syntax errors."""
+        from lib.parse_test_evidence import TestResult
+        from commands.test import recommend_action
+
+        result = TestResult(
+            name="test_foo",
+            status="error",
+            failure_code="TEST_BROKEN",
+            error_message="SyntaxError: invalid syntax",
+            file_path="tests/test.py",
+            line_number=10
+        )
+
+        action = recommend_action(result)
+        assert 'syntax' in action.lower()
+        assert 'fix' in action.lower()
+
+    def test_recommend_action_import_error(self):
+        """Recommends installing dependencies for ImportError."""
+        from lib.parse_test_evidence import TestResult
+        from commands.test import recommend_action
+
+        result = TestResult(
+            name="test_bar",
+            status="error",
+            failure_code="TEST_BROKEN",
+            error_message="ImportError: cannot import name 'User'",
+            file_path="tests/test.py",
+            line_number=5
+        )
+
+        action = recommend_action(result)
+        assert 'dependencies' in action.lower() or 'import' in action.lower()
+
+    def test_recommend_action_module_not_found_error(self):
+        """Recommends installing dependencies for ModuleNotFoundError."""
+        from lib.parse_test_evidence import TestResult
+        from commands.test import recommend_action
+
+        result = TestResult(
+            name="test_baz",
+            status="error",
+            failure_code="TEST_BROKEN",
+            error_message="ModuleNotFoundError: No module named 'pytest'",
+            file_path="tests/test.py",
+            line_number=3
+        )
+
+        action = recommend_action(result)
+        assert 'install' in action.lower() or 'dependencies' in action.lower()
+
+    def test_recommend_action_env_broken(self):
+        """Recommends checking environment for ENV_BROKEN."""
+        from lib.parse_test_evidence import TestResult
+        from commands.test import recommend_action
+
+        result = TestResult(
+            name="test_qux",
+            status="error",
+            failure_code="ENV_BROKEN",
+            error_message="Connection refused",
+            file_path="tests/test.py",
+            line_number=20
+        )
+
+        action = recommend_action(result)
+        assert 'environment' in action.lower()
+        assert 'check' in action.lower() or 'setup' in action.lower()
+
+
+class TestExecuteTestCommandEscalation:
+    """Test execute_test_command escalation behavior."""
+
+    def test_execute_test_command_returns_exit_code_2_for_broken(self, tmp_path, monkeypatch):
+        """Returns exit code 2 when tests are BROKEN."""
+        # Setup spec
+        spec_path = tmp_path / "docs" / "features" / "feat-123.md"
+        spec_path.parent.mkdir(parents=True)
+        spec_path.write_text("# Feature: Test")
+
+        # Mock detect_test_failures to return BROKEN state
+        from lib.parse_test_evidence import TestEvidence, TestResult
+
+        broken_evidence = TestEvidence(
+            state="BROKEN",
+            total_tests=1,
+            passed=0,
+            failed=0,
+            errors=1,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_broken",
+                    status="error",
+                    failure_code="TEST_BROKEN",
+                    error_message="SyntaxError: invalid syntax",
+                    file_path="tests/test.py",
+                    line_number=5
+                )
+            ],
+            summary="1 error"
+        )
+
+        def mock_detect(*args, **kwargs):
+            return broken_evidence
+
+        from commands import test as test_module
+        monkeypatch.setattr(test_module, "detect_test_failures", mock_detect)
+
+        # Execute with run_tests=True
+        result = execute_test_command("feat-123", project_root=tmp_path, run_tests=True)
+
+        # Should return exit code 2 for escalation
+        assert result == 2
+
+    def test_execute_test_command_logs_escalation_in_artifact(self, tmp_path, monkeypatch):
+        """Logs escalation details in test design artifact."""
+        # Setup spec
+        spec_path = tmp_path / "docs" / "features" / "feat-123.md"
+        spec_path.parent.mkdir(parents=True)
+        spec_path.write_text("# Feature: Test")
+
+        # Mock detect_test_failures to return BROKEN state
+        from lib.parse_test_evidence import TestEvidence, TestResult
+
+        broken_evidence = TestEvidence(
+            state="BROKEN",
+            total_tests=1,
+            passed=0,
+            failed=0,
+            errors=1,
+            skipped=0,
+            results=[
+                TestResult(
+                    name="test_broken",
+                    status="error",
+                    failure_code="TEST_BROKEN",
+                    error_message="SyntaxError: invalid syntax",
+                    file_path="tests/test.py",
+                    line_number=5
+                )
+            ],
+            summary="1 error"
+        )
+
+        def mock_detect(*args, **kwargs):
+            return broken_evidence
+
+        from commands import test as test_module
+        monkeypatch.setattr(test_module, "detect_test_failures", mock_detect)
+
+        # Execute with run_tests=True
+        result = execute_test_command("feat-123", project_root=tmp_path, run_tests=True)
+
+        # Artifact should be created
+        artifact_path = tmp_path / "docs" / "tests" / "test-design" / "feat-123-test-design.md"
+        assert artifact_path.exists()
+
+        # Check escalation is logged
+        content = artifact_path.read_text()
+        # The template renders "Escalation Required: YES" in the markdown
+        assert "Escalation Required:" in content and "YES" in content
+        assert "TEST_BROKEN" in content
+        assert "SyntaxError" in content
+        assert "test_broken" in content  # Test name should be in escalation
