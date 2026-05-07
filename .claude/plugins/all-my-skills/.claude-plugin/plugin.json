@@ -1,0 +1,9 @@
+{
+  "name": "all-my-skills",
+  "version": "0.1.0",
+  "description": "Daniel's STDD + orchestration + review workflows for Claude Code",
+  "author": "mer0mingian",
+  "skills": "./.claude/skills",
+  "agents": "./.claude/agents",
+  "commands": "./.claude/commands"
+}
