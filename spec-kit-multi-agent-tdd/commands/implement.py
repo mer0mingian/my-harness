@@ -198,7 +198,8 @@ def create_implementation_notes(
     feature_id: str,
     agent_name: str,
     config: dict,
-    project_root: Path
+    project_root: Path,
+    red_state_evidence: Optional[Dict] = None
 ) -> Path:
     """
     Generate implementation notes artifact from template.
@@ -211,6 +212,7 @@ def create_implementation_notes(
         agent_name: Name of implementation agent
         config: Configuration dictionary
         project_root: Project root directory
+        red_state_evidence: Optional RED state validation result to include in artifact
 
     Returns:
         Path to created implementation notes artifact
@@ -242,7 +244,8 @@ def create_implementation_notes(
         feature_name=feature_name,
         agent_name=agent_name,
         timestamp=datetime.now(timezone.utc).isoformat(),
-        status='draft'
+        status='draft',
+        red_state_evidence=red_state_evidence
     )
 
     # Resolve output path using artifact_paths library
@@ -340,9 +343,44 @@ def main():
             else:
                 print(f"  {key}: {value}")
 
-        # Step 5: Create implementation notes artifact
+        # Step 4.5: TDD Entry Validation (RED state check)
+        print(f"\n{'='*60}")
+        print("TDD ENTRY VALIDATION")
+        print(f"{'='*60}\n")
+
+        from lib.test_runner import validate_red_state
+
+        validation_result = validate_red_state(project_root, config, args.feature_id)
+
+        print(f"Test State: {validation_result['state']}")
+        print(f"Timestamp: {validation_result['timestamp']}")
+        print(f"\n{validation_result['message']}\n")
+
+        if not validation_result['validation_passed']:
+            print(f"✗ TDD entry validation failed", file=sys.stderr)
+            print(f"  State: {validation_result['state']}", file=sys.stderr)
+            print(f"  Tests must be FAILING (RED state) before implementation", file=sys.stderr)
+            print(f"\n  Evidence:", file=sys.stderr)
+            print(f"    Total tests: {validation_result['evidence'].total_tests}", file=sys.stderr)
+            print(f"    Passed: {validation_result['evidence'].passed}", file=sys.stderr)
+            print(f"    Failed: {validation_result['evidence'].failed}", file=sys.stderr)
+            print(f"    Errors: {validation_result['evidence'].errors}", file=sys.stderr)
+
+            if validation_result['state'] == 'BROKEN':
+                # Escalation case
+                print(f"\n  Escalation required: Fix test issues before implementing", file=sys.stderr)
+                return 2
+            else:
+                # GREEN state - validation failure
+                print(f"\n  Tests already passing - no implementation needed or tests broken", file=sys.stderr)
+                return 1
+
+        print("✓ RED state confirmed - proceeding with implementation\n")
+
+        # Step 5: Create implementation notes artifact with RED evidence
         impl_notes_path = create_implementation_notes(
-            args.feature_id, agent_name, config, project_root
+            args.feature_id, agent_name, config, project_root,
+            red_state_evidence=validation_result
         )
         print(f"\n✓ Created implementation notes: {impl_notes_path}")
 

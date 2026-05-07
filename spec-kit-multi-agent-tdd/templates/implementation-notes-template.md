@@ -40,6 +40,33 @@ This section documents the complete TDD cycle for test-driven development verifi
 
 ### RED State (Initial/Before Implementation)
 
+{% if red_state_evidence %}
+**TDD Entry Validation:** ✓ Passed  
+**Timestamp:** {{ red_state_evidence.timestamp }}  
+**State:** {{ red_state_evidence.state }}  
+**Validation:** {{ red_state_evidence.message }}
+
+**Test Results:**
+- Total tests: {{ red_state_evidence.evidence.total_tests }}
+- Passed: {{ red_state_evidence.evidence.passed }}
+- Failed: {{ red_state_evidence.evidence.failed }}
+- Errors: {{ red_state_evidence.evidence.errors }}
+- Skipped: {{ red_state_evidence.evidence.skipped }}
+
+**Test Failure Output:**
+```
+{{ red_state_evidence.output }}
+```
+
+**Failed Tests:**
+{% for result in red_state_evidence.evidence.results %}
+{% if result.status == 'failed' %}
+- [ ] {{ result.name }} - {{ result.failure_code or 'UNKNOWN' }}
+  - Location: {{ result.file_path }}{% if result.line_number %}:{{ result.line_number }}{% endif %}
+  {% if result.error_message %}- Error: {{ result.error_message }}{% endif %}
+{% endif %}
+{% endfor %}
+{% else %}
 **Test Failure Output:**
 ```
 # Paste failing test output here (before implementation)
@@ -49,6 +76,7 @@ This section documents the complete TDD cycle for test-driven development verifi
 **Failed Tests:**
 - [ ] Test name(s) that failed in RED state
 - [ ] Expected failures per test-design
+{% endif %}
 
 ### GREEN State (After Implementation)
 
