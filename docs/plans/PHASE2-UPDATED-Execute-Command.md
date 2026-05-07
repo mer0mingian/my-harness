@@ -136,9 +136,11 @@ def execute_workflow(feature_id, mode='auto'):
     return WorkflowSummary(
         feature_id=feature_id,
         status='COMPLETED',
-        pr_url=result.pr_url,
+        commit_sha=result.commit_sha,
         artifacts=result.artifacts
     )
+    
+    # NOTE: PR creation removed from Phase 2 scope (future enhancement)
 ```
 
 **Modes:**

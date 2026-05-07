@@ -199,82 +199,23 @@ feature_id: feat-auth-login  # Links to .specify/specs/ artifact
 
 ---
 
-### P1-2: PR Creation (Delegated to Orchestrator)
+### P1-2: PR Creation (Future Task - Not in Phase 2)
 
 **Gap:** PRD lines 157-180 mention PR creation  
-**User Clarification:** Orchestrator (Slice 3.5) handles PR, not commit command
+**User Clarification:** Removed from Phase 2 scope. Future enhancement.
 
-**Fix:**
-Remove PR creation from S6-005. Orchestrator calls Bitbucket API after successful commit.
-
-```python
-# In commands/execute.py (Slice 3.5)
-
-def create_pull_request(feature_id: str, workflow_summary_path: Path) -> dict:
-    """
-    Create Bitbucket pull request after successful workflow.
-    Uses Bitbucket REST API (not gh cli).
-    """
-    # Read workflow summary for PR description
-    with open(workflow_summary_path, encoding='utf-8') as f:
-        summary_content = f.read()
-    
-    # Extract commit SHA from git log
-    result = subprocess.run(
-        ['git', 'log', '-1', '--format=%H'],
-        capture_output=True, text=True, check=True
-    )
-    commit_sha = result.stdout.strip()
-    
-    # Get current branch
-    result = subprocess.run(
-        ['git', 'branch', '--show-current'],
-        capture_output=True, text=True, check=True
-    )
-    source_branch = result.stdout.strip()
-    
-    # Construct PR title from first commit line
-    result = subprocess.run(
-        ['git', 'log', '-1', '--format=%s'],
-        capture_output=True, text=True, check=True
-    )
-    pr_title = result.stdout.strip()
-    
-    # Construct PR description with artifact links
-    pr_description = f"""
-{summary_content}
-
----
-**Artifacts:**
-{generate_artifact_links(feature_id)}
-
-**Workflow Evidence:**
-- RED State: Validated
-- GREEN State: Achieved
-- Reviews: Completed (arch + code)
-"""
-    
-    # Call Bitbucket API (requires BITBUCKET_TOKEN env var)
-    # Implementation deferred to S3.5-002
-    
-    return {
-        'pr_url': f'https://bitbucket.org/team/repo/pull-requests/123',
-        'pr_id': 123,
-        'source_branch': source_branch,
-        'target_branch': 'main'
-    }
-```
+**Future Implementation Notes:**
+- Orchestrator would call Bitbucket API after successful commit
+- Uses Bitbucket REST API: `POST /repositories/{workspace}/{repo_slug}/pullrequests`
+- Auth via `BITBUCKET_TOKEN` environment variable
+- SDK: `atlassian-python-api` (supports Bitbucket Cloud + Server)
 
 **Files Changed:**
-- `commands/execute.py`: Add `create_pull_request()` after step 10 success
-- `commands/commit.py`: Remove any PR creation logic (focus on git commit only)
-- `docs/plans/TASK-LIST-Multi-Agent-TDD.md`: Move PR creation from S6-005 → S3.5-002
-- `docs/plans/PRD-Multi-Agent-TDD-Workflow.md`: Clarify PR creation is orchestrator responsibility
+- `docs/plans/TASK-LIST-Multi-Agent-TDD.md`: Remove PR creation from all slices
+- `docs/plans/PRD-Multi-Agent-TDD-Workflow.md`: Mark PR creation as Phase 3+
+- `docs/plans/PHASE2-UPDATED-Execute-Command.md`: Mark PR creation as future
 
-**Note:** Bitbucket API integration uses:
-- REST API: `POST /repositories/{workspace}/{repo_slug}/pullrequests`
-- Auth: `BITBUCKET_TOKEN` environment variable
-- SDK: `pip install atlassian-python-api` (supports Bitbucket Cloud + Server)
+**Action:** Documentation update only - no implementation in Phase 2.
 
 ---
 

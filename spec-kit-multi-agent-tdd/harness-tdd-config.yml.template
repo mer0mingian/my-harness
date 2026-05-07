@@ -12,43 +12,33 @@ agents:
   arch_reviewer: "arch-specialist"     # Agent for architecture review
   code_reviewer: "review-specialist"   # Agent for code review
 
-# Artifact configuration (paths, templates, mandatory flags)
-# Paths support template variables: {feature_id}, {feature_name}, {timestamp}
+# Artifact configuration (standardized paths and naming)
 artifacts:
-  # Test Design (Step 7) - MANDATORY
-  # Constitutional requirement: Cannot be disabled
-  test_design:
-    path: "docs/tests/test-design/{feature_id}-test-design.md"
-    template: ".specify/templates/test-design-template.md"
-    mandatory: true  # Cannot be disabled (constitutional requirement)
+  # Root directory for all workflow artifacts
+  root: "docs/features"
 
-  # Implementation Notes (Step 8) - OPTIONAL
-  # Teams can disable this artifact if they find it redundant
-  implementation_notes:
-    path: "docs/implementation/{feature_id}-implementation-notes.md"
-    template: ".specify/templates/implementation-notes-template.md"
-    mandatory: false  # Can be toggled by teams
+  # Artifact type suffixes (used in {feature_id}-{suffix}.md)
+  types:
+    spec: "spec"
+    test_design: "test-design"
+    impl_notes: "impl-notes"
+    arch_review: "arch-review"
+    code_review: "code-review"
+    workflow_summary: "workflow-summary"
 
-  # Architecture Review (Step 9) - MANDATORY
-  # Constitutional requirement: Cannot be disabled
-  arch_review:
-    path: "docs/reviews/arch-review/{feature_id}-arch-review.md"
-    template: ".specify/templates/arch-review-template.md"
-    mandatory: true  # Cannot be disabled
+  # Search paths for finding existing artifacts (in priority order)
+  search_paths:
+    - "docs/features"
+    - "docs/specs"
+    - ".specify/specs"
 
-  # Code Review (Step 9) - MANDATORY
-  # Constitutional requirement: Cannot be disabled
-  code_review:
-    path: "docs/reviews/code-review/{feature_id}-code-review.md"
-    template: ".specify/templates/code-review-template.md"
-    mandatory: true  # Cannot be disabled
-
-  # Workflow Summary (Step 10) - MANDATORY
-  # Constitutional requirement: Cannot be disabled
-  workflow_summary:
-    path: "docs/workflow/{feature_id}-workflow-summary.md"
-    template: ".specify/templates/workflow-summary-template.md"
-    mandatory: true  # Cannot be disabled
+  # Mandatory flags (per CONSTITUTION)
+  mandatory:
+    test_design: true       # Step 7 - Cannot be disabled
+    impl_notes: false       # Step 8 - Optional per CONSTITUTION line 125
+    arch_review: true       # Step 9 - Cannot be disabled
+    code_review: true       # Step 9 - Cannot be disabled
+    workflow_summary: true  # Step 10 - Cannot be disabled
 
 # Quality gates configuration
 # Gates enforce constitutional principles (RED state validation, review enforcement)
@@ -96,13 +86,25 @@ test_framework:
       - "ModuleNotFoundError"
 
 # Workflow execution configuration
-execution:
+workflow:
+  # Human feedback at workflow stages (can be skipped with --skip-human-feedback flag)
+  skip_human_feedback: false
   # Enable parallel execution for independent steps (Phase 3 feature)
   parallel_enabled: false
   # Timeout for agent tasks (in minutes)
   agent_timeout: 30
   # Enable artifact validation (check templates match outputs)
   validate_artifacts: true
+
+# Local Jira structure (replaces Linear integration)
+# Future: Will sync with actual Jira via API
+jira:
+  # Enable local folder structure for epics/stories
+  local_mode: true
+  # Root directory for epic/story folders
+  root: ".specify/epics"
+  # Auto-create story files when running workflow
+  auto_create_stories: true
 
 # Logging and observability
 logging:
