@@ -284,19 +284,26 @@ specify multi-agent execute feat-123 --gate-mode=manual
 
 ## Updated Phase 2 Timeline
 
-**Sequential Execution (Single Developer):**
-- Slice 3: 4-5 hours (test command)
-- **Slice 3.5: 3-4 hours (execute command) — NEW**
-- Slice 4: 4-5 hours (implement command)
-- Slice 5: 5-6 hours (review command)
-- Slice 6: 3-4 hours (commit command)
-- **Total: 20-24 hours** (was 17-20 hrs before execute command)
+**CRITICAL UPDATE (2026-05-07):** Architectural correction required before Phase 2 completion.
 
-**Parallel Execution (2-3 Developers):**
-- Track 1: Slices 3-4 (test + implement)
-- Track 2: Slices 5-6 (review + commit)
-- Track 3: Slice 3.5 (execute orchestrator)
-- **Total: 12-15 hours** with 3 developers
+**Issue:** Commands implemented as Python scripts, incompatible with SpecKit architecture (must be markdown).
+
+**Correction:** 12.5 hours to convert Python commands → markdown + helper scripts + hooks
+
+See: [ARCHITECTURAL-CORRECTION-PLAN.md](../spec-kit-multi-agent-tdd/docs/plans/ARCHITECTURAL-CORRECTION-PLAN.md)
+
+**Revised Timeline:**
+- Slice 3: 4-5 hours (test command) - ✅ DONE (needs conversion)
+- Slice 3.5: 3-4 hours (execute command) - ✅ DONE (needs conversion)
+- Slice 4: 4-5 hours (implement command) - ✅ DONE (needs conversion)
+- **Architectural Correction: 12.5 hours** - ⚠️ BLOCKING
+  - Phase 1-3: Create helper scripts + hooks (6.5h)
+  - Phase 4: Convert 5 commands to markdown (6h)
+- Slice 5: 5-6 hours (review command) - 🔄 PARTIAL (needs completion + conversion)
+- Slice 6: 3-4 hours (commit command) - 🔄 PARTIAL (needs completion + conversion)
+- **Total: 33-37 hours** (was 20-24 hrs before correction)
+
+**Critical Path:** Architectural correction → Complete Slice 5-6 → Phase 2 done
 
 ---
 
