@@ -1,0 +1,23 @@
+{
+  "name": "harness-tdd-workflow",
+  "version": "1.0.0",
+  "description": "Multi-agent TDD workflow commands and artifact templates for SpecKit",
+  "author": "Harness Sandbox Team",
+  "commands": [
+    "test",
+    "implement",
+    "review",
+    "commit",
+    "plan"
+  ],
+  "templates": {
+    "directory": "templates/"
+  },
+  "config": {
+    "file": "harness-tdd-config.yml",
+    "schema": "config-schema.json"
+  },
+  "hooks": {
+    "install": "hooks/install.sh"
+  }
+}
