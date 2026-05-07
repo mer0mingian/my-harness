@@ -1,0 +1,15 @@
+{
+  "name": "harness-agents",
+  "version": "1.0.0",
+  "description": "Multi-agent TDD workflow specialist agents",
+  "agents": [
+    "agents/test-specialist.md",
+    "agents/dev-specialist.md",
+    "agents/arch-specialist.md",
+    "agents/review-specialist.md",
+    "agents/qa-specialist.md"
+  ],
+  "installation": {
+    "target": ".claude/agents/"
+  }
+}
