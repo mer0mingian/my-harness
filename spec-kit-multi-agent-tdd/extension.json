@@ -5,8 +5,8 @@
   "author": "Harness Sandbox Team",
   "commands": {
     "test": {
-      "file": "commands/test.py",
-      "description": "Spawn @test-specialist agent to write failing tests for a feature",
+      "file": "commands/test.md",
+      "description": "Generate failing tests (RED state) for feature",
       "usage": "/speckit.multi-agent.test <feature-id>",
       "arguments": [
         {
@@ -17,7 +17,7 @@
       ]
     },
     "execute": {
-      "file": "commands/execute.py",
+      "file": "commands/execute.md",
       "description": "Execute full TDD workflow (test → implement → review → commit)",
       "usage": "/speckit.multi-agent.execute <feature-id> [--mode=auto|interactive]",
       "arguments": [
@@ -34,16 +34,50 @@
       ]
     },
     "implement": {
-      "description": "Spawn @dev-specialist agent to implement feature (Phase 3)"
+      "file": "commands/implement.md",
+      "description": "Implement feature code (RED → GREEN)",
+      "usage": "/speckit.multi-agent.implement <feature-id> [--skip-integration]",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        },
+        {
+          "name": "--skip-integration",
+          "required": false,
+          "description": "Skip integration checks (ruff, mypy)"
+        }
+      ]
     },
     "review": {
-      "description": "Spawn review agents for code and architecture review (Phase 3)"
+      "file": "commands/review.md",
+      "description": "Parallel architecture + code review",
+      "usage": "/speckit.multi-agent.review <feature-id> [--max-cycles=N]",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        },
+        {
+          "name": "--max-cycles",
+          "required": false,
+          "description": "Maximum review cycles (default: 3)"
+        }
+      ]
     },
     "commit": {
-      "description": "Create Git commit with TDD workflow metadata (Phase 3)"
-    },
-    "plan": {
-      "description": "Generate multi-agent execution plan for feature (Phase 3)"
+      "file": "commands/commit.md",
+      "description": "Validate evidence and create git commit",
+      "usage": "/speckit.multi-agent.commit <feature-id>",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        }
+      ]
     }
   },
   "templates": {
@@ -54,6 +88,7 @@
     "schema": "config-schema.json"
   },
   "hooks": {
+    "config": "hooks/config.yml",
     "install": "hooks/install.sh"
   }
 }
