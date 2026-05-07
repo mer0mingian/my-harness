@@ -21,6 +21,8 @@ from commands.implement import (
     prepare_agent_context,
     create_implementation_notes,
     update_impl_notes_with_green_evidence,
+    run_integration_checks,
+    update_impl_notes_with_integration_results,
     main,
 )
 
@@ -470,6 +472,311 @@ Test output here
             # Check GREEN section added without coverage
             assert '### GREEN State (After Implementation)' in updated_content
             assert 'Coverage Metrics' not in updated_content
+
+
+class TestIntegrationChecks:
+    """Test integration validation functionality."""
+
+    def test_run_integration_checks_disabled(self):
+        """Integration checks disabled returns empty list."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {
+                'integration_checks': {
+                    'enabled': False
+                }
+            }
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert results == []
+
+    def test_run_integration_checks_no_config(self):
+        """No integration checks config returns empty list."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {}
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert results == []
+
+    def test_run_integration_checks_passing(self):
+        """Integration checks passing returns success results."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'echo', 'command': 'echo test', 'critical': False}
+                    ]
+                }
+            }
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert len(results) == 1
+            assert results[0]['name'] == 'echo'
+            assert results[0]['passed'] is True
+            assert results[0]['exit_code'] == 0
+            assert 'test' in results[0]['output']
+            assert results[0]['critical'] is False
+
+    def test_run_integration_checks_failing_non_critical(self):
+        """Integration checks failing non-critical returns warning."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'false', 'command': 'false', 'critical': False}
+                    ]
+                }
+            }
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert len(results) == 1
+            assert results[0]['name'] == 'false'
+            assert results[0]['passed'] is False
+            assert results[0]['exit_code'] == 1
+            assert results[0]['critical'] is False
+
+    def test_run_integration_checks_failing_critical(self):
+        """Integration checks failing critical returns critical failure."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'false', 'command': 'false', 'critical': True}
+                    ]
+                }
+            }
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert len(results) == 1
+            assert results[0]['name'] == 'false'
+            assert results[0]['passed'] is False
+            assert results[0]['critical'] is True
+
+    def test_run_integration_checks_timeout(self):
+        """Integration checks timing out returns timeout result."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'sleep', 'command': 'sleep 120', 'critical': False}
+                    ]
+                }
+            }
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert len(results) == 1
+            assert results[0]['name'] == 'sleep'
+            assert results[0]['passed'] is False
+            assert results[0]['exit_code'] == -1
+            assert 'Timeout' in results[0]['output']
+
+    def test_run_integration_checks_multiple(self):
+        """Multiple integration checks run independently."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'echo1', 'command': 'echo pass', 'critical': False},
+                        {'name': 'false', 'command': 'false', 'critical': False},
+                        {'name': 'echo2', 'command': 'echo pass2', 'critical': False}
+                    ]
+                }
+            }
+
+            results = run_integration_checks(project_root, config, 'feat-123')
+
+            assert len(results) == 3
+            assert results[0]['passed'] is True
+            assert results[1]['passed'] is False
+            assert results[2]['passed'] is True
+
+    def test_update_impl_notes_with_integration_results(self):
+        """Update impl notes with integration check results."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            artifact_path = Path(tmpdir) / "feat-123-impl-notes.md"
+            original_content = """# Implementation Notes
+
+## RED→GREEN Evidence
+
+### RED State
+
+Content here
+
+## Notes
+
+Some notes
+"""
+            artifact_path.write_text(original_content)
+
+            integration_results = [
+                {
+                    'name': 'ruff',
+                    'command': 'ruff check src/',
+                    'passed': True,
+                    'exit_code': 0,
+                    'output': 'All checks passed',
+                    'critical': False
+                },
+                {
+                    'name': 'mypy',
+                    'command': 'mypy src/',
+                    'passed': False,
+                    'exit_code': 1,
+                    'output': 'Error: type mismatch',
+                    'critical': False
+                }
+            ]
+
+            update_impl_notes_with_integration_results(artifact_path, integration_results)
+
+            updated_content = artifact_path.read_text()
+
+            # Check integration section added
+            assert '## Integration Validation Results' in updated_content
+            assert '**Summary:** 1/2 checks passed' in updated_content
+            assert 'ruff' in updated_content
+            assert '✓ PASS' in updated_content
+            assert 'mypy' in updated_content
+            assert '⚠ FAIL (warning)' in updated_content
+            assert 'Failed Checks:' in updated_content
+            assert 'Error: type mismatch' in updated_content
+
+    def test_green_validation_with_integration_checks(self):
+        """GREEN validation runs integration checks after test validation."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+
+            # Setup directory structure
+            (project_root / "docs" / "features").mkdir(parents=True)
+
+            # Create impl notes artifact
+            impl_notes_path = project_root / "docs" / "features" / "feat-123-impl-notes.md"
+            impl_notes_content = """# Implementation Notes: Feat 123
+
+**Status:** draft
+
+## RED→GREEN Evidence
+
+### RED State (Initial/Before Implementation)
+
+**Test Results:**
+- Total tests: 3
+
+## Notes
+
+Some notes
+"""
+            impl_notes_path.write_text(impl_notes_content)
+
+            # Mock validate_green_state to return GREEN state
+            mock_validation = {
+                'state': 'GREEN',
+                'evidence': MagicMock(total_tests=3, passed=3, failed=0, errors=0),
+                'timestamp': '2024-01-01T00:00:00Z',
+                'exit_code': 0,
+                'output': 'All tests passed',
+                'validation_passed': True,
+                'message': 'GREEN state validated',
+                'coverage': None
+            }
+
+            # Config with integration checks
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'echo', 'command': 'echo pass', 'critical': False}
+                    ]
+                },
+                'artifacts': {
+                    'root': 'docs/features',
+                    'types': {'impl_notes': 'impl-notes'}
+                }
+            }
+
+            with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root), '--validate-green']), \
+                 patch('commands.implement.load_config', return_value=config), \
+                 patch('lib.test_runner.validate_green_state', return_value=mock_validation):
+                exit_code = main()
+
+            assert exit_code == 0
+
+            # Check integration results added to impl notes
+            updated_content = impl_notes_path.read_text()
+            assert '## Integration Validation Results' in updated_content
+            assert 'echo' in updated_content
+
+    def test_green_validation_with_critical_integration_failure(self):
+        """GREEN validation with critical integration check failure returns exit code 1."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+
+            # Setup directory structure
+            (project_root / "docs" / "features").mkdir(parents=True)
+
+            # Create impl notes artifact
+            impl_notes_path = project_root / "docs" / "features" / "feat-123-impl-notes.md"
+            impl_notes_content = """# Implementation Notes: Feat 123
+
+**Status:** draft
+
+## RED→GREEN Evidence
+
+### RED State
+
+Content
+"""
+            impl_notes_path.write_text(impl_notes_content)
+
+            # Mock validate_green_state to return GREEN state
+            mock_validation = {
+                'state': 'GREEN',
+                'evidence': MagicMock(total_tests=3, passed=3, failed=0, errors=0),
+                'timestamp': '2024-01-01T00:00:00Z',
+                'exit_code': 0,
+                'output': 'All tests passed',
+                'validation_passed': True,
+                'message': 'GREEN state validated',
+                'coverage': None
+            }
+
+            # Config with critical integration check
+            config = {
+                'integration_checks': {
+                    'enabled': True,
+                    'commands': [
+                        {'name': 'false', 'command': 'false', 'critical': True}
+                    ]
+                },
+                'artifacts': {
+                    'root': 'docs/features',
+                    'types': {'impl_notes': 'impl-notes'}
+                }
+            }
+
+            with patch('sys.argv', ['implement', 'feat-123', '--project-root', str(project_root), '--validate-green']), \
+                 patch('commands.implement.load_config', return_value=config), \
+                 patch('lib.test_runner.validate_green_state', return_value=mock_validation):
+                exit_code = main()
+
+            assert exit_code == 1
 
 
 if __name__ == '__main__':

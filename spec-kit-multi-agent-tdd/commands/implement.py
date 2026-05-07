@@ -9,9 +9,10 @@ Part of the Multi-Agent TDD workflow Phase 2.
 import sys
 import argparse
 import re
+import subprocess
 from pathlib import Path
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 # Add project root to sys.path for lib imports
 # This allows 'from lib import artifact_paths' to work when running from commands/
@@ -58,6 +59,21 @@ DEFAULT_CONFIG = {
     'test_framework': {
         'type': 'pytest',
         'file_patterns': ['tests/**/*.py'],
+    },
+    'integration_checks': {
+        'enabled': True,
+        'commands': [
+            {
+                'name': 'ruff',
+                'command': 'ruff check src/',
+                'critical': False
+            },
+            {
+                'name': 'mypy',
+                'command': 'mypy src/',
+                'critical': False
+            }
+        ]
     }
 }
 
@@ -277,6 +293,178 @@ def create_implementation_notes(
     return output_path
 
 
+def run_integration_checks(
+    project_root: Path,
+    config: dict,
+    feature_id: str
+) -> List[Dict]:
+    """
+    Run configured integration checks.
+
+    Integration checks are additional quality gates that run after GREEN state
+    validation passes. These include linters, type checkers, formatters, and
+    security scanners. By default, failures are warnings and don't block the
+    workflow, unless marked as critical.
+
+    Args:
+        project_root: Project root directory
+        config: Configuration dict with integration_checks section
+        feature_id: Feature identifier for context
+
+    Returns:
+        List of check results, each with:
+        - name: Check name (e.g., "ruff", "mypy")
+        - command: Command that was run
+        - exit_code: Exit code from command
+        - passed: bool (exit code == 0)
+        - output: Command output (stdout + stderr)
+        - critical: bool (whether failure should block workflow)
+
+    Example:
+        >>> results = run_integration_checks(
+        ...     Path('/path/to/project'),
+        ...     config,
+        ...     'feat-auth-login'
+        ... )
+        >>> passed_count = sum(1 for r in results if r['passed'])
+        >>> critical_failures = [r for r in results if not r['passed'] and r['critical']]
+    """
+    checks_config = config.get('integration_checks', {})
+
+    if not checks_config.get('enabled', False):
+        return []
+
+    commands = checks_config.get('commands', [])
+    results = []
+
+    for check in commands:
+        name = check['name']
+        command = check['command']
+        critical = check.get('critical', False)
+
+        print(f"  Running {name}...", end=' ', flush=True)
+
+        try:
+            result = subprocess.run(
+                command.split(),
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+                timeout=60  # 1 minute timeout per check
+            )
+
+            passed = result.returncode == 0
+
+            results.append({
+                'name': name,
+                'command': command,
+                'exit_code': result.returncode,
+                'passed': passed,
+                'output': result.stdout + result.stderr,
+                'critical': critical
+            })
+
+            if passed:
+                print("✓ PASS")
+            else:
+                if critical:
+                    print("✗ FAIL (CRITICAL)")
+                else:
+                    print("⚠ FAIL (warning)")
+
+        except subprocess.TimeoutExpired:
+            results.append({
+                'name': name,
+                'command': command,
+                'exit_code': -1,
+                'passed': False,
+                'output': f"Timeout after 60 seconds",
+                'critical': critical
+            })
+            print("✗ TIMEOUT")
+
+        except Exception as e:
+            results.append({
+                'name': name,
+                'command': command,
+                'exit_code': -1,
+                'passed': False,
+                'output': str(e),
+                'critical': critical
+            })
+            print(f"✗ ERROR: {e}")
+
+    return results
+
+
+def update_impl_notes_with_integration_results(
+    artifact_path: Path,
+    integration_results: List[Dict]
+) -> None:
+    """
+    Update implementation notes with integration check results.
+
+    Adds a new section after the RED→GREEN Evidence section documenting
+    integration validation results including pass/fail status, command
+    output for failures, and overall summary.
+
+    Args:
+        artifact_path: Path to impl notes artifact
+        integration_results: List of integration check results from run_integration_checks
+
+    Raises:
+        FileNotFoundError: If artifact_path does not exist
+        OSError: If cannot read or write artifact file
+    """
+    content = artifact_path.read_text(encoding='utf-8')
+
+    # Build integration validation section
+    passed = sum(1 for r in integration_results if r['passed'])
+    total = len(integration_results)
+
+    integration_section = f"""
+## Integration Validation Results
+
+**Summary:** {passed}/{total} checks passed
+
+| Check | Command | Status |
+|-------|---------|--------|
+"""
+
+    for result in integration_results:
+        status = "✓ PASS" if result['passed'] else ("✗ FAIL (CRITICAL)" if result['critical'] else "⚠ FAIL (warning)")
+        integration_section += f"| {result['name']} | `{result['command']}` | {status} |\n"
+
+    integration_section += "\n"
+
+    # Add failed check details
+    failures = [r for r in integration_results if not r['passed']]
+    if failures:
+        integration_section += "**Failed Checks:**\n\n"
+        for result in failures:
+            integration_section += f"### {result['name']}\n"
+            integration_section += f"Command: `{result['command']}`\n"
+            integration_section += f"Exit code: {result['exit_code']}\n"
+            integration_section += f"Critical: {'Yes' if result['critical'] else 'No'}\n\n"
+            integration_section += f"```\n{result['output'][:500]}\n```\n\n"
+
+    # Insert before Notes section if it exists, otherwise append
+    # This ensures it comes after GREEN State evidence
+    if "## Notes" in content:
+        content = content.replace("## Notes", f"{integration_section}\n## Notes")
+    elif "## Refactoring" in content:
+        content = content.replace("## Refactoring", f"{integration_section}\n## Refactoring")
+    elif "## Integration Validation" in content:
+        # Already has integration validation section (from template), replace it
+        import re
+        pattern = r'## Integration Validation.*?(?=## |$)'
+        content = re.sub(pattern, integration_section.strip() + "\n\n", content, flags=re.DOTALL)
+    else:
+        content = content + "\n" + integration_section
+
+    artifact_path.write_text(content, encoding='utf-8')
+
+
 def update_impl_notes_with_green_evidence(
     artifact_path: Path,
     validation_result: Dict
@@ -461,6 +649,36 @@ def main():
                     return 1  # Validation failure (still RED)
 
             print("✓ GREEN state confirmed - implementation verified\n")
+
+            # Run integration checks
+            print(f"{'='*60}")
+            print("INTEGRATION VALIDATION")
+            print(f"{'='*60}\n")
+
+            integration_results = run_integration_checks(
+                project_root, config, args.feature_id
+            )
+
+            if integration_results:
+                # Show summary
+                passed_checks = sum(1 for r in integration_results if r['passed'])
+                total_checks = len(integration_results)
+                print(f"\nIntegration checks: {passed_checks}/{total_checks} passed\n")
+
+                # Check for critical failures
+                critical_failures = [r for r in integration_results if not r['passed'] and r['critical']]
+                if critical_failures:
+                    print(f"✗ Critical integration checks failed:", file=sys.stderr)
+                    for r in critical_failures:
+                        print(f"  - {r['name']}: {r['command']}", file=sys.stderr)
+                    return 1  # Fail workflow on critical integration failures
+
+                # Update impl notes with integration results
+                update_impl_notes_with_integration_results(
+                    impl_notes_path, integration_results
+                )
+            else:
+                print("No integration checks configured (skipped)\n")
 
             # Update impl notes artifact with GREEN evidence
             update_impl_notes_with_green_evidence(
