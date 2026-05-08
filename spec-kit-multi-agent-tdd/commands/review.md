@@ -41,8 +41,12 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 **Default configuration includes**:
 - Agent names (check for architecture, simplify for code quality)
 - Review settings (parallel_review: true, max_cycles: 3)
+- Workflow dispatch: `parallel_enabled` (default: false when key missing from config)
 - Artifact paths and templates
 - Conflict resolution rules (safety wins)
+
+**Config key loaded**:
+- `workflow.parallel_enabled` — controls whether agents dispatch in parallel or sequentially (default: `false`)
 
 ## Step 2: Find Implementation Notes
 
@@ -111,7 +115,7 @@ Collect review context for both agents:
 
 ## Step 7: Invoke Parallel Reviewers
 
-**NOTE**: Parallel execution described, not implemented in markdown. Future automation will spawn agents.
+**NOTE**: Execution mode is controlled by `workflow.parallel_enabled` from `.specify/harness-tdd-config.yml`. Default is `false` (sequential) when the key is missing.
 
 **@check agent (architecture review)**:
 - Context: implementation files, notes, spec, diff
@@ -125,7 +129,11 @@ Collect review context for both agents:
 - Focus: Complexity, duplication, readability, maintainability
 - Verdict: APPROVED | NEEDS_REVISION | BLOCKED
 
-**Execution**: Both agents run in parallel (no sequential dependency)
+**Conditional dispatch** (based on `workflow.parallel_enabled`):
+
+- **If `parallel_enabled: true`**: Invoke @check and @simplify simultaneously (parallel execution). Wait for both agents to complete before proceeding to Step 8. Both agents receive the same review context.
+
+- **If `parallel_enabled: false`**: Run @check first (architecture review). Wait for @check to complete and record its verdict. Then run @simplify sequentially (code quality review). Wait for @simplify to complete before proceeding to Step 8.
 
 ## Step 8: Collect Review Verdicts
 
