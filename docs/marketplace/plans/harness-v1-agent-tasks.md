@@ -5,9 +5,9 @@
 **Reading order:** Top-to-bottom is execution order, grouped by phase. Within a phase, tasks marked "parallel with" can run concurrently.
 
 **Conventions used in every prompt:**
-- Workspace parent directory: `/mnt/c/memory/`
-- Marketplace repo: `/mnt/c/memory/my-harness/`
-- Sandbox repo: `/mnt/c/memory/harness-sandbox/`
+- Workspace parent directory: `/home/minged01/repositories/harness-workplace/`
+- Marketplace repo: `/home/minged01/repositories/harness-workplace/harness-tooling/`
+- Sandbox repo: `/home/minged01/repositories/harness-workplace/harness-sandbox/`
 - Every prompt names explicitly: (a) what files the agent may write to, (b) what it MUST NOT touch, (c) expected response shape, (d) hard response length cap.
 - No agent may `git commit`, `git push`, create branches, or delete files. Destructive or network-publishing actions stay in the main thread.
 - Research agents return text only; they never call `Write` or `Edit`.
@@ -32,7 +32,7 @@ Phase 1 (sandbox build, write to harness-sandbox/):
   S4 ─┤
   S5 ─┘
          │
-Phase 2 (marketplace restructure, write to my-harness/):
+Phase 2 (marketplace restructure, write to harness-tooling/):
   M1 ──────────────► (review) ──► M1b (rename, optional)
   M2 ──────────────┐
                     ├─► M3 ─┐
@@ -49,7 +49,7 @@ Phase 4: V1 (after all above). V2 is manual, Daniel runs it.
 
 # Phase 0 — Research
 
-## R1 — Inventory my-harness current state
+## R1 — Inventory harness-tooling current state
 
 - **Agent:** Explore · **Model:** haiku
 - **Writes files:** No
@@ -62,7 +62,7 @@ You are inventorying a repository so a master plan can be executed against
 accurate facts. You are NOT modifying anything. Return a structured markdown
 report and nothing else. Do not Write or Edit any file.
 
-Repo under inventory: /mnt/c/memory/my-harness/
+Repo under inventory: /home/minged01/repositories/harness-workplace/harness-tooling/
 
 Produce a report with these sections, each clearly labelled. Keep under 800
 words total.
@@ -103,7 +103,7 @@ State presence/absence of each of these exact paths:
 - .mcp.json
 
 ## 6. Docs
-List every file under /mnt/c/memory/my-harness/docs/ (recurse one level).
+List every file under /mnt/c/memory/harness-tooling/docs/ (recurse one level).
 
 Rules:
 - Use Glob, Grep, Read only.
@@ -134,9 +134,9 @@ Inspect the pinned version of NVIDIA's OpenShell-Community Gemini sandbox:
 - Pinned README: https://github.com/NVIDIA/OpenShell-Community/blob/36c558e929359830bf272868f42de7bf47bd2716/sandboxes/gemini/README.md
 - Pinned Dockerfile: https://github.com/NVIDIA/OpenShell-Community/blob/36c558e929359830bf272868f42de7bf47bd2716/sandboxes/gemini/Dockerfile
 
-A local clone exists at /mnt/c/memory/my-harness/.worktrees/OpenShell (not
+A local clone may exist at /home/minged01/repositories/harness-workplace/harness-tooling/.worktrees/OpenShell (not
 guaranteed to be at the pinned commit). Prefer WebFetch on the pinned URLs
-above for the source of truth; consult the local clone only for context.
+above for the source of truth; consult the local clone only for context if it exists.
 
 Produce a report with these sections:
 
@@ -179,7 +179,7 @@ user without sudo, read-only filesystem, tini conflicts, etc.
 Rules:
 - WebFetch allowed for the three pinned URLs above + any linked install docs
   for Claude Code, OpenCode, Chloe, rtk.
-- Read allowed on /mnt/c/memory/my-harness/.worktrees/ contents.
+- Read allowed on /home/minged01/repositories/harness-workplace/harness-tooling/.worktrees/ contents.
 - Do NOT write files.
 - Cap: 1200 words.
 ```
@@ -201,7 +201,7 @@ You are researching how three tools run as Docker services for a local
 docker-compose stack. Return a structured markdown report. Do not modify
 files.
 
-Each tool has a local clone under /mnt/c/memory/my-harness/.worktrees/:
+Each tool has a local clone under /mnt/c/memory/harness-tooling/.worktrees/:
 - haft/
 - CodeGraphContext/
 - deepwiki-rs/  (this contains `litho`)
@@ -273,7 +273,7 @@ Rules:
 You are researching how to run Graphiti as optional personal memory in an
 isolated docker-compose file. Return a report. Do not modify files.
 
-Local clone: /mnt/c/memory/my-harness/.worktrees/graphiti/
+Local clone: /mnt/c/memory/harness-tooling/.worktrees/graphiti/
 Upstream: https://github.com/getzep/graphiti
 
 Focus first on the MCP server at `mcp_server/` in the repo.
@@ -323,7 +323,7 @@ Rules:
 
 # Phase 1 — Sandbox build
 
-All Phase 1 tasks operate on `/mnt/c/memory/harness-sandbox/`. They MUST NOT touch `/mnt/c/memory/my-harness/` in any way.
+All Phase 1 tasks operate on `/mnt/c/memory/harness-sandbox/`. They MUST NOT touch `/mnt/c/memory/harness-tooling/` in any way.
 
 Each Phase 1 prompt assumes the main thread will substitute `{{R2_FINDINGS}}`, `{{R3_FINDINGS}}`, `{{R4_FINDINGS}}` placeholders with the relevant sections of the Phase 0 reports before launching the agent. The placeholders remain in this doc as a template; at runtime, main thread replaces them inline.
 
@@ -337,7 +337,7 @@ Each Phase 1 prompt assumes the main thread will substitute `{{R2_FINDINGS}}`, `
 **Prompt:**
 ```
 Write a Dockerfile at /mnt/c/memory/harness-sandbox/Dockerfile. You may
-only Write that single file. Do NOT touch any file in /mnt/c/memory/my-harness/.
+only Write that single file. Do NOT touch any file in /mnt/c/memory/harness-tooling/.
 Do NOT run `docker build` — verification is the main thread's job.
 
 ## Base image
@@ -408,7 +408,7 @@ Contents: a single service named `agent`, defined as follows.
   via `docker exec`.
 - `stdin_open: true`, `tty: true`.
 - Bind-mounts:
-  - `${MARKETPLACE_PATH:-../my-harness}:/workspace/marketplace:ro`
+  - `${MARKETPLACE_PATH:-../harness-tooling}:/workspace/marketplace:ro`
   - `${PROJECT_PATH:-./project}:/workspace/project:rw`
   - `${HOME}/.claude:/home/sandbox/.claude:rw`
   - `${HOME}/.opencode:/home/sandbox/.opencode:rw`
@@ -639,7 +639,7 @@ Return: list of files written + their byte counts. Cap: 80 words.
 
 # Phase 2 — Marketplace restructure
 
-All Phase 2 tasks operate on `/mnt/c/memory/my-harness/`. They MUST NOT touch `/mnt/c/memory/harness-sandbox/`.
+All Phase 2 tasks operate on `/mnt/c/memory/harness-tooling/`. They MUST NOT touch `/mnt/c/memory/harness-sandbox/`.
 
 ## M1 — Skill naming audit (report only)
 
@@ -649,7 +649,7 @@ All Phase 2 tasks operate on `/mnt/c/memory/my-harness/`. They MUST NOT touch `/
 
 **Prompt:**
 ```
-You are auditing skill naming in /mnt/c/memory/my-harness/.agents/skills/.
+You are auditing skill naming in /mnt/c/memory/harness-tooling/.agents/skills/.
 Do NOT rename anything. Do NOT Write or Edit. Return a report.
 
 A valid skill name carries one of these prefixes: `stdd-`, `orchestrate-`,
@@ -685,17 +685,17 @@ Rules: Glob, Read, Grep only. No Write/Edit. Cap: 600 words.
 
 **Prompt:** *(templated — main thread substitutes the approved mapping)*
 ```
-Rename skill directories inside /mnt/c/memory/my-harness/.agents/skills/
+Rename skill directories inside /mnt/c/memory/harness-tooling/.agents/skills/
 per this mapping approved by the user:
 
 {{APPROVED_RENAME_MAPPING}}
 
 For each rename:
-1. Use Bash `git mv old new` inside the my-harness repo — this preserves
-   git history. Use `git -C /mnt/c/memory/my-harness mv ...`.
+1. Use Bash `git mv old new` inside the harness-tooling repo — this preserves
+   git history. Use `git -C /mnt/c/memory/harness-tooling mv ...`.
 2. If the target name already exists, abort with an error for that pair
    only; continue with the rest.
-3. After all renames, run `git -C /mnt/c/memory/my-harness status` and
+3. After all renames, run `git -C /mnt/c/memory/harness-tooling status` and
    include the output in your response.
 
 Do NOT commit. Do NOT push. Do NOT modify any files outside
@@ -716,7 +716,7 @@ Response: per-rename success/failure lines + final git status. Cap: 300 words.
 
 **Prompt:**
 ```
-You are flattening nested agent directories in /mnt/c/memory/my-harness/
+You are flattening nested agent directories in /mnt/c/memory/harness-tooling/
 .agents/agents/. Claude Code does not recurse into subdirectories under
 `.claude/agents/`, so the canonical source must be flat. OpenCode tolerates
 either.
@@ -734,9 +734,9 @@ Procedure:
      with the parent dir's category: `c4-architect.md`,
      `tdd-reviewer.md`.
 2. After moving all .md files up, delete the now-empty subdir via
-   `git -C /mnt/c/memory/my-harness rm -r <subdir>`.
+   `git -C /mnt/c/memory/harness-tooling rm -r <subdir>`.
 3. DO NOT commit. DO NOT push.
-4. After all operations, run `git -C /mnt/c/memory/my-harness status` and
+4. After all operations, run `git -C /mnt/c/memory/harness-tooling status` and
    include in response.
 
 Per-file rationale line in the response: `daniels-workflow-agents/
@@ -754,12 +754,12 @@ Cap: 500 words.
 ## M3 — .claude/ + .claude-plugin/ setup
 
 - **Agent:** general-purpose · **Model:** sonnet
-- **Writes files:** Yes — `/mnt/c/memory/my-harness/.claude/` tree and `.claude-plugin/plugin.json`
+- **Writes files:** Yes — `/mnt/c/memory/harness-tooling/.claude/` tree and `.claude-plugin/plugin.json`
 - **Depends on:** M1 (skills stable), M2 (agents flat) · **Parallel with:** M4, M5
 
 **Prompt:**
 ```
-Set up the Claude Code integration inside /mnt/c/memory/my-harness/.
+Set up the Claude Code integration inside /mnt/c/memory/harness-tooling/.
 
 ## Directories / files to create
 
@@ -816,7 +816,7 @@ Response: list of files created, symlink targets, output of
 
 **Prompt:**
 ```
-Set up the OpenCode integration inside /mnt/c/memory/my-harness/.
+Set up the OpenCode integration inside /mnt/c/memory/harness-tooling/.
 
 ## Current state (per R1)
 
@@ -871,7 +871,7 @@ any backups made with old/new paths. Cap: 200 words.
 
 **Prompt:**
 ```
-Scaffold a Gemini CLI extension at /mnt/c/memory/my-harness/.gemini/
+Scaffold a Gemini CLI extension at /mnt/c/memory/harness-tooling/.gemini/
 extensions/research/.
 
 Per the harness v1 plan, Gemini CLI is scoped to *research* workflows
@@ -905,7 +905,7 @@ commands. It should NOT expose `stdd-` implementation skills like TDD.
    attempt feature implementation." Cap: 150 words.
 
 3. `skills/` — populate with symlinks to only the review-* and general-*
-   skills under /mnt/c/memory/my-harness/.agents/skills/. Use relative
+   skills under /mnt/c/memory/harness-tooling/.agents/skills/. Use relative
    paths (`../../../../.agents/skills/review-differential-review` etc.).
    Discover the list of matching skills via Glob on
    .agents/skills/review-* and general-*.
@@ -938,7 +938,7 @@ of gemini-extension.json. Cap: 250 words.
 **Prompt:**
 ```
 You are updating YAML frontmatter of agent markdown files under
-/mnt/c/memory/my-harness/.agents/agents/. You modify frontmatter ONLY,
+/mnt/c/memory/harness-tooling/.agents/agents/. You modify frontmatter ONLY,
 never the body below the frontmatter.
 
 Context: each agent file is the source of truth for all three CLIs. We
@@ -1004,11 +1004,11 @@ Per-file summary: file name + "added skills list + ACL" | "skipped
 
 **Prompt:**
 ```
-Consolidate documentation inside /mnt/c/memory/my-harness/.
+Consolidate documentation inside /mnt/c/memory/harness-tooling/.
 
 ## 1. Archive prior plans
 
-Move (git mv) these files into /mnt/c/memory/my-harness/docs/archive/:
+Move (git mv) these files into /mnt/c/memory/harness-tooling/docs/archive/:
 - multi-container-harness-plan.md
 - multi-agent-cli-harness-plan.md
 - multi-agent-plugins-marketplace-plan.md
@@ -1024,7 +1024,7 @@ archived file:
 
 Do NOT delete the archived files. Do NOT commit.
 
-## 2. Refresh /mnt/c/memory/my-harness/CLAUDE.md
+## 2. Refresh /mnt/c/memory/harness-tooling/CLAUDE.md
 
 Write a CLAUDE.md at the marketplace repo root (overwrite if exists —
 Read first, preserve any "session-specific" sections you find).
@@ -1032,7 +1032,7 @@ Read first, preserve any "session-specific" sections you find).
 Content skeleton:
 
 ```markdown
-# CLAUDE.md — my-harness (marketplace)
+# CLAUDE.md — harness-tooling (marketplace)
 
 This is the MARKETPLACE repo. Sibling sandbox runtime lives at
 ../harness-sandbox. Parent workspace CLAUDE.md covers cross-repo scope.
@@ -1065,7 +1065,7 @@ Task definitions: [docs/harness-v1-agent-tasks.md](docs/harness-v1-agent-tasks.m
 Archived plans: [docs/archive/](docs/archive/)
 ```
 
-## 3. Refresh /mnt/c/memory/my-harness/README.md
+## 3. Refresh /mnt/c/memory/harness-tooling/README.md
 
 Should state: what the repo is (the marketplace), how to install per
 CLI (Claude Code marketplace, OpenCode plugin, Gemini extension), where
@@ -1099,7 +1099,7 @@ banners were added. Cap: 200 words.
 Validate the final state of the harness repos. Return a pass/fail report.
 Do not modify files.
 
-For /mnt/c/memory/my-harness/:
+For /mnt/c/memory/harness-tooling/:
 1. For each symlink under .claude/, .opencode/, .gemini/extensions/*/,
    verify that `readlink -f` resolves to a real path inside .agents/.
 2. Parse .claude-plugin/plugin.json with `jq .`. Report valid/invalid.

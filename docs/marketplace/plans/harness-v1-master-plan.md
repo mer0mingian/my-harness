@@ -9,7 +9,9 @@
 
 ## 1. Purpose
 
-Deliver a working **v1** of Daniel's multi-agent-cli harness: a reproducible docker-compose sandbox that runs Claude Code, OpenCode, and Gemini CLI with a shared marketplace of skills/agents/commands, plus locally-hosted memory services (Haft, CodeGraphContext, optionally Graphiti). v1 must be usable by Daniel tomorrow and onboardable by one teammate within a week with no additional tooling.
+Deliver a working **v1** of the multi-agent-cli harness: a reproducible docker-compose sandbox that runs Claude Code, OpenCode, and Gemini CLI with a shared marketplace of skills/agents/commands, plus locally-hosted memory services (Haft, CodeGraphContext, optionally Graphiti). v1 must be usable immediately and onboardable by one teammate within a week with no additional tooling.
+
+**Current workspace:** `/home/minged01/repositories/harness-workplace/`
 
 ## 2. Vision recap (what Daniel asked for)
 
@@ -63,67 +65,78 @@ The older `multi-agent-cli-harness-plan.md` contained several factual errors. Th
 | Bash conversion script for TOML | Unnecessary given reality above | Deleted from scope |
 | `.agents/configs/mcp_config.yaml` is authoritative | It's a research document | Treat as reference, do not ship |
 
-## 6. Two-repo boundaries
+## 6. Multi-repo boundaries
 
 | File type | Belongs in | Reason |
 |---|---|---|
-| Skills, agents, commands, plugin manifests | `my-harness/` | Marketplace — changes often, versioned alongside workflow content |
+| Skills, agents, commands, plugin manifests | `harness-tooling/` | Marketplace — changes often, versioned alongside workflow content |
 | Dockerfile, compose files, entry script, `.env.example` | `harness-sandbox/` | Runtime — changes rarely, different release cadence |
-| Planning docs | `my-harness/docs/` | Precedent (existing plans live there); not shipped in a plugin bundle |
-| Workspace-level `CLAUDE.md`, `README.md`, `.code-workspace` | `/mnt/c/memory/` (parent, un-tracked) | Not owned by either repo |
+| Planning docs | `harness-tooling/docs/marketplace/plans/` | Marketplace planning; not shipped in plugin bundles |
+| Test project application code | `sta2e-vtt-lite/` | Fresh implementation using SpecKit/BMAD |
+| Test project system docs & specs | `sta2e-vtt-lite-system/` | BMAD artifacts, legacy docs, architecture, C4 |
+| Workspace-level `CLAUDE.md`, `.code-workspace` | `/home/minged01/repositories/harness-workplace/` | Parent workspace, shared across repos |
 | Session memory (MEMORY.md) | `~/.claude/projects/...` | User-scoped; never committed |
 
 ## 7. Target end state (post-execution)
 
 ```
-/mnt/c/memory/                                  (parent workspace, un-tracked)
-├── CLAUDE.md
-├── README.md
-├── harness.code-workspace
-├── my-harness/                                 (git, marketplace)
+/home/minged01/repositories/harness-workplace/  (parent workspace)
+├── CLAUDE.md                                   (workspace-level instructions)
+├── RTK.md                                      (RTK token optimization config)
+├── harness.code-workspace                      (VS Code multi-root workspace)
+├── harness-tooling/                            (git, marketplace)
 │   ├── .agents/
-│   │   ├── skills/                             (prefixed: stdd-*, orchestrate-*, review-*, general-*)
+│   │   ├── skills/                             (prefixed: stdd-*, orchestrate-*, review-*, general-*, etc.)
 │   │   ├── agents/
-│   │   │   ├── prompts/                        (shared bodies)
-│   │   │   ├── daniels-workflow-orchestrator.md
+│   │   │   ├── prompts/                        (shared agent bodies)
+│   │   │   ├── test-specialist.md              (TDD test agent)
+│   │   │   ├── dev-specialist.md               (TDD implementation agent)
+│   │   │   ├── arch-specialist.md              (Architecture reviewer)
+│   │   │   ├── review-specialist.md            (Code reviewer)
 │   │   │   └── …
-│   │   └── commands/                           (.md for Claude Code + OpenCode; .gemini.toml for Gemini)
-│   ├── .claude/
-│   │   ├── settings.json                       (hooks + MCP client config)
-│   │   ├── skills/   → ../.agents/skills/
-│   │   ├── agents/   → ../.agents/agents/
-│   │   └── commands/ → ../.agents/commands/
+│   │   └── commands/                           (.md for Claude Code + OpenCode)
 │   ├── .claude-plugin/plugin.json              (marketplace manifest)
-│   ├── .opencode/
-│   │   ├── opencode.jsonc                      (plugins + MCP)
-│   │   ├── skills/ → ../.agents/skills/
-│   │   ├── agents/ → ../.agents/agents/
-│   │   └── commands/ → ../.agents/commands/
-│   ├── .gemini/extensions/stdd-workflow/
-│   │   ├── gemini-extension.json
-│   │   ├── GEMINI.md
-│   │   ├── skills/                             (scoped symlinks: stdd-* only)
-│   │   └── commands/ → ../../../.agents/commands/
-│   ├── .mcp.json                               (shared Claude/Cursor/compose-services config)
-│   ├── README.md                               (refreshed)
-│   ├── CLAUDE.md                               (refreshed)
+│   ├── spec-kit-multi-agent-tdd/               (SpecKit extension)
+│   │   ├── .claude/commands/                   (slash commands)
+│   │   │   ├── speckit.multi-agent.test.md
+│   │   │   ├── speckit.multi-agent.implement.md
+│   │   │   ├── speckit.multi-agent.review.md
+│   │   │   └── speckit.multi-agent.commit.md
+│   │   └── docs/                               (extension documentation)
+│   ├── README.md                               (marketplace overview)
+│   ├── CLAUDE.md                               (tooling repo instructions)
 │   └── docs/
-│       ├── harness-v1-master-plan.md           (this doc)
-│       ├── harness-v1-agent-tasks.md           (companion)
-│       └── archive/                            (deprecated prior plans)
-└── harness-sandbox/                            (git, sandbox stack)
-    ├── Dockerfile
-    ├── docker-compose.yml
-    ├── docker-compose.services.yml             (Haft + CGC always-on; litho gated by profile `docs`)  [SUPERSEDED — CGC now lives in docker-compose.yml; no separate services file]
-    ├── docker-compose.graphiti.yml             [SUPERSEDED — file deleted; Graphiti dropped from v1]
-    ├── .env.example
-    ├── bin/harness
-    ├── README.md                               (already exists; extend)
-    ├── CLAUDE.md                               (already exists; extend)
-    └── docs/
-        ├── quickstart.md
-        ├── attach-patterns.md
-        └── troubleshooting.md
+│       └── marketplace/plans/
+│           ├── harness-v1-master-plan.md       (this doc)
+│           └── harness-v1-agent-tasks.md       (companion)
+├── harness-sandbox/                            (git, sandbox runtime)
+│   ├── Dockerfile                              (two-stage: ca-ready + tools)
+│   ├── docker-compose.yml                      (agent + cgc + litho services)
+│   ├── workspace-template/                     (SpecKit workspace template)
+│   │   ├── .claude/                            (team-shared Claude config)
+│   │   │   └── mcp.json.example                (CGC + MCP servers)
+│   │   ├── .specify/                           (SpecKit config)
+│   │   ├── .harness.yml                        (workspace + plugin config)
+│   │   ├── docs/                               (artifact directories)
+│   │   ├── specs/                              (specifications)
+│   │   └── architecture/                       (C4, ADRs, deepwiki)
+│   ├── .env.example
+│   ├── bin/
+│   │   ├── harness                             (lifecycle manager)
+│   │   └── sandbox-entrypoint.sh               (container init)
+│   ├── README.md
+│   ├── CLAUDE.md                               (sandbox repo instructions)
+│   ├── Task-List.md                            (implementation tasks)
+│   ├── Technical-Requirements.md               (requirements spec)
+│   └── Roadmap.md                              (phase dependencies)
+├── sta2e-vtt-lite/                             (git, test project - app code)
+│   └── (empty until Phase 4)
+└── sta2e-vtt-lite-system/                      (git, test project - system docs)
+    └── legacy_docs/                            (BMAD migration source)
+        ├── business/                           (user journeys)
+        ├── architecture/                       (C4 diagrams, decisions)
+        ├── game_mechanics/                     (STA 2e rules + data)
+        └── specifications/                     (feature requirements)
 ```
 
 ## 8. Execution phases
