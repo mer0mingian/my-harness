@@ -26,7 +26,7 @@ This roadmap organizes 66 implementation tasks into 12 vertical slices, showing 
 | **Phase 1**: Foundation | Slice 1-2 | 7-8 hrs | None | Yes (both slices parallel) |
 | **Phase 2**: Core Workflow | Slice 3-3.5-4-5-6 | 20-24 hrs | Phase 1 | Sequential (3→3.5→4→5→6) |
 | **Phase 2.5**: Config | Slice 8 | 8 pts | Phase 2 | No (sequential) |
-| **Phase 3**: Discovery & Solution Design | Slice 7a-7d | 13 pts | Phase 2.5 | 7a‖7b then 7c→7d |
+| **Phase 3**: Discovery & Solution Design | Slice 7a-7d | 10 pts | Phase 2.5 | 7a‖7b then 7c→7d |
 | **Phase 4**: Migration | Slice 9-11 | 7-10 hrs | Phase 3 | Sequential (9→10→11) |
 
 ---
@@ -422,7 +422,7 @@ graph TD
 
 ---
 
-## Phase 3: Discovery & Solution Design (13 pts)
+## Phase 3: Discovery & Solution Design (10 pts)
 
 **Goal:** Add Discovery and Solution Design phases upstream of TDD workflow.  
 **Required for:** v1.0  
@@ -430,6 +430,17 @@ graph TD
 
 **Slices:** 7a → 7b (parallel) → 7c → 7d (sequential after templates)  
 **Dependencies:** Phase 2.5 (Slice 8) complete
+
+### Test Strategy
+
+Applies across all Phase 3 (and downstream) work on this extension:
+
+- **Python scripts and `lib/`** — full pytest coverage of behaviour.
+- **Command markdown files** (`commands/*.md`) — YAML frontmatter validation only (machine-readable metadata). No structural prose tests.
+- **Templates** (`templates/*.md`) — YAML frontmatter validation only. No automated tests on prose or section headings.
+- **Behavioural correctness** — verified by end-to-end / dogfood runs of each command, not by unit tests on the markdown itself.
+
+This policy was adopted on 2026-05-08 (commit `04d0fa2` removed 6 structural markdown test files, ~143 test cases). Rationale: markdown command files are interpreted by an LLM agent at runtime and have no behaviour to regress against; section drift is caught by PR review.
 
 ### Slice 7a: PRD + System Constitution Templates (2 pts)
 
@@ -449,13 +460,13 @@ graph TD
 
 **Key behaviours:** grill-me runs throughout; re-run merges (not overwrites); unanswered questions saved to `${feature_id}-open-questions.md`.
 
-### Slice 7d: `/speckit.multi-agent.solution-design` Command (5 pts)
+### Slice 7d: `/speckit.multi-agent.solution-design` Command (3 pts)
 
 - S7d-001: Prerequisites validation (c4-* agents exist, warn if PRD missing) (0.5 pt)
-- S7d-002: ADR generation with 3 alternatives + C1/C2 mermaid per alternative (1.5 pts)
-- S7d-003: User review gate — pause after ADR, wait for solution confirmation (0.5 pt)
-- S7d-004: Sequential c4-context → c4-container → c4-component invocation with cumulative context (2 pts)
-- S7d-005: Remaining views (Dependency, Interface, Data Design) + artifact validation (0.5 pt)
+- S7d-002: ADR generation with 3 alternatives + C1/C2 mermaid per alternative (1 pt)
+- S7d-003: User review gate — pause after ADR, wait for solution confirmation (0.25 pt)
+- S7d-004: Sequential c4-context → c4-container → c4-component invocation with cumulative context (1 pt)
+- S7d-005: Remaining views (Dependency, Interface, Data Design) + artifact validation (0.25 pt)
 
 **Key behaviours:** Fail-fast if c4-* agents missing; interrupt on contradiction; user confirms chosen solution before C2/C3 generation.
 

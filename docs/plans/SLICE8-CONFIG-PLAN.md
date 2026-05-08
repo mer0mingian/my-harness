@@ -42,8 +42,9 @@ Priority order (from Q16c):
 - Merge: combine findings from both agents, apply safety-wins conflict resolution
 
 **Acceptance criteria:**
-- [ ] Config `parallel_enabled: true` triggers parallel dispatch instructions in command markdown
-- [ ] Config `parallel_enabled: false` falls back to sequential (no regression)
+- [ ] `commands/review.md` has valid YAML frontmatter
+- [ ] End-to-end run with `parallel_enabled: true` invokes both agents concurrently
+- [ ] End-to-end run with `parallel_enabled: false` falls back to sequential (no regression)
 - [ ] Review artifacts still generated correctly in both modes
 
 ---
@@ -63,9 +64,9 @@ Priority order (from Q16c):
 - On timeout signal from agent, escalate to human with partial artifacts saved
 
 **Acceptance criteria:**
-- [ ] Each command passes timeout value to agent invocation instructions
-- [ ] Timeout instruction present in test, implement, review, commit commands
-- [ ] Default 30min used if config absent
+- [ ] All four updated command files have valid YAML frontmatter
+- [ ] End-to-end run with a configured `agent_timeout` shows the value reaching agent invocations in test, implement, review, commit
+- [ ] Default 30min used if config absent (verified by E2E run with config omitted)
 
 ---
 
@@ -145,8 +146,8 @@ Priority order (from Q16c):
 - Only creates if folder/file doesn't exist (idempotent)
 
 **Acceptance criteria:**
-- [ ] Commit command calls jira_local when `auto_create_stories: true`
-- [ ] Creates `.specify/epics/{epic_id}/{story_id}.md` if missing
+- [ ] Python `lib/jira_local.py` `auto_create_story_structure` covered by pytest
+- [ ] End-to-end commit run with `auto_create_stories: true` creates `.specify/epics/{epic_id}/{story_id}.md` if missing
 - [ ] Idempotent (no error if already exists)
 - [ ] Skipped silently when `auto_create_stories: false`
 
@@ -157,9 +158,10 @@ Priority order (from Q16c):
 - [ ] All 5 features implemented
 - [ ] `scripts/validate_artifact_structure.py` works standalone: `python3 scripts/validate_artifact_structure.py feat-test`
 - [ ] `scripts/detect_review_convergence.py` works standalone
-- [ ] Review command parallel mode works with mock agents
-- [ ] Timeout instructions appear in all 4 command files
+- [ ] End-to-end smoke test of `/review` with `parallel_enabled=true` and `=false` produces correct artifacts
+- [ ] End-to-end run shows configured `agent_timeout` reaches agent invocations in test, implement, review, commit
 - [ ] Jira auto-create tested with real folder structure
+- [ ] YAML frontmatter on all modified `commands/*.md` files validates (yamllint or equivalent)
 - [ ] No regressions in existing Phase 2 commands (re-run end-to-end test)
 
 ---
