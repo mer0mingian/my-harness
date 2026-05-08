@@ -78,6 +78,30 @@
           "description": "Feature identifier (e.g., 'feat-123')"
         }
       ]
+    },
+    "discover": {
+      "file": "commands/discover.md",
+      "description": "Discovery phase: generate PRD and System Constitution via grill-me relentless questioning",
+      "usage": "/speckit.multi-agent.discover <feature-id>",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        }
+      ]
+    },
+    "solution-design": {
+      "file": "commands/solution-design.md",
+      "description": "Solution Design: generate ADR comparing approaches and C2/C3 architecture via c4-* agents",
+      "usage": "/speckit.multi-agent.solution-design <feature-id>",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": true,
+          "description": "Feature identifier (e.g., 'feat-123')"
+        }
+      ]
     }
   },
   "templates": {
