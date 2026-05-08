@@ -600,6 +600,5 @@ If implementation fails at any slice:
 - [PRD-Multi-Agent-TDD-Workflow.md](PRD-Multi-Agent-TDD-Workflow.md) — Product requirements
 - [CONSTITUTION-Multi-Agent-TDD.md](CONSTITUTION-Multi-Agent-TDD.md) — Constitutional principles
 - [ARTIFACT-SUMMARY.md](ARTIFACT-SUMMARY.md) — Artifact details and configuration
-- [Technical-Requirements.md](Technical-Requirements.md) — Current requirements (to be updated in Slice 10)
-- [Task-List.md](Task-List.md) — Current tasks (to be updated in Slice 10)
-- [Roadmap.md](Roadmap.md) — Current roadmap (to be updated in Slice 10)
+- [TASK-LIST-Multi-Agent-TDD.md](TASK-LIST-Multi-Agent-TDD.md) — Current task tracking
+- [ROADMAP-Multi-Agent-TDD.md](ROADMAP-Multi-Agent-TDD.md) — Current roadmap and phase status
