@@ -54,6 +54,9 @@ artifacts:
     workflow_summary: 'workflow-summary'
 ```
 
+**Config key loaded**:
+- `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
+
 **Artifact paths constructed as**:
 - Pattern: `{artifacts.root}/{feature_id}-{artifact_type}.md`
 - Example: `docs/features/feat-123-test-design.md`
@@ -86,7 +89,7 @@ Run previous workflow steps to create missing artifacts.
 
 ## Step 3: Generate Workflow Summary
 
-Create workflow summary artifact from template.
+Create workflow summary artifact from template. Complete this step within ${agent_timeout} minutes (default: 30). If the summary cannot be generated within the time limit, output partial results with what has been completed, then escalate to human with the list of remaining artifacts to include.
 
 **Output path**: `{artifacts.root}/{feature_id}-workflow-summary.md`
 

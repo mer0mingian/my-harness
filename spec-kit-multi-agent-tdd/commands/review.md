@@ -45,8 +45,9 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 - Artifact paths and templates
 - Conflict resolution rules (safety wins)
 
-**Config key loaded**:
+**Config keys loaded**:
 - `workflow.parallel_enabled` — controls whether agents dispatch in parallel or sequentially (default: `false`)
+- `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
 
 ## Step 2: Find Implementation Notes
 
@@ -134,6 +135,9 @@ Collect review context for both agents:
 - **If `parallel_enabled: true`**: Invoke @check and @simplify simultaneously (parallel execution). Wait for both agents to complete before proceeding to Step 8. Both agents receive the same review context.
 
 - **If `parallel_enabled: false`**: Run @check first (architecture review). Wait for @check to complete and record its verdict. Then run @simplify sequentially (code quality review). Wait for @simplify to complete before proceeding to Step 8.
+
+**Agent timeout instruction**:
+Each reviewer must complete their review within ${agent_timeout} minutes (default: 30). If a reviewer cannot finish within the time limit, output partial results covering findings identified so far, then escalate to human for manual review of the remaining items.
 
 ## Step 8: Collect Review Verdicts
 
