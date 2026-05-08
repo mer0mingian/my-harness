@@ -408,7 +408,7 @@ graph TD
 
 **Goal:** Implement all config options declared in `harness-tdd-config.yml.template` that have no backing implementation.  
 **Status:** Required before Phase 3.  
-**Detail:** See [SLICE8-CONFIG-PLAN.md](SLICE8-CONFIG-PLAN.md)
+**Detail:** See [SLICE8-CONFIG-PLAN.md](../../archive/SLICE8-CONFIG-PLAN.md)
 
 **Slice 8 Tasks (priority order):**
 - S8-001: Parallel agent dispatch in /review — `workflow.parallel_enabled` (2 pts)
@@ -426,7 +426,7 @@ graph TD
 
 **Goal:** Add Discovery and Solution Design phases upstream of TDD workflow.  
 **Required for:** v1.0  
-**Detail:** See [PHASE3-IMPLEMENTATION-PLAN.md](PHASE3-IMPLEMENTATION-PLAN.md)
+**Detail:** See [PHASE3-IMPLEMENTATION-PLAN.md](../../archive/PHASE3-IMPLEMENTATION-PLAN.md)
 
 **Slices:** 7a → 7b (parallel) → 7c → 7d (sequential after templates)  
 **Dependencies:** Phase 2.5 (Slice 8) complete
@@ -898,9 +898,9 @@ This investment pays off immediately in deployment and ongoing usage.
 ## Related Documents
 
 - [PLAN-Multi-Agent-TDD-Implementation.md](PLAN-Multi-Agent-TDD-Implementation.md) — Implementation plan (vertical slices)
-- [PHASE2-UPDATED-Execute-Command.md](PHASE2-UPDATED-Execute-Command.md) — Phase 2 update with Slice 3.5 details ✨ NEW
+- [PHASE2-UPDATED-Execute-Command.md](../../archive/PHASE2-UPDATED-Execute-Command.md) — Phase 2 update with Slice 3.5 details ✨ NEW (archived)
 - [TASK-LIST-Multi-Agent-TDD.md](TASK-LIST-Multi-Agent-TDD.md) — Granular task breakdown
-- [PRD-Multi-Agent-TDD-Workflow.md](../harness-tooling/docs/PRD-Multi-Agent-TDD-Workflow.md) — Product requirements
+- [PRD-Multi-Agent-TDD-Workflow.md](PRD-Multi-Agent-TDD-Workflow.md) — Product requirements
 - [CONSTITUTION-Multi-Agent-TDD.md](CONSTITUTION-Multi-Agent-TDD.md) — Constitutional principles
 - [ARTIFACT-SUMMARY.md](ARTIFACT-SUMMARY.md) — Artifact details and configuration
 

@@ -597,7 +597,7 @@ If implementation fails at any slice:
 
 ## Related Documents
 
-- [PRD-Multi-Agent-TDD-Workflow.md](../harness-tooling/docs/PRD-Multi-Agent-TDD-Workflow.md) — Product requirements (to be moved)
+- [PRD-Multi-Agent-TDD-Workflow.md](PRD-Multi-Agent-TDD-Workflow.md) — Product requirements
 - [CONSTITUTION-Multi-Agent-TDD.md](CONSTITUTION-Multi-Agent-TDD.md) — Constitutional principles
 - [ARTIFACT-SUMMARY.md](ARTIFACT-SUMMARY.md) — Artifact details and configuration
 - [Technical-Requirements.md](Technical-Requirements.md) — Current requirements (to be updated in Slice 10)

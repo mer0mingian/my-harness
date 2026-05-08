@@ -290,7 +290,7 @@ specify multi-agent execute feat-123 --gate-mode=manual
 
 **Correction:** 12.5 hours to convert Python commands → markdown + helper scripts + hooks
 
-See: [ARCHITECTURAL-CORRECTION-PLAN.md](../spec-kit-multi-agent-tdd/docs/plans/ARCHITECTURAL-CORRECTION-PLAN.md)
+See: [ARCHITECTURAL-CORRECTION-PLAN.md](../../spec-kit-multi-agent-tdd/docs/archive/ARCHITECTURAL-CORRECTION-PLAN.md)
 
 **Revised Timeline:**
 - Slice 3: 4-5 hours (test command) - ✅ DONE (needs conversion)

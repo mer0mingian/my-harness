@@ -2,7 +2,7 @@
 
 **Session Date:** 2026-04-22
 **Revised:** 2026-04-24 — incorporates session decisions on (a) two-tier plugin architecture, (b) `pydantic-ai-skills` + custom pydantic models as the schema layer, (c) sequence diagrams (mermaid / zenuml) and YAML are both first-class authoring surfaces compiling to one canonical manifest, (d) Drawflow/Baklava canvas deprioritised to v1.2+, (e) Claude Code + OpenCode full parity, Gemini CLI research-only.
-**Status:** Approved scope for v1 of the `harness-workflow-runtime` plugin. Implementation plan: [harness-workflow-runtime-plan.md](harness-workflow-runtime-plan.md).
+**Status:** Approved scope for v1 of the `harness-workflow-runtime` plugin. Implementation plan: [harness-workflow-runtime-plan.md](../marketplace/plans/harness-workflow-runtime-plan.md).
 
 ---
 

@@ -1,6 +1,6 @@
 > **DEPRECATED 2026-04-21** — superseded by
-> [../harness-v1-master-plan.md](../harness-v1-master-plan.md) and
-> [../harness-v1-agent-tasks.md](../harness-v1-agent-tasks.md). Kept for historical reference only.
+> [../marketplace/plans/harness-v1-master-plan.md](../marketplace/plans/harness-v1-master-plan.md) and
+> [../marketplace/plans/harness-v1-agent-tasks.md](../marketplace/plans/harness-v1-agent-tasks.md). Kept for historical reference only.
 
 # Multi-Agent Plugin Marketplace Strategy
 
