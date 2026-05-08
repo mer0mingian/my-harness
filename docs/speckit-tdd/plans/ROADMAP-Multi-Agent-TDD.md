@@ -1,8 +1,8 @@
 # Roadmap: Multi-Agent TDD Workflow Implementation
 
-**Version:** 1.1  
-**Date:** 2026-05-07  
-**Status:** Planning  
+**Version:** 1.2  
+**Date:** 2026-05-08  
+**Status:** Execution (85% Complete)  
 **Derived From:** PLAN-Multi-Agent-TDD-Implementation.md, TASK-LIST-Multi-Agent-TDD.md, PHASE2-UPDATED-Execute-Command.md
 
 ---
@@ -21,13 +21,13 @@ This roadmap organizes 66 implementation tasks into 12 vertical slices, showing 
 
 ## Phase Overview
 
-| Phase | Slices | Effort | Dependencies | Parallelizable |
-|-------|--------|--------|--------------|----------------|
-| **Phase 1**: Foundation | Slice 1-2 | 7-8 hrs | None | Yes (both slices parallel) |
-| **Phase 2**: Core Workflow | Slice 3-3.5-4-5-6 | 20-24 hrs | Phase 1 | Sequential (3→3.5→4→5→6) |
-| **Phase 2.5**: Config | Slice 8 | 8 pts | Phase 2 | No (sequential) |
-| **Phase 3**: Discovery & Solution Design | Slice 7a-7d | 10 pts | Phase 2.5 | 7a‖7b then 7c→7d |
-| **Phase 4**: Migration | Slice 9-11 | 7-10 hrs | Phase 3 | Sequential (9→10→11) |
+| Phase | Slices | Effort | Status | Completed |
+|-------|--------|--------|--------|-----------|
+| **Phase 1**: Foundation | Slice 1-2 | 7-8 hrs | ✅ COMPLETE | 2026-05-08 |
+| **Phase 2**: Core Workflow | Slice 3-3.5-4-5-6 | 20-24 hrs | ✅ COMPLETE | 2026-05-08 |
+| **Phase 2.5**: Config | Slice 8 | 8 pts | ✅ COMPLETE | 2026-05-08 |
+| **Phase 3**: Discovery & Solution Design | Slice 7a-7d | 10 pts | ✅ COMPLETE | 2026-05-08 |
+| **Phase 4**: Migration | Slice 9-11 | 7-10 hrs | ⏳ IN PROGRESS | - |
 
 ---
 
@@ -87,10 +87,11 @@ graph TD
 
 ---
 
-## Phase 1: Foundation (7-8 hours)
+## Phase 1: Foundation (7-8 hours) ✅ COMPLETE
 
 **Goal:** Build foundation for multi-agent TDD workflow.
 
+**Status:** ✅ Complete (2026-05-08)  
 **Slices:** 1-2  
 **Parallelization:** Both slices run in parallel  
 **Dependencies:** None
@@ -117,8 +118,8 @@ graph TD
 
 **Acceptance Criteria:**
 - [x] `claude plugin install harness-agents` succeeds
-- [ ] All 5 agents spawn correctly
-- [ ] Commands available in Claude Code
+- [x] All 5 agents spawn correctly
+- [x] Commands available in Claude Code
 
 ---
 
@@ -138,9 +139,9 @@ graph TD
 - Install hook
 
 **Acceptance Criteria:**
-- [ ] `specify extension add harness-tdd-workflow` succeeds
-- [ ] Config file created at `.specify/harness-tdd-config.yml`
-- [ ] Templates copied to `.specify/templates/`
+- [x] `specify extension add harness-tdd-workflow` succeeds
+- [x] Config file created at `.specify/harness-tdd-config.yml`
+- [x] Templates copied to `.specify/templates/`
 
 ---
 
@@ -158,10 +159,11 @@ graph TD
 
 ---
 
-## Phase 2: Core Workflow (20-24 hours)
+## Phase 2: Core Workflow (20-24 hours) ✅ COMPLETE
 
 **Goal:** Implement complete TDD workflow (steps 7-10) with streamlined orchestration.
 
+**Status:** ✅ Complete (2026-05-08)  
 **Slices:** 3, 3.5, 4, 5, 6  
 **Parallelization:** None (sequential workflow dependencies)  
 **Dependencies:** Phase 1 (both Slice 1 and Slice 2 complete)
@@ -198,9 +200,9 @@ graph TD
 - Failure code detection
 
 **Acceptance Criteria:**
-- [ ] @test agent writes failing tests
-- [ ] File gate blocks implementation files
-- [ ] Structured failure codes validated
+- [x] @test agent writes failing tests
+- [x] File gate blocks implementation files
+- [x] Structured failure codes validated
 
 ---
 
@@ -249,13 +251,13 @@ graph TD
 - Interactive mode support
 
 **Acceptance Criteria:**
-- [ ] Command invokes all 4 subcommands sequentially
-- [ ] Halts on first gate failure with clear diagnostics
-- [ ] Escalates to human with reason and recommended action
-- [ ] Workflow summary created on success
-- [ ] Interactive mode prompts between steps (if enabled)
-- [ ] Manual gate mode waits for approval
-- [ ] All quality gates enforced (non-bypassable)
+- [x] Command invokes all 4 subcommands sequentially
+- [x] Halts on first gate failure with clear diagnostics
+- [x] Escalates to human with reason and recommended action
+- [x] Workflow summary created on success
+- [x] Interactive mode prompts between steps (if enabled)
+- [x] Manual gate mode waits for approval
+- [x] All quality gates enforced (non-bypassable)
 
 **Benefits:**
 - **For Users:** One command instead of four, automatic error handling, progress visibility
@@ -294,10 +296,10 @@ graph TD
 - Integration validation
 
 **Acceptance Criteria:**
-- [ ] @make agent implements code
-- [ ] RED state validated before implementation
-- [ ] GREEN state achieved (all tests pass)
-- [ ] Integration checks pass
+- [x] @make agent implements code
+- [x] RED state validated before implementation
+- [x] GREEN state achieved (all tests pass)
+- [x] Integration checks pass
 
 ---
 
@@ -336,10 +338,10 @@ graph TD
 - Review cycle management
 
 **Acceptance Criteria:**
-- [ ] @check and @simplify agents run in parallel
-- [ ] Conflicts detected and resolved (safety wins)
-- [ ] Review cycles tracked (max 3)
-- [ ] BLOCKED verdict halts workflow
+- [x] @check and @simplify agents run in parallel
+- [x] Conflicts detected and resolved (safety wins)
+- [x] Review cycles tracked (max 3)
+- [x] BLOCKED verdict halts workflow
 
 ---
 
@@ -373,10 +375,10 @@ graph TD
 - Git commit logic
 
 **Acceptance Criteria:**
-- [ ] All mandatory artifacts validated
-- [ ] Workflow summary created
-- [ ] All artifacts committed to feature branch
-- [ ] Spec lifecycle updated
+- [x] All mandatory artifacts validated
+- [x] Workflow summary created
+- [x] All artifacts committed to feature branch
+- [x] Spec lifecycle updated
 
 ---
 
@@ -404,10 +406,10 @@ graph TD
 
 ---
 
-## Phase 2.5: Config Feature Implementations (8 pts)
+## Phase 2.5: Config Feature Implementations (8 pts) ✅ COMPLETE
 
 **Goal:** Implement all config options declared in `harness-tdd-config.yml.template` that have no backing implementation.  
-**Status:** Required before Phase 3.  
+**Status:** ✅ Complete (2026-05-08)  
 **Detail:** See [SLICE8-CONFIG-PLAN.md](../../archive/SLICE8-CONFIG-PLAN.md)
 
 **Slice 8 Tasks (priority order):**
@@ -422,9 +424,10 @@ graph TD
 
 ---
 
-## Phase 3: Discovery & Solution Design (10 pts)
+## Phase 3: Discovery & Solution Design (10 pts) ✅ COMPLETE
 
 **Goal:** Add Discovery and Solution Design phases upstream of TDD workflow.  
+**Status:** ✅ Complete (2026-05-08)  
 **Required for:** v1.0  
 **Detail:** See [PHASE3-IMPLEMENTATION-PLAN.md](../../archive/PHASE3-IMPLEMENTATION-PLAN.md)
 
@@ -480,83 +483,108 @@ This policy was adopted on 2026-05-08 (commit `04d0fa2` removed 6 structural mar
 
 ---
 
-## Phase 4: Documentation Synchronization (2-3 hours)
+## Phase 4: Migration (7-10 hours) ⏳ IN PROGRESS
 
-**Goal:** Update planning documentation to reflect completed branch archival and current architecture.
+**Goal:** Clean up PRIES plugin, merge phase 5 work, update documentation.
 
-**Status:** 2/4 tasks complete (S9-001, S9-002 complete; Slices 10-11 are N/A for harness-tooling)  
-**Slices:** 9 (documentation updates only)  
-**Parallelization:** None (sequential documentation updates)  
+**Status:** ⏳ In Progress  
+**Slices:** 9-11  
+**Parallelization:** None (sequential cleanup dependencies)  
 **Dependencies:** Phase 3 (Slice 8)
 
-**Note:** The feat/pries-workflow and feat/technical-governance branches were already archived on 2026-05-08 (ADR-003, ADR-004). Remaining work is updating planning documents and marketplace README to reflect current state.
+### Slice 9: Cleanup PRIES & Merge Phase 5 (2-3 hours)
 
-### Slice 9: Documentation Synchronization (1-2 hours)
-
-**Tasks (4 applicable, 2 N/A):**
-- S9-001: Archive feat/pries-workflow branch ✅ COMPLETE (ADR-003, 2026-05-08)
-- S9-002: Archive feat/technical-governance branch ✅ COMPLETE (ADR-004, 2026-05-08)
-- S9-003: Update planning documentation (TASK-LIST, ROADMAP) (1 hr) - PENDING
-- S9-004: Update marketplace README (30 min) - PENDING
-- S9-005: N/A (no phase 5 worktree exists)
-- S9-006: N/A (no phase 5 worktree exists)
+**Tasks (6):**
+- S9-001: Archive PRIES plugin (30 min)
+- S9-002: Update marketplace README (30 min)
+- S9-003: Review phase 5 worktree changes (1 hr)
+- S9-004: Merge phase 5 worktree (1.5 hrs)
+- S9-005: Close phase 5 worktree (15 min)
+- S9-006: Document PRIES deprecation in ADR (45 min)
 
 **Dependencies:**
-- Slices 1-8 complete
+- Slices 1-8 complete (new workflow must be functional before removing old one)
 
-**Critical Path:** S9-001 ✅ → S9-002 ✅ → S9-003 → S9-004
+**Critical Path:** S9-001 → S9-002 → S9-003 → S9-004 → S9-005 → S9-006
 
 **Deliverables:**
-- [x] feat/pries-workflow branch archived (ADR-003)
-- [x] feat/technical-governance branch archived (ADR-004)
-- [ ] Planning documents updated to reflect current state
-- [ ] Marketplace README updated with dual-plugin architecture
+- PRIES plugin archived
+- Phase 5 worktree merged and closed
+- ADR documenting deprecation
 
 **Acceptance Criteria:**
-- [x] Both archived branches documented via ADRs
-- [ ] Planning docs reflect that branches are already archived
-- [ ] No obsolete "remove PRIES" task descriptions
-- [ ] Marketplace README reflects current architecture
+- [ ] PRIES plugin removed from marketplace
+- [ ] Phase 5 complete work merged into main
+- [ ] Deprecation rationale documented
 
 ---
 
-### Slice 10: N/A - External Repository Documentation
+### Slice 10: Update Requirements, Tasks, Roadmap (3-4 hours)
 
-**Status:** NOT APPLICABLE for harness-tooling repository
+**Tasks (4):**
+- S10-001: Update Technical-Requirements.md (2 hrs)
+- S10-002: Update Task-List.md (1.5 hrs)
+- S10-003: Update Roadmap.md (1.5 hrs)
+- S10-004: Cross-reference validation (1 hr)
 
-**Tasks (4):** All reference harness-sandbox repository files
-- S10-001: N/A - `harness-sandbox/Technical-Requirements.md` (different repo)
-- S10-002: N/A - `harness-sandbox/Task-List.md` (different repo)
-- S10-003: N/A - `harness-sandbox/Roadmap.md` (different repo)
-- S10-004: Cross-reference validation (harness-tooling only) (30 min) - moved to S9-003
+**Dependencies:**
+- S9-006 (PRIES deprecation documented)
 
-**Reason:** These tasks belong in a separate harness-sandbox migration plan. The harness-tooling repository does not contain harness-sandbox documentation.
+**Parallelization within Slice:**
+- S10-001, S10-002, S10-003 can run in parallel
+- S10-004 waits for all three
+
+**Critical Path:** S10-001/002/003 → S10-004
+
+**Deliverables:**
+- Updated requirements (v2.0)
+- Updated task list
+- Updated roadmap
+
+**Acceptance Criteria:**
+- [ ] No PRIES references in docs
+- [ ] All requirements trace to dual-plugin architecture
+- [ ] All cross-references valid
 
 ---
 
-### Slice 11: N/A - External Repository Documentation
+### Slice 11: Remove Superpowers & Update Sandbox Docs (2-3 hours)
 
-**Status:** NOT APPLICABLE for harness-tooling repository
+**Tasks (5):**
+- S11-001: Audit superpowers references (30 min)
+- S11-002: Update sandbox CLAUDE.md (1 hr)
+- S11-003: Update sandbox README (45 min)
+- S11-004: Update sandbox installation guide (30 min)
+- S11-005: Final documentation review (1 hr)
 
-**Tasks (5):** All reference harness-sandbox repository files
-- S11-001: N/A - Audit `harness-sandbox/docs/` (different repo)
-- S11-002: N/A - Update `harness-sandbox/CLAUDE.md` (different repo)
-- S11-003: N/A - Update `harness-sandbox/README.md` (different repo)
-- S11-004: N/A - Update `harness-sandbox/docs/sandbox-install.md` (different repo)
-- S11-005: N/A - Review harness-sandbox documentation (different repo)
+**Dependencies:**
+- S10-004 (requirements docs updated)
 
-**Reason:** These tasks belong in a separate harness-sandbox migration plan. The harness-tooling repository does not contain harness-sandbox documentation.
+**Critical Path:** S11-001 → S11-002 → S11-003/S11-004 → S11-005
+
+**Deliverables:**
+- Updated sandbox documentation
+- Superpowers removed from docs
+
+**Acceptance Criteria:**
+- [ ] No superpowers references in harness-sandbox docs
+- [ ] Dual-plugin architecture documented
+- [ ] Installation guide updated
 
 ---
 
 **Phase 4 Execution Strategy:**
 
-**Sequential (Documentation Updates Only):**
-- S9-003 → S9-004 (update planning docs, then marketplace README)
-- **Duration**: 1-2 hours (single developer)
-- **Status**: 50% complete (S9-001, S9-002 already done via ADR-003, ADR-004)
+**Sequential Only:**
+- Slice 9 must complete before Slice 10 (PRIES removal before doc updates)
+- Slice 10 must complete before Slice 11 (requirements before sandbox docs)
+- **Duration**: 7-10 hours (single or multiple developers)
 
-**Note:** Slices 10-11 are not applicable for harness-tooling. If harness-sandbox documentation needs updating, that should be tracked in a separate harness-sandbox migration plan.
+**Optimization Opportunities:**
+- Within Slice 10: Parallel doc updates (S10-001/002/003)
+- **Developer 1**: S10-001 (requirements)
+- **Developer 2**: S10-002, S10-003 (task list, roadmap)
+- **Duration with 2 devs**: ~6-8 hours (20% time savings)
 
 ---
 
@@ -679,7 +707,7 @@ Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 
 ## Milestones & Deliverables
 
-### Milestone 1: Foundation Complete (After Phase 1)
+### Milestone 1: Foundation Complete (After Phase 1) ✅
 **Deliverables:**
 - harness-agents Claude Code plugin installed
 - harness-tdd-workflow SpecKit extension installed
@@ -687,13 +715,15 @@ Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 - Configuration template in place
 
 **Acceptance:**
-- [ ] Both plugins install without errors
-- [ ] `/agents.spawn test-specialist` works
-- [ ] `/agents.assign-task` works
+- [x] Both plugins install without errors
+- [x] `/agents.spawn test-specialist` works
+- [x] `/agents.assign-task` works
+
+**Completed:** 2026-05-08
 
 ---
 
-### Milestone 2: Core Workflow Complete (After Phase 2)
+### Milestone 2: Core Workflow Complete (After Phase 2) ✅
 **Deliverables:**
 - `/speckit.multi-agent.test` command functional
 - `/speckit.multi-agent.execute` command functional ✨ NEW
@@ -703,24 +733,29 @@ Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 - All 5 artifact templates created
 
 **Acceptance:**
-- [ ] Full workflow executes end-to-end (both individual commands and orchestrated)
-- [ ] Execute command invokes all 4 subcommands sequentially
-- [ ] All quality gates enforce (TDD, evidence, review)
-- [ ] All 5 artifacts created correctly
-- [ ] Execute command halts on gate failures with clear diagnostics
+- [x] Full workflow executes end-to-end (both individual commands and orchestrated)
+- [x] Execute command invokes all 4 subcommands sequentially
+- [x] All quality gates enforce (TDD, evidence, review)
+- [x] All 5 artifacts created correctly
+- [x] Execute command halts on gate failures with clear diagnostics
+
+**Completed:** 2026-05-08
 
 ---
 
-### Milestone 3: Enhancements Complete (After Phase 3)
+### Milestone 3: Enhancements Complete (After Phase 3) ✅
 **Deliverables:**
-- `/speckit.multi-agent.plan --mode=interactive` functional
+- `/speckit.multi-agent.discover` functional
+- `/speckit.multi-agent.solution-design` functional
 - Configuration documentation complete
 - Teams can customize artifacts
 
 **Acceptance:**
-- [ ] Grill-me integration works (if available)
-- [ ] Configuration validation works
-- [ ] Teams can toggle artifact behavior
+- [x] Grill-me integration works (if available)
+- [x] Configuration validation works
+- [x] Teams can toggle artifact behavior
+
+**Completed:** 2026-05-08
 
 ---
 
@@ -763,89 +798,87 @@ Phase 4: Slice 9 → Slice 10 → Slice 11 (7-10 hrs sequential)
 
 Implementation is successful when:
 
-1. **All applicable tasks complete:**
-   - [x] Phase 1: 13/13 tasks (Slices 1-2) ✅ COMPLETE
-   - [x] Phase 2: 30/30 tasks (Slices 3, 3.5, 4, 5, 6) ✅ COMPLETE
-   - [x] Phase 3: 15/15 tasks (Slices 7-8) ✅ COMPLETE (over-delivered)
-   - [ ] Phase 4: 2/4 applicable tasks (Slices 9, excluding N/A tasks 10-11)
+1. **All 66 tasks complete:**
+   - [x] Phase 1: 13/13 tasks (Slices 1-2) ✅
+   - [x] Phase 2: 30/30 tasks (Slices 3, 3.5, 4, 5, 6) ✅ — includes new Slice 3.5
+   - [x] Phase 3: 13/13 tasks (Slices 7-8) ✅
+   - [ ] Phase 4: 0/15 tasks (Slices 9-11) ⏳
 
 2. **All 4 milestones achieved:**
    - [x] Milestone 1: Foundation ✅
-   - [x] Milestone 2: Core Workflow ✅
+   - [x] Milestone 2: Core Workflow (including execute orchestrator) ✅
    - [x] Milestone 3: Enhancements ✅
-   - [ ] Milestone 4: Documentation Synchronization (50% complete)
+   - [ ] Milestone 4: Migration ⏳
 
 3. **Full workflow functional (two patterns):**
-   - [x] **Individual commands:** All 4 workflow commands functional ✅
-   - [x] **Orchestrated command:** `/speckit.multi-agent.execute` working ✅
-   - [x] All 5 artifacts created correctly ✅
-   - [x] Quality gates enforce (TDD, evidence, review) ✅
-   - [x] Execute command halts on gate failures with clear diagnostics ✅
+   - [x] **Individual commands:** `/speckit.multi-agent.test` → `/speckit.multi-agent.implement` → `/speckit.multi-agent.review` → `/speckit.multi-agent.commit` executes end-to-end
+   - [x] **Orchestrated command:** `/speckit.multi-agent.execute` invokes all 4 subcommands and completes successfully
+   - [x] All 5 artifacts created correctly
+   - [x] Quality gates enforce (TDD, evidence, review)
+   - [x] Execute command halts on gate failures with clear diagnostics
 
 4. **Configuration works:**
-   - [x] Teams can toggle artifact mandatory flags ✅
-   - [x] Teams can customize artifact paths ✅
-   - [x] Teams can override templates ✅
+   - [x] Teams can toggle artifact mandatory flags
+   - [x] Teams can customize artifact paths
+   - [x] Teams can override templates
 
-5. **Documentation synchronization:**
-   - [x] feat/pries-workflow branch archived (ADR-003) ✅
-   - [x] feat/technical-governance branch archived (ADR-004) ✅
-   - [ ] Planning documents updated to reflect current state
-   - [ ] Marketplace README updated with dual-plugin architecture
-   - N/A: harness-sandbox documentation (different repository)
+5. **Clean migration:**
+   - [ ] PRIES plugin removed
+   - [ ] Phase 5 worktree merged
+   - [ ] Documentation updated (no PRIES, no superpowers)
+   - [ ] All cross-references valid
 
 ---
 
 ## Timeline Estimates
 
-### Actual Timeline (Completed Work)
-- **Phases 1-3**: COMPLETE ✅ (58/58 tasks, 100%)
-  - Phase 1: Foundation (13 tasks)
-  - Phase 2: Core Workflow (30 tasks)
-  - Phase 3: Enhancements (15 tasks)
-- **Phase 4**: 50% complete (2/4 applicable tasks)
-  - [x] Branch archival (S9-001, S9-002)
-  - [ ] Documentation updates (S9-003, S9-004)
-  - Estimated remaining: 1-2 hours
+### Conservative Timeline (Single Developer, Sequential)
+- **Week 1**: Phase 1-2 (foundation + core workflow, 27-32 hrs)
+- **Week 2**: Phase 3-4 (enhancements + migration, 14-19 hrs)
+- **Total**: 2 weeks (41-51 hours including buffer)
 
-### Remaining Work
-- **S9-003**: Update planning documentation (TASK-LIST, ROADMAP) - 1 hour
-- **S9-004**: Update marketplace README - 30 minutes
-- **Total**: 1.5 hours to completion
+### Aggressive Timeline (Dual Developers, Parallel)
+- **Week 1**: Phase 1-3 (foundation + core + enhancements, 26-32 hrs)
+- **Week 2**: Phase 4 (migration, 7-10 hrs)
+- **Total**: 1.5 weeks (33-42 hours including buffer)
 
-**Note on Over-Delivery:**
-Phases 1-3 delivered 58/58 tasks (100%), including:
-- Slice 3.5: Execute orchestrator command (5 tasks)
-- Slice 7: Discovery + Solution Design (6 tasks, originally planned as 4)
-- Slice 8: Configuration implementation (5 tasks, originally planned as 4)
+### Recommended Timeline (Hybrid Approach)
+- **Week 1**: Phase 1-2 (foundation + core, 27-32 hrs)
+- **Week 2**: Phase 3-4 (enhancements + migration, 14-19 hrs)
+- **Total**: 2 weeks (41-51 hours including buffer)
 
-This represents significant value-add beyond original scope while maintaining quality standards.
+**Note on Slice 3.5 Impact:**
+The addition of the execute orchestrator command adds 3-4 hours to Phase 2 but provides:
+- Significant UX improvement for end users (1 command vs 4)
+- Easier CI/CD integration
+- Consistent workflow enforcement
+- Better error handling and diagnostics
+This investment pays off immediately in deployment and ongoing usage.
 
 ---
 
 ## Progress Tracking
 
 **Phase Completion:**
-- [x] **Phase 1**: Foundation (13/13 tasks) ✅ COMPLETE
-- [x] **Phase 2**: Core Workflow (30/30 tasks) ✅ COMPLETE — includes Slice 3.5 (5 tasks)
-- [x] **Phase 3**: Enhancements (15/15 tasks) ✅ COMPLETE — includes Slice 7 (6 tasks) and Slice 8 (5 tasks)
-- [ ] **Phase 4**: Documentation Synchronization (2/4 applicable tasks, 9 N/A tasks)
-  - [x] S9-001: Branch archival (feat/pries-workflow) ✅
-  - [x] S9-002: Branch archival (feat/technical-governance) ✅
-  - [ ] S9-003: Update planning documentation
-  - [ ] S9-004: Update marketplace README
-  - N/A: S9-005, S9-006 (no phase 5 worktree)
-  - N/A: Slice 10 (4 tasks for harness-sandbox repo)
-  - N/A: Slice 11 (5 tasks for harness-sandbox repo)
+- [x] **Phase 1**: Foundation (13/13 tasks) ✅
+- [x] **Phase 2**: Core Workflow (30/30 tasks) ✅ — includes new Slice 3.5 (5 tasks)
+- [x] **Phase 3**: Enhancements (13/13 tasks) ✅
+- [ ] **Phase 4**: Migration (0/15 tasks) ⏳
+
+**Slice 3.5 Tasks (NEW):**
+- [x] S3.5-001: Create execute command scaffold
+- [x] S3.5-002: Implement subcommand orchestration
+- [x] S3.5-003: Error handling and gate enforcement
+- [x] S3.5-004: Interactive mode integration
+- [x] S3.5-005: End-to-end testing
 
 **Milestone Completion:**
-- [x] **Milestone 1**: Foundation Complete ✅
-- [x] **Milestone 2**: Core Workflow Complete ✅
-- [x] **Milestone 3**: Enhancements Complete ✅
-- [ ] **Milestone 4**: Documentation Synchronization (50% complete, 2/4 tasks done)
+- [x] **Milestone 1**: Foundation Complete (2026-05-08)
+- [x] **Milestone 2**: Core Workflow Complete (2026-05-08)
+- [x] **Milestone 3**: Enhancements Complete (2026-05-08)
+- [ ] **Milestone 4**: Migration Complete
 
-**Overall Progress**: 60/66 tasks (91%) - **2 Phase 4 tasks remaining**  
-**Adjusted Progress** (excluding N/A tasks): 60/57 (105% - over-delivered in Phases 1-3)
+**Overall Progress**: 56/66 tasks (85%)
 
 ---
 
@@ -885,6 +918,17 @@ This represents significant value-add beyond original scope while maintaining qu
 ---
 
 ## Version History
+
+**v1.2 (2026-05-08):**
+- Updated status to "Execution (85% Complete)"
+- Marked Phases 1-3 as COMPLETE with completion timestamps
+- Updated progress tracking: 56/66 tasks complete
+- Phase 1: 13/13 tasks ✅
+- Phase 2: 30/30 tasks ✅
+- Phase 3: 13/13 tasks ✅
+- Phase 4: 0/15 tasks ⏳
+- Updated all milestone checkboxes and acceptance criteria
+- All quality gates and workflow patterns verified as functional
 
 **v1.1 (2026-05-07):**
 - Added Slice 3.5: Execute Command orchestrator
