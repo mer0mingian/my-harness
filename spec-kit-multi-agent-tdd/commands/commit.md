@@ -54,8 +54,16 @@ artifacts:
     workflow_summary: 'workflow-summary'
 ```
 
-**Config key loaded**:
+**Config keys loaded**:
 - `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
+- `jira.auto_create_stories` — when `true` and `jira.local_mode: true`, call `auto_create_story_structure` for the feature before validation (default: false); when `false`, skip silently
+- `jira.local_mode` — enable local Jira structure management (default: false)
+
+**Auto-create story structure** (when `jira.auto_create_stories: true` and `jira.local_mode: true`):
+- Call `auto_create_story_structure(feature_id, epic_id, story_id)` from `lib/jira_local.py`
+- `epic_id` and `story_id` are read from config keys `jira.epic_id` and `jira.story_id`
+- If file already exists, no error is raised (idempotent)
+- If `jira.auto_create_stories: false`, this step is skipped silently
 
 **Artifact paths constructed as**:
 - Pattern: `{artifacts.root}/{feature_id}-{artifact_type}.md`

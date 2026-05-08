@@ -196,6 +196,66 @@ def update_story_status(
     story_file.write_text('\n'.join(lines), encoding='utf-8')
 
 
+def auto_create_story_structure(
+    feature_id: str,
+    epic_id: str,
+    story_id: str,
+    jira_root: str = ".specify/epics",
+) -> dict:
+    """
+    Create Epic directory and Story markdown file idempotently.
+
+    Args:
+        feature_id: Feature identifier (e.g., 'feat-001')
+        epic_id: Epic identifier (e.g., 'epic-001')
+        story_id: Story identifier (e.g., 'story-001')
+        jira_root: Root directory for Jira structure (default: '.specify/epics')
+
+    Returns:
+        dict with keys:
+            - 'created' (bool): True if file was created, False if already existed
+            - 'path' (str): Absolute path to the story file
+
+    Raises:
+        ValueError: If epic_id or story_id is empty
+
+    Example:
+        >>> auto_create_story_structure('feat-001', 'epic-001', 'story-001')
+        {'created': True, 'path': '.specify/epics/epic-001/story-001.md'}
+    """
+    if not epic_id:
+        raise ValueError("epic_id must not be empty")
+    if not story_id:
+        raise ValueError("story_id must not be empty")
+
+    root = Path(jira_root)
+    epic_dir = root / epic_id
+    epic_dir.mkdir(parents=True, exist_ok=True)
+
+    story_file = epic_dir / f"{story_id}.md"
+
+    if story_file.exists():
+        return {"created": False, "path": str(story_file)}
+
+    template = f"""---
+story_id: {story_id}
+epic_id: {epic_id}
+feature_id: {feature_id}
+status: open
+---
+
+# Story: {story_id}
+
+## Description
+
+## Acceptance Criteria
+
+## Tasks
+"""
+    story_file.write_text(template, encoding="utf-8")
+    return {"created": True, "path": str(story_file)}
+
+
 def link_artifacts_to_story(
     story_id: str,
     artifacts: list[Path],
