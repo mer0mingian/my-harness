@@ -22,6 +22,7 @@ skills:
   - python-testing-uv-playwright
   - stdd-test-driven-development
   - stdd-make-constrained-implementation
+  - stdd-ask-questions-if-underspecified
   - general-python-environment
   - general-solid
   - general-verification-before-completion
