@@ -59,6 +59,7 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 - Test framework settings (pytest, file patterns)
 - Artifact paths and templates
 - Integration check commands
+- `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
 
 ### Step 2: Find Test Design Artifact
 
@@ -193,6 +194,9 @@ NOTE: Agent will read test files from patterns:
   - **/test_*.py
   - **/*_test.py
 ```
+
+**Agent timeout instruction**:
+Complete this task within ${agent_timeout} minutes (default: 30). If you cannot achieve GREEN state within the time limit, output partial results with a summary of completed work, then escalate to human with what remains and the current test state.
 
 **Phase 1 Exit**: Exit 0 (success - context prepared, artifact created)
 

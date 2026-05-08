@@ -41,8 +41,14 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 **Default configuration includes**:
 - Agent names (check for architecture, simplify for code quality)
 - Review settings (parallel_review: true, max_cycles: 3)
+- Workflow dispatch: `parallel_enabled` (default: false when key missing from config)
 - Artifact paths and templates
 - Conflict resolution rules (safety wins)
+
+**Config keys loaded**:
+- `workflow.parallel_enabled` — controls whether agents dispatch in parallel or sequentially (default: `false`)
+- `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
+- `gates.convergence_detection` — enable convergence detection between review cycles (default: `false`)
 
 ## Step 2: Find Implementation Notes
 
@@ -111,7 +117,7 @@ Collect review context for both agents:
 
 ## Step 7: Invoke Parallel Reviewers
 
-**NOTE**: Parallel execution described, not implemented in markdown. Future automation will spawn agents.
+**NOTE**: Execution mode is controlled by `workflow.parallel_enabled` from `.specify/harness-tdd-config.yml`. Default is `false` (sequential) when the key is missing.
 
 **@check agent (architecture review)**:
 - Context: implementation files, notes, spec, diff
@@ -125,7 +131,14 @@ Collect review context for both agents:
 - Focus: Complexity, duplication, readability, maintainability
 - Verdict: APPROVED | NEEDS_REVISION | BLOCKED
 
-**Execution**: Both agents run in parallel (no sequential dependency)
+**Conditional dispatch** (based on `workflow.parallel_enabled`):
+
+- **If `parallel_enabled: true`**: Invoke @check and @simplify simultaneously (parallel execution). Wait for both agents to complete before proceeding to Step 8. Both agents receive the same review context.
+
+- **If `parallel_enabled: false`**: Run @check first (architecture review). Wait for @check to complete and record its verdict. Then run @simplify sequentially (code quality review). Wait for @simplify to complete before proceeding to Step 8.
+
+**Agent timeout instruction**:
+Each reviewer must complete their review within ${agent_timeout} minutes (default: 30). If a reviewer cannot finish within the time limit, output partial results covering findings identified so far, then escalate to human for manual review of the remaining items.
 
 ## Step 8: Collect Review Verdicts
 
@@ -160,6 +173,24 @@ If overall verdict is `NEEDS_REVISION`:
 - Overall verdict becomes `BLOCKED`
 - Escalate to human for review
 - ❌ Exit 2 with escalation details
+
+**Convergence check** (when `gates.convergence_detection: true`):
+
+After the max-cycles check, if the current cycle number is greater than 1 and `gates.convergence_detection` is `true` in config (default: `false`), run:
+
+```bash
+python3 scripts/detect_review_convergence.py \
+  docs/features/${FEATURE_ID}-arch-review.md \
+  docs/features/${FEATURE_ID}-code-review.md \
+  docs/features/${FEATURE_ID}-arch-review-prev.md \
+  docs/features/${FEATURE_ID}-code-review-prev.md
+```
+
+Where `*-prev.md` are the review artifacts saved from the previous cycle.
+
+- **Exit 0 (converged)**: Findings in the current cycle are identical to the previous cycle. Stop cycling early and report "convergence detected — findings have stabilised". Escalate to human if this occurs before `APPROVED`.
+- **Exit 1 (not converged)**: Findings differ. Continue to the next cycle as normal.
+- **Exit 2 (error)**: Previous cycle artifacts not found or unreadable. Skip convergence check and continue cycling.
 
 ## Step 10: Update Review Artifacts
 
@@ -248,8 +279,8 @@ artifacts:
     template: '.specify/templates/code-review-template.md'
     mandatory: true
 
-review:
-  parallel_review: true
+workflow:
+  parallel_enabled: false
   max_cycles: 3
   conflict_resolution: 'safety_wins'  # BLOCKED > NEEDS_REVISION > APPROVED
 ```

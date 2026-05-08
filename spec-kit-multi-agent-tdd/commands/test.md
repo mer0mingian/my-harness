@@ -74,6 +74,7 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 - Test framework settings (pytest, file patterns)
 - Failure code classifications (valid RED vs. broken)
 - Artifact paths and templates
+- `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
 
 **File gate restrictions** (from config):
 - Test file patterns: `tests/**/*.py`, `**/test_*.py`, `**/*_test.py`
@@ -108,6 +109,9 @@ Prepare structured context for @test-specialist:
 **Future (Phase 4+)**:
 - Automate via Claude Code Agent API
 - Direct agent spawning without manual invocation
+
+**Agent timeout instruction**:
+Complete this task within ${agent_timeout} minutes (default: 30). If you cannot finish within the time limit, output partial results covering what has been completed so far, then escalate to human with a summary of remaining work.
 
 **Agent deliverables**:
 - Test files in `tests/` directory matching configured patterns
