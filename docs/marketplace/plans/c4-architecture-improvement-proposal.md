@@ -168,10 +168,29 @@ Audit all matd-* agents to ensure:
 
 ## Review Questions
 
-1. **Deprecation approach**: Should we delete C4 specialist agents or mark as deprecated with redirect?
-2. **Plugin distribution**: Should deprecated agents stay in MATD plugin or move to separate legacy plugin?
-3. **Command naming**: Keep `stdd-02-design.md` or rename to `matd-02-design.md` for consistency?
+~~1. **Deprecation approach**: Should we delete C4 specialist agents or mark as deprecated with redirect?~~
+~~2. **Plugin distribution**: Should deprecated agents stay in MATD plugin or move to separate legacy plugin?~~
+~~3. **Command naming**: Keep `stdd-02-design.md` or rename to `matd-02-design.md` for consistency?~~
+
+## Approved Decisions (2026-05-08)
+
+1. **Delete C4 agents** - No deprecation markers, clean deletion
+2. **No legacy plugin** - Delete agents entirely from repository
+3. **Rename commands** - All `stdd-*.md` → `matd-*.md` for consistency
+
+## Implementation Status
+
+**Status:** Approved - Ready for execution  
+**C4 agents to delete:**
+- matd-c4-context.md
+- matd-c4-container.md
+- matd-c4-component.md
+- matd-c4-code.md
+
+**Commands to rename:**
+- stdd-02-design.md → matd-02-design.md
+- (Audit for other stdd-* commands)
 
 ---
 
-**Awaiting user approval before proceeding with implementation.**
+**OpenCode plugin development:** Marked as future work, not part of current plan.
