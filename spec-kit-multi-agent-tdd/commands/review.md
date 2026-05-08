@@ -256,8 +256,8 @@ artifacts:
     template: '.specify/templates/code-review-template.md'
     mandatory: true
 
-review:
-  parallel_review: true
+workflow:
+  parallel_enabled: false
   max_cycles: 3
   conflict_resolution: 'safety_wins'  # BLOCKED > NEEDS_REVISION > APPROVED
 ```

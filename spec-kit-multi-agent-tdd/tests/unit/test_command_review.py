@@ -119,13 +119,24 @@ class TestStep7ConditionalBranching:
         )
 
     def test_step7_default_is_false_when_key_missing(self, review_md_content):
-        """Step 7 or Step 1 must document that default is false when key missing."""
+        """Step 1 must document that default is false when key missing."""
+        # Extract Step 1 section only
+        step1_start = review_md_content.find("## Step 1:")
+        assert step1_start != -1, "Step 1 section not found in review.md"
+
+        step2_start = review_md_content.find("## Step 2:", step1_start)
+        assert step2_start != -1, "Step 2 section not found in review.md"
+
+        step1_content = review_md_content[step1_start:step2_start]
+
+        # Check that Step 1 section contains both "default" and "false" near parallel_enabled
         has_default_false = (
-            "default" in review_md_content.lower()
-            and "false" in review_md_content
-            and "parallel_enabled" in review_md_content
+            "default" in step1_content.lower()
+            and "false" in step1_content
+            and "parallel_enabled" in step1_content
         )
         assert has_default_false, (
-            "review.md must document that parallel_enabled defaults to false "
-            "when the key is missing from config"
+            "review.md Step 1 must document that parallel_enabled defaults to false "
+            "when the key is missing from config. "
+            f"Step 1 content:\n{step1_content}"
         )
