@@ -48,6 +48,7 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 **Config keys loaded**:
 - `workflow.parallel_enabled` — controls whether agents dispatch in parallel or sequentially (default: `false`)
 - `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
+- `gates.convergence_detection` — enable convergence detection between review cycles (default: `false`)
 
 ## Step 2: Find Implementation Notes
 
@@ -172,6 +173,24 @@ If overall verdict is `NEEDS_REVISION`:
 - Overall verdict becomes `BLOCKED`
 - Escalate to human for review
 - ❌ Exit 2 with escalation details
+
+**Convergence check** (when `gates.convergence_detection: true`):
+
+After the max-cycles check, if the current cycle number is greater than 1 and `gates.convergence_detection` is `true` in config (default: `false`), run:
+
+```bash
+python3 scripts/detect_review_convergence.py \
+  docs/features/${FEATURE_ID}-arch-review.md \
+  docs/features/${FEATURE_ID}-code-review.md \
+  docs/features/${FEATURE_ID}-arch-review-prev.md \
+  docs/features/${FEATURE_ID}-code-review-prev.md
+```
+
+Where `*-prev.md` are the review artifacts saved from the previous cycle.
+
+- **Exit 0 (converged)**: Findings in the current cycle are identical to the previous cycle. Stop cycling early and report "convergence detected — findings have stabilised". Escalate to human if this occurs before `APPROVED`.
+- **Exit 1 (not converged)**: Findings differ. Continue to the next cycle as normal.
+- **Exit 2 (error)**: Previous cycle artifacts not found or unreadable. Skip convergence check and continue cycling.
 
 ## Step 10: Update Review Artifacts
 
