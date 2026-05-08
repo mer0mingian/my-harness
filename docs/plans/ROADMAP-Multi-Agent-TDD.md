@@ -25,7 +25,8 @@ This roadmap organizes 66 implementation tasks into 12 vertical slices, showing 
 |-------|--------|--------|--------------|----------------|
 | **Phase 1**: Foundation | Slice 1-2 | 7-8 hrs | None | Yes (both slices parallel) |
 | **Phase 2**: Core Workflow | Slice 3-3.5-4-5-6 | 20-24 hrs | Phase 1 | Sequential (3→3.5→4→5→6) |
-| **Phase 3**: Enhancements | Slice 7-8 | 7-9 hrs | Phase 2 | Yes (both slices parallel) |
+| **Phase 2.5**: Config | Slice 8 | 8 pts | Phase 2 | No (sequential) |
+| **Phase 3**: Discovery & Solution Design | Slice 7a-7d | 13 pts | Phase 2.5 | 7a‖7b then 7c→7d |
 | **Phase 4**: Migration | Slice 9-11 | 7-10 hrs | Phase 3 | Sequential (9→10→11) |
 
 ---
@@ -403,75 +404,68 @@ graph TD
 
 ---
 
-## Phase 3: Enhancements (7-9 hours)
+## Phase 2.5: Config Feature Implementations (8 pts)
 
-**Goal:** Add interactive planning and configuration customization.
+**Goal:** Implement all config options declared in `harness-tdd-config.yml.template` that have no backing implementation.  
+**Status:** Required before Phase 3.  
+**Detail:** See [SLICE8-CONFIG-PLAN.md](SLICE8-CONFIG-PLAN.md)
 
-**Slices:** 7-8  
-**Parallelization:** Both slices run in parallel  
-**Dependencies:** Phase 2 complete (Slice 6)
+**Slice 8 Tasks (priority order):**
+- S8-001: Parallel agent dispatch in /review — `workflow.parallel_enabled` (2 pts)
+- S8-002: Agent timeout instructions in all commands — `workflow.agent_timeout` (1 pt)
+- S8-003: `scripts/validate_artifact_structure.py` — post-generation warn-only (3 pts)
+- S8-004: Convergence detection between review cycles — `gates.convergence_detection` (1 pt)
+- S8-005: Local Jira auto-folder creation — `jira.auto_create_stories` (1 pt)
 
-### Slice 7: Grill-Me Integration (3-4 hours)
-
-**Tasks (4):**
-- S7-001: Implement /speckit.multi-agent.plan command (2 hrs)
-- S7-002: Implement grill-me skill discovery (1.5 hrs)
-- S7-003: Implement interactive Q&A session (1.5 hrs)
-- S7-004: Test interactive planning end-to-end (45 min)
-
-**Dependencies:**
-- Slice 6 complete (core workflow functional)
-
-**Critical Path:** S7-001 → S7-002 → S7-003 → S7-004
-
-**Deliverables:**
-- `/speckit.multi-agent.plan --mode=interactive` command
-- Grill-me skill integration (optional dependency)
-- Fallback to standard planning
-
-**Acceptance Criteria:**
-- [ ] Interactive Q&A runs if grill-me available
-- [ ] Graceful degradation if grill-me not found
-- [ ] Plan artifact created with decisions documented
+**Dependencies:** Phase 2 complete (Slice 6)  
+**Acceptance Criteria:** All 5 config keys have working implementations; no Phase 2 regressions.
 
 ---
 
-### Slice 8: Configuration & Customization (3-4 hours)
+## Phase 3: Discovery & Solution Design (13 pts)
 
-**Tasks (4):**
-- S8-001: Create configuration documentation (2 hrs)
-- S8-002: Implement configuration validation (1.5 hrs)
-- S8-003: Test artifact customization (1 hr)
-- S8-004: Test template override (1 hr)
+**Goal:** Add Discovery and Solution Design phases upstream of TDD workflow.  
+**Required for:** v1.0  
+**Detail:** See [PHASE3-IMPLEMENTATION-PLAN.md](PHASE3-IMPLEMENTATION-PLAN.md)
 
-**Dependencies:**
-- Slice 6 complete (core workflow functional)
+**Slices:** 7a → 7b (parallel) → 7c → 7d (sequential after templates)  
+**Dependencies:** Phase 2.5 (Slice 8) complete
 
-**Critical Path:** S8-001 → S8-002 → S8-003/S8-004
+### Slice 7a: PRD + System Constitution Templates (2 pts)
 
-**Deliverables:**
-- Configuration documentation
-- JSON Schema validation
-- Customization examples
+- S7a-001: `templates/prd-template.md` — What & Why, Business Value, Measurability, Goals & No-goals, Risks & Stories, Dependencies, People, Metrics (1 pt)
+- S7a-002: `templates/system-constitution-template.md` — Tech Radar, Team Tech Skills, Compliance & Governance, NFRs (Testing Strategy, Performance, Scalability, Reliability) (1 pt)
 
-**Acceptance Criteria:**
-- [ ] Teams can toggle artifact mandatory flags
-- [ ] Teams can customize artifact paths
-- [ ] Teams can override templates
+### Slice 7b: ADR + Solution Design Templates (2 pts) [parallel with 7a]
+
+- S7b-001: `templates/adr-template.md` — 3 alternatives, each with C1 Context + C2 Container mermaid (1 pt)
+- S7b-002: `templates/solution-design-template.md` — Decomposition (C2/C3), Dependency, Interface, Data Design views (1 pt)
+
+### Slice 7c: `/speckit.multi-agent.discover` Command (3 pts)
+
+- S7c-001: Command scaffold + prerequisite checks (0.5 pt)
+- S7c-002: grill-with-docs skill integration, consensus-driven questioning (1.5 pts)
+- S7c-003: PRD generation + merge-on-rerun + open questions artifact (1 pt)
+
+**Key behaviours:** grill-me runs throughout; re-run merges (not overwrites); unanswered questions saved to `${feature_id}-open-questions.md`.
+
+### Slice 7d: `/speckit.multi-agent.solution-design` Command (5 pts)
+
+- S7d-001: Prerequisites validation (c4-* agents exist, warn if PRD missing) (0.5 pt)
+- S7d-002: ADR generation with 3 alternatives + C1/C2 mermaid per alternative (1.5 pts)
+- S7d-003: User review gate — pause after ADR, wait for solution confirmation (0.5 pt)
+- S7d-004: Sequential c4-context → c4-container → c4-component invocation with cumulative context (2 pts)
+- S7d-005: Remaining views (Dependency, Interface, Data Design) + artifact validation (0.5 pt)
+
+**Key behaviours:** Fail-fast if c4-* agents missing; interrupt on contradiction; user confirms chosen solution before C2/C3 generation.
 
 ---
 
 **Phase 3 Execution Strategy:**
 
-**Parallel Execution (Recommended):**
-- **Developer 1**: Slice 7 (grill-me integration)
-- **Developer 2**: Slice 8 (configuration documentation)
-- **Duration**: 3-4 hours (both slices complete)
-
-**Sequential Execution (Single Developer):**
-- Complete Slice 8 first (configuration more foundational)
-- Then Slice 7 (grill-me enhancement)
-- **Duration**: 7-9 hours
+**Critical Path:** 7a/7b (parallel) → 7c → 7d  
+**Single Developer:** 7a → 7b → 7c → 7d sequentially  
+**Two Developers:** 7a ‖ 7b simultaneously, then 7c → 7d
 
 ---
 

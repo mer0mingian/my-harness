@@ -315,18 +315,18 @@ Phase 2 enforces RED→GREEN with evidence artifacts.
 
 **Q14a:** Should grill-me run at START of /discover (to build PRD from scratch), or throughout (iterative refinement)?
 
-**ANSWER:**
+**ANSWER:** throughout
 
 **Q14b:** How many questions should grill-me ask before generating PRD?
 - Fixed count (e.g., minimum 10 questions)
 - Until consensus (agent satisfied with understanding)
 - User-controlled (user says "stop, I've given enough info")
 
-**ANSWER:**
+**ANSWER:** Until consensus, but allow user defer for clarification of unknowns
 
 **Q14c:** Should grill-me questions be saved as artifact (docs/features/${feature_id}-discovery-questions.md)?
 
-**ANSWER:**
+**ANSWER:** no, only unanswered questions
 
 ---
 
@@ -337,16 +337,16 @@ Phase 2 has max 3 review cycles for /review command.
 - Agent generates PRD → user reviews → agent refines based on feedback → repeat?
 - Or: grill-me is inherently interactive, no separate review needed?
 
-**ANSWER:**
+**ANSWER:** no, only invoke manually
 
 **Q15b:** Should /solution-design have review cycles?
 - Agent proposes 3 solutions → user picks one → agent generates C4 → user reviews → refine?
 
-**ANSWER:**
+**ANSWER:** No, only invoke manually
 
 **Q15c:** Should review cycles be configurable per command, or global setting?
 
-**ANSWER:**
+**ANSWER:** no autoamted review cycles for these phases
 
 ---
 
@@ -357,20 +357,20 @@ Missing implementations: parallel execution, timeout enforcement, artifact valid
 
 **Q16a:** Are all 5 missing features REQUIRED for Phase 3, or can some be Phase 4 enhancements?
 
-**ANSWER:**
+**ANSWER:** Make these 5 a separate phase before phase 3, as we're re-scoping a bit. they will need to be re-evaluated
 
 **Q16b:** Should Slice 8 also add NEW config options (beyond template), or just implement existing ones?
 
-**ANSWER:**
+**ANSWER:** just implement existing ones
 
 **Q16c:** Priority order for Slice 8 implementations? (1 = highest priority)
-- ___ Parallel execution (for /review parallel agents)
-- ___ Agent timeout enforcement
-- ___ Artifact validation
-- ___ Convergence detection (review cycles)
-- ___ Local Jira auto-create
+- 1 Parallel execution (for /review parallel agents)
+- 2 Agent timeout enforcement
+- 3 Artifact validation
+- 4 Convergence detection (review cycles)
+- 5 Local Jira auto-create
 
-**ANSWER:**
+**ANSWER:** see numbers above
 
 ---
 
@@ -381,15 +381,15 @@ Config template goes in .specify/harness-tdd-config.yml (per-project).
 - User-wide defaults (agent preferences, log level)
 - Project config overrides global
 
-**ANSWER:**
+**ANSWER:** no, installed with speckit extension per project
 
 **Q17b:** What config options make sense globally vs per-project?
 
-**ANSWER:**
+**ANSWER:** make a recommendation
 
 **Q17c:** If global config conflicts with project config, which wins?
 
-**ANSWER:**
+**ANSWER:** project
 
 ---
 
@@ -404,40 +404,40 @@ Let's calibrate story points using Phase 2 tasks we've completed.
 - 3 (moderate)
 - 5 (complex)
 
-**ANSWER:**
+**ANSWER:** Cannot answer. How many tokens were required for the task?
 
 **Q18b:** Creating validate_red_state.py script (350 lines, complex pytest parsing) was how many points?
 
-**ANSWER:**
+**ANSWER:** Cannot answer. How many tokens were required for the task?
 
 **Q18c:** Full architectural correction plan (research + 10 scripts + 3 hooks + 5 markdown commands) was how many points total?
 
-**ANSWER:**
+**ANSWER:**  Cannot answer. How many tokens were required for the task?
 
 ---
 
 ### Q19: Phase 3 Task Estimation
 Estimate these Phase 3 tasks:
 
-**Q19a:** Create ADR template (markdown file with sections, comparison matrix) = ___ points
+**Q19a:** Create ADR template (markdown file with sections, comparison matrix) = 2 points
 
-**ANSWER:**
+**ANSWER:** including research
 
-**Q19b:** Create 4 C4 templates (context, container, component, code - each with mermaid diagram section) = ___ points
+**Q19b:** Create 4 C4 templates (context, container, component, code - each with mermaid diagram section) = 3 points
 
-**ANSWER:**
+**ANSWER:** including research
 
-**Q19c:** Implement /discover command (grill-me integration, artifact generation, validation) = ___ points
+**Q19c:** Implement /discover command (grill-me integration, artifact generation, validation) = 3 points
 
-**ANSWER:**
+**ANSWER:** see inline
 
-**Q19d:** Implement /solution-design command (ADR creation, c4-* agent orchestration, diagram generation) = ___ points
+**Q19d:** Implement /solution-design command (ADR creation, c4-* agent orchestration, diagram generation) = 5 points
 
-**ANSWER:**
+**ANSWER:** see inline
 
-**Q19e:** Implement Slice 8 config features (5 missing implementations) = ___ points
+**Q19e:** Implement Slice 8 config features (5 missing implementations) = 8 points
 
-**ANSWER:**
+**ANSWER:** see inline
 
 ---
 
@@ -446,15 +446,15 @@ Original estimate: 7-9 hours for Phase 3 (before /solution-design was added).
 
 **Q20a:** With NEW scope (2 commands + templates + config), what's your estimate in story points for ENTIRE Phase 3?
 
-**ANSWER:**
+**ANSWER:** 13+
 
 **Q20b:** Should Phase 3 be split into smaller slices beyond 7a (discover) and 7b (solution-design) and 8 (config)?
 
-**ANSWER:**
+**ANSWER:** no
 
 **Q20c:** What's the CRITICAL PATH (longest dependency chain) through Phase 3 tasks?
 
-**ANSWER:**
+**ANSWER:** see diagram and commands reference
 
 ---
 
@@ -465,15 +465,16 @@ You mentioned extracting artifact names from workflow.svg.
 
 **Q21a:** The diagram is 3.6MB. Should we extract a text-based artifact list manually, or write a parser?
 
-**ANSWER:**
+**ANSWER:** you may also parse from /home/minged01/repositories/harness-workplace/Agentic Engineering Workflow.png
+
 
 **Q21b:** Are there artifacts in workflow.svg NOT mentioned in our current plan (beyond PRD, Constitution, ADR, C4)?
 
-**ANSWER:**
+**ANSWER:** check this yourself. there is testing strategy mentioned in refinement phase. this is derived from the spec. It is not a separate artifact
 
 **Q21c:** Should workflow.svg be regenerated to match final Phase 3 scope, or is it a reference only?
 
-**ANSWER:**
+**ANSWER:** reference only
 
 ---
 
@@ -482,15 +483,15 @@ What could prevent Phase 3 from succeeding?
 
 **Q22a:** Biggest risk you foresee in Phase 3 implementation?
 
-**ANSWER:**
+**ANSWER:** spec drift. need regular consolidation by asking user questions
 
 **Q22b:** Are c4-* agents tested and working? Or do we need to validate/fix them before /solution-design?
 
-**ANSWER:**
+**ANSWER:** tested and working
 
 **Q22c:** Should we prototype /discover with grill-me BEFORE building full command, or trust it will work?
 
-**ANSWER:**
+**ANSWER:** trust it will work
 
 ---
 
@@ -501,15 +502,15 @@ After answering above questions:
 
 **Q23a:** Any changes to the Phase 3 approach based on your answers?
 
-**ANSWER:**
+**ANSWER:** ready to proceed
 
 **Q23b:** Confidence level (1-10) that Phase 3 scope is now well-defined?
 
-**ANSWER:**
+**ANSWER:** not high, since I have clarified some things. please check the /home/minged01/repositories/harness-workplace/Agentic Engineering Workflow.png and validate this corresponds with your expectations
 
 **Q23c:** Should we create a Phase 3 implementation plan NOW, or iterate on answers first?
 
-**ANSWER:**
+**ANSWER:** Create plan for plan 2 slice 8 and then create the phase 3 plan
 
 ---
 

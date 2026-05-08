@@ -127,6 +127,44 @@ Skills: Use arch-c4-architecture for workflow, arch-mermaid-diagrams for syntax
 
 ---
 
+## G4: Artifact Flow Understanding (CONFIRMED VIA DIAGRAM)
+
+**Diagram Source:** `Agentic Engineering Workflow.png`
+
+### PRD Must-Have Sections (Discovery Panel)
+- What & Why
+- Business Value
+- Measurability
+- Goals & No-goals
+- Risks & Stories
+- Dependencies
+- People
+- Metrics
+
+### System Constitution Must-Have Sections (Discovery Panel)
+- Tech Radar
+- Team Tech Skills
+- Compliance & Governance
+- NFRs: Testing Strategy, Performance, Scalability, Reliability
+
+### Solution Design Output (Solution Design Panel)
+- ADR (approved solution)
+- **C2/C3 Views** (Container + Component levels — NOT C1 Context or C4 Code)
+- Diagrams
+- Data Flow
+
+### Refinement Inputs (Refinement Panel)
+- C2/C3 Views + Diagrams, data flow (from Solution Design)
+- Consolidate internal interfaces
+- Testing Strategy (derived here, not in implementation)
+- → Produces: vertical slices (Epic, Story, Task)
+
+### PRD ↔ Spec Relationship
+- PRD = upstream context (What & Why, business motivation, Job-to-be-Done)
+- Spec = SpecKit technical specification (acceptance criteria, user stories format)
+- PRD does NOT contain user stories — these are derived as Epics during Refinement
+- Both are inputs to Solution Design
+
 ## G4: Artifact Flow Understanding (CORRECTED)
 
 **Workflow.svg Analysis:**
