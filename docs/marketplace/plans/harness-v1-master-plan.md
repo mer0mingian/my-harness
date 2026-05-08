@@ -1,9 +1,11 @@
 # Harness v1 — Master plan
 
-**Status:** Drafted, awaiting approval to deploy agents
-**Last updated:** 2026-04-21
+**Status:** In Progress (Phase 0/1 complete, Phase 2 MATD plugin spec approved)
+**Last updated:** 2026-05-08
 **Supersedes (in part):** [multi-agent-cli-harness-plan.md](multi-agent-cli-harness-plan.md), [multi-agent-plugins-marketplace-plan.md](multi-agent-plugins-marketplace-plan.md), [multi-container-harness-plan.md](multi-container-harness-plan.md)
-**Companion:** [harness-v1-agent-tasks.md](harness-v1-agent-tasks.md) — copy-pasteable subagent prompts, one per task
+**Companions:** 
+- [harness-v1-agent-tasks.md](harness-v1-agent-tasks.md) — copy-pasteable subagent prompts, one per task
+- [matd-plugin-spec.md](matd-plugin-spec.md) — MATD plugin architecture & agent mapping
 
 ---
 
@@ -30,13 +32,20 @@ Deliver a working **v1** of the multi-agent-cli harness: a reproducible docker-c
 - `bin/harness` — host-side entry script: `harness up`, `harness shell`, `harness down`, `harness services up/down`.
 - Short docs for quickstart and common attach patterns.
 
-### my-harness/ (restructure the existing tree)
-- `.agents/` confirmed as canonical source of truth for skills/agents/commands.
-- Skill-isolation strategy applied: workflow-prefix audit + per-CLI ACL/list.
-- `.claude/` symlinks + `settings.json` + `.claude-plugin/plugin.json` (markdown commands — **no TOML**).
-- `.opencode/` symlinks + `permission.skill` ACLs on agent frontmatter.
-- `.gemini/extensions/stdd-workflow/` with correct `gemini-extension.json` shape and scoped skill symlinks.
-- Nested agent subdirs (`c4-architecture-agents/`, `daniels-workflow-agents/`, `tdd-agents/`) flattened per-CLI where required.
+### harness-tooling/ (restructure with modular plugins)
+- **MATD Plugin** (Multi-Agent Test-Driven Development) — primary workflow plugin. See [matd-plugin-spec.md](matd-plugin-spec.md) for complete specification.
+  - `.agents/` flat structure (OpenCode compatible) with `matd-*` prefixed agents
+  - `.claude/` nested structure with symlinks + `.claude-plugin/plugin.json`
+  - Agent frontmatter includes workflow-aware skill permissions
+  - `matd-dev` merges `python-dev` + `pries-make` capabilities
+- **Separate marketplace plugins** (grouped by prefix):
+  - `harness-manage-plugin/` — manage-* skills (skill-creator, mcp-builder, etc.)
+  - `harness-file-ops-plugin/` — file-ops-* skills (pdf, pptx, xlsx)
+  - `harness-context-plugin/` — context-* skills
+  - Additional plugins as needed
+- `.agents/agents/` already flat ✅ (no nested subdirs to flatten)
+- `.opencode/` — reads flat `.agents/` directly; permission ACLs in agent frontmatter
+- `.gemini/` — scaffolding only (no functional plugin for v1)
 - Root `README.md` + `CLAUDE.md` refreshed; old plan docs marked deprecated with cross-links to this plan.
 
 ### Cross-repo
@@ -61,7 +70,7 @@ The older `multi-agent-cli-harness-plan.md` contained several factual errors. Th
 | Claude Code commands are TOML | Claude Code uses markdown (`.claude/commands/*.md`) | Drop TOML pipeline for Claude Code entirely |
 | Gemini CLI has `.gemini/mcp-servers.json` | Gemini CLI puts MCP config inside `gemini-extension.json` | Configure MCP inside the extension manifest |
 | Custom MCP server lives in `.agents/mcp/` | Needed MCP servers (Haft, CGC, Graphiti) are external | `.agents/mcp/` is not created; MCP points at sibling compose services |
-| "Migrate agents" handled flat | Existing agent directory has nested subfolders Claude Code doesn't recurse into | Flatten or per-CLI restructure via task M2 |
+| "Migrate agents" handled flat | Existing agent directory already flat; no nested subdirs | Task M2 becomes rename-to-matd-prefix + merge python-dev/pries-make |
 | Bash conversion script for TOML | Unnecessary given reality above | Deleted from scope |
 | `.agents/configs/mcp_config.yaml` is authoritative | It's a research document | Treat as reference, do not ship |
 
