@@ -1,0 +1,1 @@
+../../.agents/agents/matd-critical-thinker.md
