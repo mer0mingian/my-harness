@@ -32,6 +32,6 @@ both when editing — they are consumed by different CLIs.
 
 ## Plans
 
-- Master plan: [docs/harness-v1-master-plan.md](docs/harness-v1-master-plan.md)
-- Task definitions: [docs/harness-v1-agent-tasks.md](docs/harness-v1-agent-tasks.md)
+- Master plan: [docs/marketplace/plans/harness-v1-master-plan.md](../marketplace/plans/harness-v1-master-plan.md)
+- Task definitions: [docs/marketplace/plans/harness-v1-agent-tasks.md](../marketplace/plans/harness-v1-agent-tasks.md)
 - Archived plans: [docs/archive/](docs/archive/)
