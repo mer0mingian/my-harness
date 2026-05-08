@@ -344,3 +344,49 @@ NOTE: This is already broken — the archive file sits in docs/archive/ so ../RE
 | Files that move | 23 (13 individual files + 10 files in reference-workflows-ppries directory move) |
 | Reference fixes required | 21 distinct link changes across 9 files |
 | Files staying in place | 30 |
+
+---
+
+## Archival Assessment
+
+**Date:** 2026-05-08
+**Scope:** Planning documents in `docs/plans/`, `docs/DOC-REORGANISATION-PROPOSAL.md`, and `spec-kit-multi-agent-tdd/docs/plans/`
+**Purpose:** Identify which planning docs should remain Active references, which should be Archived for institutional memory, and which should be Deleted as superseded or ephemeral.
+
+### Status Table
+
+| File | Status | Reason |
+|------|--------|--------|
+| `docs/plans/ARCHITECTURAL-CORRECTION-PLAN.md` | N/A | File does not exist at this path; only `spec-kit-multi-agent-tdd/docs/plans/ARCHITECTURAL-CORRECTION-PLAN.md` exists. No action. |
+| `docs/plans/ARTIFACT-SUMMARY.md` | Active | Working reference describing artifact templates, mandatory flags, paths, gates — agents and commands rely on this contract today. |
+| `docs/plans/CONSTITUTION-Multi-Agent-TDD.md` | Active | Non-bypassable constitutional principles; cited by gates/agents at runtime — current state of record, not historical. |
+| `docs/plans/GAP-FIX-RECOMMENDATIONS.md` | Archive | Phase 2 gap fixes are implemented; the document captures the rationale (constitutional violations identified, fixes applied) which is institutional memory worth preserving. |
+| `docs/plans/PHASE2-UPDATED-Execute-Command.md` | Archive | Phase 2 is complete; document records why orchestrated `/execute` was chosen over four sequential commands — rationale worth keeping. |
+| `docs/plans/PHASE3-IMPLEMENTATION-PLAN.md` | Archive | Phase 3 (discover + solution-design) is implemented; plan records the Phase 3 design decisions (test strategy, slice breakdown) referenced from DOC-REORGANISATION-PROPOSAL but no longer a working plan. |
+| `docs/plans/PLAN-Multi-Agent-TDD-Implementation.md` | Active | Master implementation plan referenced by ROADMAP and Phase 4 still ahead; serves as the architectural blueprint until full migration completes. |
+| `docs/plans/PRD-Multi-Agent-TDD-Workflow.md` | Active | Product requirements document — the authoritative "what and why" for the extension; referenced by ROADMAP and ongoing phases. |
+| `docs/plans/ROADMAP-Multi-Agent-TDD.md` | Active | Phase 4 (migration) and reorganisation still ahead; ROADMAP is the canonical phase tracker per archival criteria. |
+| `docs/plans/SLICE8-CONFIG-PLAN.md` | Archive | Slice 8 config feature is implemented (Phase 2.5 complete); plan records the priority order and rationale for the 5 config options — institutional memory. |
+| `docs/plans/TASK-LIST-Multi-Agent-TDD.md` | Active | Granular task tracking with acceptance criteria; Phase 4 tasks still pending — remains the working task ledger until all phases complete. |
+| `docs/plans/harness-v1-agent-tasks.md` | Active | Marketplace harness-v1 subagent prompts; harness-v1 work is ongoing (separate concern from SpecKit phases) and DOC-REORGANISATION still needs to move it. |
+| `docs/plans/harness-v1-master-plan.md` | Active | Marketplace harness-v1 master plan; supersedes earlier plans (already in archive) and remains the current state of record for the marketplace effort. |
+| `docs/plans/harness-workflow-runtime-plan.md` | Active | Workflow runtime plugin plan; Phase R deliverable plan still referenced and not yet superseded. |
+| `docs/DOC-REORGANISATION-PROPOSAL.md` | Active | Reorganisation has not been executed yet; this document IS the plan for that work. |
+| `spec-kit-multi-agent-tdd/docs/plans/ARCHITECTURAL-CORRECTION-PLAN.md` | Archive | Architectural Correction (Python commands → markdown) is fully executed per project status; plan captures the rationale for the migration pattern (commands/ markdown vs scripts/ Python vs hooks/) which is enduring institutional memory. |
+| `spec-kit-multi-agent-tdd/docs/plans/PHASE3-GRILLING-QUESTIONS.md` | Archive | Phase 3 questions are answered and the implementation plan derived from them is now complete; the answered questions document the design rationale for /discover and /solution-design — worth preserving. |
+
+### Summary Counts
+
+| Status | Count | Files |
+|--------|-------|-------|
+| Active | 9 | ARTIFACT-SUMMARY, CONSTITUTION, PLAN, PRD, ROADMAP, TASK-LIST, harness-v1-agent-tasks, harness-v1-master-plan, harness-workflow-runtime-plan, DOC-REORGANISATION-PROPOSAL (note: 10 entries because DOC-REORGANISATION lives at `docs/` root, not `docs/plans/`) |
+| Archive | 6 | GAP-FIX-RECOMMENDATIONS, PHASE2-UPDATED-Execute-Command, PHASE3-IMPLEMENTATION-PLAN, SLICE8-CONFIG-PLAN, ARCHITECTURAL-CORRECTION-PLAN (in spec-kit-multi-agent-tdd), PHASE3-GRILLING-QUESTIONS |
+| Delete | 0 | (none — every assessed document either has ongoing reference value or captures rationale worth preserving) |
+| N/A | 1 | `docs/plans/ARCHITECTURAL-CORRECTION-PLAN.md` does not exist at the listed path |
+
+Total documents assessed: 17 listed (16 actually exist + 1 N/A). Active: 10. Archive: 6. Delete: 0.
+
+### Recommended Execution Order
+
+The archival should be executed **before** the documentation reorganisation in Section 3, not after. Reasoning: the Move List in Section 3 mechanically relocates 13 files plus a directory and rewrites 21 distinct relative-link references. Archiving 4 of those `docs/plans/` files first (GAP-FIX-RECOMMENDATIONS, PHASE2-UPDATED-Execute-Command, PHASE3-IMPLEMENTATION-PLAN, SLICE8-CONFIG-PLAN) into `docs/archive/` shrinks the speckit-tdd plans move set from 10 files to 6, which also reduces the cross-document link-fix surface in Section 4a (any inbound link to those four files only needs to resolve to `../../archive/` once, instead of being moved twice). The two `spec-kit-multi-agent-tdd/docs/plans/` files (ARCHITECTURAL-CORRECTION-PLAN and PHASE3-GRILLING-QUESTIONS) should move to a parallel `spec-kit-multi-agent-tdd/docs/archive/` directory in the same archival pass, so the extension subtree mirrors the marketplace's archive convention. Once archival is done, the reorganisation moves a smaller, fully-active set of plans into the new `docs/speckit-tdd/plans/` and `docs/marketplace/plans/` subtrees, and the resulting structure cleanly separates "what is current" from "why decisions were made."
+
