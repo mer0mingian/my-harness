@@ -19,7 +19,8 @@ The SpecKit Multi-Agent TDD extension adds AI-powered discovery, solution design
 
 2. **Install this extension**:
    ```bash
-   claude plugin install harness-tooling/spec-kit-multi-agent-tdd
+   # Extension auto-installs via workspace .harness.yml
+   # Or manually: specify extension add harness-tdd-workflow --from /path/to/harness-tooling/spec-kit-multi-agent-tdd
    ```
 
 3. **Initialize in your project**:
@@ -167,11 +168,11 @@ Edit `.specify/harness-tdd-config.yml` to customize:
 
 ```yaml
 agents:
-  test_agent: "test-specialist"        # Agent for writing tests
-  implementation_agent: "dev-specialist"  # Agent for implementation
-  qa_agent: "qa-specialist"            # Agent for acceptance testing
-  arch_reviewer: "arch-specialist"     # Agent for architecture review
-  code_reviewer: "review-specialist"   # Agent for code review
+  test_agent: "matd-qa"                # Agent for writing tests
+  implementation_agent: "matd-dev"     # Agent for implementation
+  qa_agent: "matd-qa"                  # Agent for acceptance testing
+  arch_reviewer: "matd-architect"      # Agent for architecture review
+  code_reviewer: "matd-critical-thinker" # Agent for code review
 ```
 
 ### Artifact Paths
@@ -230,19 +231,25 @@ Every commit requires proof of TDD adherence:
 
 ---
 
-## Specialist Agents
+## MATD Plugin Agents
 
-The extension uses 5 specialist agents:
+The extension uses agents from the **matd** Claude Code plugin:
 
-| Agent | Role | Skills Used |
-|-------|------|-------------|
-| **test-specialist** | Writes comprehensive failing tests | `dev-tdd`<br/>`stdd-test-author-constrained` |
-| **dev-specialist** | Implements minimal code to pass tests | `dev-tdd`<br/>`stdd-make-constrained-implementation` |
-| **qa-specialist** | Validates acceptance criteria | `general-verification-before-completion` |
-| **arch-specialist** | Reviews architecture and safety | `review-check-correctness` |
-| **review-specialist** | Reviews code quality | `review-simplify-complexity` |
+| Agent | Role | Responsibilities |
+|-------|------|------------------|
+| `matd-qa` | Test & QA Engineer | Creates E2E/Integration tests, acceptance validation |
+| `matd-dev` | Implementation Engineer | Implements code using TDD within fixed file manifests |
+| `matd-architect` | Solution Architect | Architecture review, solution design |
+| `matd-critical-thinker` | Red Team Validator | Code review, analyzes for completeness/edge cases |
+| `matd-orchestrator` | Master Orchestrator | User-facing PM and workflow coordinator |
 
-These agents are defined in `.agents/plugins/harness-agents/` and can be customized via frontmatter.
+**Installation:**
+```bash
+# Auto-installed via .harness.yml plugins section
+# Or manually: claude plugin install /path/to/harness-tooling/.claude/.claude-plugin
+```
+
+**Agent definitions:** `harness-tooling/.claude/agents/matd-*.md`
 
 ---
 
@@ -250,10 +257,10 @@ These agents are defined in `.agents/plugins/harness-agents/` and can be customi
 
 ### "Agent not found" error
 
-Ensure the harness-agents plugin is installed:
+Ensure the matd plugin agents are installed:
 ```bash
-ls .agents/plugins/harness-agents/agents/
-# Should show: test-specialist.md, dev-specialist.md, arch-specialist.md, review-specialist.md, qa-specialist.md
+ls harness-tooling/.claude/agents/matd-*.md
+# Should show: matd-qa.md, matd-dev.md, matd-architect.md, matd-critical-thinker.md, matd-orchestrator.md
 ```
 
 ### "Artifact not found" error
@@ -364,7 +371,7 @@ After completing implementation:
 
 - **Full command reference**: See [docs/references/COMMANDS-REFERENCE.md](docs/references/COMMANDS-REFERENCE.md)
 - **Configuration schema**: See [config-schema.json](config-schema.json)
-- **Agent definitions**: See `.agents/plugins/harness-agents/agents/`
+- **Agent definitions**: See `harness-tooling/.claude/agents/matd-*.md`
 - **Technical requirements**: See archived planning docs in `docs/speckit-tdd/archive/`
 
 ---
