@@ -54,8 +54,8 @@ gates:
 # Planning configuration (Step 0: Interactive Planning)
 # Optional: Integrate Matt Pocock's grill-me skill for interactive planning
 planning:
-  skill: "grill-me"  # Optional: Matt Pocock's grill-me skill for interactive planning
-  skill_path: ".claude/marketplace-skills/grill-me/"  # Path to skill (if installed)
+  skill: "general-grill-me"  # Optional: grill-me skill for interactive planning
+  skill_path: ".claude/skills/general-grill-me/"  # Path to skill (if installed via plugin)
   interactive_by_default: true  # Use interactive mode by default
   fallback_mode: "standard"  # Fallback if grill-me unavailable (standard | skip)
 
