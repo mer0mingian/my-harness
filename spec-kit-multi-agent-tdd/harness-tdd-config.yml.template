@@ -4,13 +4,13 @@
 version: "1.0"
 
 # Agent assignments (maps workflow roles to Claude Code agent names)
-# These agent names must match agent definitions in your .claude-plugin/plugin.json
+# These agent names must match matd plugin agent definitions (matd-qa, matd-dev, matd-architect, matd-critical-thinker)
 agents:
-  test_agent: "test-specialist"        # Agent for Step 7: Write Tests
-  implementation_agent: "dev-specialist"  # Agent for Step 8: Implement
-  qa_agent: "qa-specialist"            # Agent for acceptance validation
-  arch_reviewer: "arch-specialist"     # Agent for architecture review
-  code_reviewer: "review-specialist"   # Agent for code review
+  test_agent: "matd-qa"                # Agent for Step 7: Write Tests
+  implementation_agent: "matd-dev"     # Agent for Step 8: Implement
+  qa_agent: "matd-qa"                  # Agent for acceptance validation
+  arch_reviewer: "matd-architect"      # Agent for architecture review
+  code_reviewer: "matd-critical-thinker"  # Agent for code review
 
 # Artifact configuration (standardized paths and naming)
 artifacts:
