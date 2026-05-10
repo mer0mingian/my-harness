@@ -1,6 +1,6 @@
 ---
 description: "Implement feature code (RED → GREEN)"
-agent: dev-specialist
+agent: matd-dev
 tools:
   - 'filesystem/read'
   - 'filesystem/write'
@@ -17,7 +17,7 @@ exit_codes:
 
 # Implementation Workflow (Multi-Agent TDD Step 8)
 
-This command prepares context for the @dev-specialist agent to implement code that makes tests pass (RED → GREEN transition). It validates entry conditions, creates implementation notes artifact, and manages post-implementation validation.
+This command prepares context for the @matd-dev agent to implement code that makes tests pass (RED → GREEN transition). It validates entry conditions, creates implementation notes artifact, and manages post-implementation validation.
 
 ## Prerequisites
 
@@ -55,7 +55,7 @@ This command prepares context for the @dev-specialist agent to implement code th
 Load harness configuration from `.specify/harness-tdd-config.yml` or use defaults.
 
 **Default configuration includes**:
-- Agent names (dev-specialist for implementation)
+- Agent names (matd-dev for implementation)
 - Test framework settings (pytest, file patterns)
 - Artifact paths and templates
 - Integration check commands
@@ -91,7 +91,7 @@ Search for feature spec in common locations:
 
 ### Step 4: Prepare Agent Context
 
-Build context bundle for @dev-specialist agent:
+Build context bundle for @matd-dev agent:
 
 **Context includes**:
 - `feature_id`: Feature identifier
@@ -158,7 +158,7 @@ Generate implementation notes artifact from template:
 **Template variables**:
 - `feature_id`: Feature identifier
 - `feature_name`: Extracted from feature_id (title-cased)
-- `agent_name`: Implementation agent name (dev-specialist)
+- `agent_name`: Implementation agent name (matd-dev)
 - `timestamp`: ISO 8601 UTC timestamp
 - `status`: 'draft' (will be updated to 'complete' after GREEN validation)
 - `red_state_evidence`: RED validation result from Step 5
@@ -183,7 +183,7 @@ Print instructions for next step (agent invocation):
 NEXT STEP: Invoke implementation agent
 ==========================================================
 
-Agent: dev-specialist
+Agent: matd-dev
 Instructions: Implement code to make tests pass
 Test design: /path/to/test-design-feat-123.md
 Feature spec: /path/to/feat-123.md  # if available
@@ -439,7 +439,7 @@ Integration checks: 1/2 passed
 
 ```
 Implementation workflow for: feat-123
-Agent: dev-specialist
+Agent: matd-dev
 
 ✓ Found test design: /path/to/test-design-feat-123.md
 ✓ Found spec: /path/to/feat-123.md
@@ -470,7 +470,7 @@ Valid RED state confirmed - proceeding with implementation
 NEXT STEP: Invoke implementation agent
 ============================================================
 
-Agent: dev-specialist
+Agent: matd-dev
 Instructions: Implement code to make tests pass
 Test design: /path/to/test-design-feat-123.md
 Feature spec: /path/to/feat-123.md
@@ -601,7 +601,7 @@ Integration checks: 1/2 passed
 ```yaml
 version: '1.0'
 agents:
-  implementation_agent: dev-specialist
+  implementation_agent: matd-dev
 
 artifacts:
   root: 'docs/features'

@@ -1,6 +1,6 @@
 ---
 description: "Generate failing tests (RED state) for feature"
-agent: test-specialist
+agent: matd-qa
 tools:
   - 'filesystem/read'
   - 'filesystem/write'
@@ -17,7 +17,7 @@ exit_codes:
 
 # Test Generation Workflow (Multi-Agent TDD Phase 3)
 
-This command spawns the @test-specialist agent to write failing tests (RED state) for a feature specification and generates a test design artifact.
+This command spawns the @matd-qa agent to write failing tests (RED state) for a feature specification and generates a test design artifact.
 
 ## Prerequisites
 
@@ -70,7 +70,7 @@ python3 scripts/extract_acceptance_criteria.py --file ${SPEC_PATH} --format json
 Load harness configuration from `.specify/harness-tdd-config.yml` or use defaults:
 
 **Default configuration includes**:
-- Agent names (test-specialist, dev-specialist, arch-specialist, review-specialist)
+- Agent names (matd-qa, matd-dev, matd-arch, matd-review)
 - Test framework settings (pytest, file patterns)
 - Failure code classifications (valid RED vs. broken)
 - Artifact paths and templates
@@ -82,7 +82,7 @@ Load harness configuration from `.specify/harness-tdd-config.yml` or use default
 
 ## Step 4: Build Agent Context
 
-Prepare structured context for @test-specialist:
+Prepare structured context for @matd-qa:
 
 **Context includes**:
 - Feature ID: `${FEATURE_ID}`
@@ -203,7 +203,7 @@ Create artifact at path from config (default: `docs/tests/test-design/${FEATURE_
 
 ```
 === Agent Invocation Required ===
-Please invoke @test-specialist agent with the following context:
+Please invoke @matd-qa agent with the following context:
 Feature ID: feat-123
 Context file: /tmp/test-agent-context-feat-123-abc123.txt
 
@@ -216,7 +216,7 @@ NOTE: This is Phase 2 MVP behavior (context-file handoff).
   Artifact: /path/to/docs/tests/test-design/feat-123-test-design.md
 
 Next steps:
-  1. Invoke @test-specialist agent with context file
+  1. Invoke @matd-qa agent with context file
   2. Review test design artifact
   3. Run tests to verify RED state
 ```
@@ -272,10 +272,10 @@ Review the test design artifact for escalation details.
 ```yaml
 version: '1.0'
 agents:
-  test_agent: test-specialist
-  implementation_agent: dev-specialist
-  arch_reviewer: arch-specialist
-  code_reviewer: review-specialist
+  test_agent: matd-qa
+  implementation_agent: matd-dev
+  arch_reviewer: matd-arch
+  code_reviewer: matd-review
 
 artifacts:
   test_design:
