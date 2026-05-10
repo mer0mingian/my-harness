@@ -104,7 +104,7 @@ Outputs:
 This single command runs the complete TDD cycle:
 1. **Test** — Generates failing tests (RED state)
 2. **Implement** — Writes minimal code to make tests pass (GREEN state)
-3. **Review** — Parallel architecture + code review by specialist agents
+3. **Review** — Parallel architecture + code review by MATD agents
 4. **Commit** — Validates evidence and creates git commit
 
 **Option B: Step-by-Step Control**
@@ -217,7 +217,7 @@ The extension enforces strict test-driven development:
    - Implementation notes document approach
 
 3. **REFACTOR** — Parallel review ensures quality:
-   - Architecture specialist checks correctness, safety constraints
+   - matd-architect agent checks correctness, safety constraints
    - Code reviewer checks complexity, duplication, readability
    - Conflicts resolved (safety wins)
 
