@@ -241,7 +241,7 @@ The extension uses agents from the **matd** Claude Code plugin:
 | `matd-dev` | Implementation Engineer | Implements code using TDD within fixed file manifests |
 | `matd-architect` | Solution Architect | Architecture review, solution design |
 | `matd-critical-thinker` | Red Team Validator | Code review, analyzes for completeness/edge cases |
-| `matd-orchestrator` | Master Orchestrator | User-facing PM and workflow coordinator |
+| `matd-specifier` | Requirements Specifier | Deep discovery, specification refinement, PRD generation |
 
 **Installation:**
 ```bash
@@ -260,7 +260,7 @@ The extension uses agents from the **matd** Claude Code plugin:
 Ensure the matd plugin agents are installed:
 ```bash
 ls harness-tooling/.claude/agents/matd-*.md
-# Should show: matd-qa.md, matd-dev.md, matd-architect.md, matd-critical-thinker.md, matd-orchestrator.md
+# Should show: matd-qa.md, matd-dev.md, matd-architect.md, matd-critical-thinker.md, matd-specifier.md
 ```
 
 ### "Artifact not found" error
