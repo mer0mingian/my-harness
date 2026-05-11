@@ -79,15 +79,15 @@
         }
       ]
     },
-    "discover": {
-      "file": "commands/discover.md",
-      "description": "Discovery phase: generate PRD and System Constitution via grill-me relentless questioning",
-      "usage": "/speckit.multi-agent.discover <feature-id>",
+    "specify-product-brief": {
+      "file": "commands/specify-product-brief.md",
+      "description": "Create or update product brief using grill-me interview for new products",
+      "usage": "/speckit.matd.specify-product-brief [product-name]",
       "arguments": [
         {
-          "name": "feature_id",
-          "required": true,
-          "description": "Feature identifier (e.g., 'feat-123')"
+          "name": "product_name",
+          "required": false,
+          "description": "Optional product identifier (determined during grill-me if not provided)"
         }
       ]
     },
