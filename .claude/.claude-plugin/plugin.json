@@ -1,8 +1,0 @@
-{
-  "name": "matd",
-  "version": "1.0.0",
-  "description": "Multi-Agent Test-Driven Development workflow for SpecKit. Provides orchestrated TDD workflow with specialized agents for requirements, architecture, QA, and implementation.",
-  "author": "Daniel Minges",
-  "agents": "agents/",
-  "skills": "skills/"
-}
