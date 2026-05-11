@@ -43,21 +43,17 @@ This directory contains company-specific templates for SpecKit-driven developmen
 **Purpose**: Various specification formats for requirements definition.
 
 **Expected Files**:
-- `prd-template.md` - Product Requirements Document
-- `tech-req-template.md` - Technical Requirements Specification
+- `spec-template.md` - Feature Specification (includes technical details)
 - `adr-template.md` - Architecture Decision Record
 
-**PRD Template Should Include**:
+**Spec Template Should Include**:
 - Feature overview and business value
 - User stories and personas
 - Acceptance criteria
 - Success metrics
 - Dependencies and assumptions
-
-**Tech-Req Template Should Include**:
 - Technical requirements and constraints
 - System architecture impact
-- Component-level requirements
 - Performance requirements
 - Security considerations
 
@@ -67,6 +63,45 @@ This directory contains company-specific templates for SpecKit-driven developmen
 - Decision drivers
 - Considered options
 - Decision outcome and consequences
+
+**Note**: Feature specs are for individual features within a product. For product-level documentation, see Product Brief Template section below.
+
+---
+
+### Product Brief Template (`specs/`)
+
+**Purpose**: High-level product vision and goals for NEW products. Different from feature specs — this is product-level, not feature-level.
+
+**Expected Files**:
+- `product-brief-template.md` - Product-level vision, goals, and constraints
+
+**Product Brief Template Should Include**:
+- Product vision and strategic goals
+- Target users and personas
+- Core value proposition and differentiators
+- High-level feature capabilities (not detailed specs)
+- Success metrics and KPIs
+- Technical context and constitution references
+- Business, technical, and organizational constraints
+
+**When to Use**:
+- Creating a NEW product (not a feature)
+- Need product-level vision document
+- Establishing success metrics for entire product
+- Defining target users and value proposition
+
+**Variables**:
+- `{product_name}` - Name of the product
+- `{domain}` - Business domain
+- `{vision}` - Product vision statement
+- `{team_name}` - Owning team
+- `{timestamp}` - Creation timestamp
+
+**Integration with Specs**:
+- Product briefs are OPTIONAL — specs can exist independently
+- When product brief exists, matd-specifier agent can reference it as additional context during feature spec creation
+- Use `/speckit.matd.specify-product-brief` to create product brief
+- Use `/speckit.multi-agent.discover` to create feature specs
 
 ---
 
@@ -218,10 +253,10 @@ templates:
   constitution:
     path: constitution/stepstone-constitution-template.md
   specs:
-    prd:
-      path: specs/prd-template.md
-    tech-req:
-      path: specs/tech-req-template.md
+    spec:
+      path: specs/spec-template.md
+    adr:
+      path: specs/adr-template.md
 ```
 
 When SpecKit creates artifacts, it:
@@ -272,7 +307,7 @@ When SpecKit creates artifacts, it:
 
 For questions or issues with templates:
 - Check [Agentic-Workflow.md](../../harness-sandbox/Agentic-Workflow.md) for workflow context
-- Review [Technical-Requirements.md](../../harness-sandbox/Technical-Requirements.md) for template requirements
+- Review the technical constitution for project-wide technical standards
 - Consult team's architectural decision records (ADRs)
 
 ---
