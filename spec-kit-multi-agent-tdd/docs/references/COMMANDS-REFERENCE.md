@@ -265,6 +265,30 @@ planning:
 
 ---
 
+## Complete Command Mapping (Agent Assignments & Outputs)
+
+This table shows the complete mapping of MATD commands to their assigned agents, skills, and output locations.
+
+| Command | Agent | Primary Skills | Output Location | Purpose |
+|---------|-------|---------------|-----------------|---------|
+| `/speckit.matd.specify-product-brief` | matd-specifier | general-grill-me, stdd-project-summary | `docs/product-brief.md` | Product-level vision and context for new products |
+| `/speckit.matd.specify-adr` | matd-architect | general-grill-me, arch-mermaid-diagrams | `docs/architecture/decisions/adr-NNN-{slug}.md` | Architecture decision records with diagrams |
+| `/speckit.matd.specify-test-strategy` | matd-qa | general-grill-me, dev-tdd, arch-mermaid-diagrams | `docs/testing/TEST_STRATEGY.md` | Test pyramid, patterns, coverage targets |
+| `/speckit.matd.specify-solution-design` | matd-architect | arch-c4-architecture, arch-mermaid-diagrams, arch-smart-docs | `openspec/changes/<id>/design.md` + C4 diagrams | Technical design with 4 architectural views |
+| `/speckit.matd.test` | matd-qa | dev-tdd, stdd-test-author-constrained | `tests/*.py`, `${feature_id}-test-design.md` | RED state - failing tests with design doc |
+| `/speckit.matd.implement` | matd-dev | dev-tdd, stdd-make-constrained-implementation | `src/*.py`, `${feature_id}-impl-notes.md` | GREEN state - implementation to pass tests |
+| `/speckit.matd.review` | matd-architect, matd-review | review-check-correctness, review-simplify-complexity | `${feature_id}-arch-review.md`, `${feature_id}-code-review.md` | Parallel architecture and code review |
+| `/speckit.matd.commit` | matd-orchestrator | general-verification-before-completion | `${feature_id}-workflow-summary.md`, git commit | Evidence validation and workflow summary |
+| `/speckit.matd.execute` | matd-orchestrator | Orchestrates test/implement/review/commit | All artifacts from sub-commands | Full TDD workflow orchestration |
+
+### Notes:
+- **Product-brief is optional**: Specs can exist without a product-brief
+- **Spec integration**: New specs optionally enhance/update existing product-brief
+- **Agent specialization**: Each MATD agent has specific skills aligned with their role
+- **Output paths**: Configurable via `.specify/harness-tdd-config.yml`
+
+---
+
 ## Sources
 
 - [GitHub SpecKit Repository](https://github.com/github/spec-kit)
