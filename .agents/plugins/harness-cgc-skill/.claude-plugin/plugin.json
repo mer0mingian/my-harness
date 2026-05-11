@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "description": "CodeGraphContext (CGC) skill for querying code graphs via MCP in harness sandbox",
   "author": "Daniel Minges",
-  "skills": "../../skills/code-graph-context/"
+  "skills": "../../../skills/code-graph-context/"
 }

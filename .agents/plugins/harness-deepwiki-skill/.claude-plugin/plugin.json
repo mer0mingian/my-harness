@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "description": "Architecture wiki (deepwiki) skill for generating and maintaining project documentation",
   "author": "Daniel Minges",
-  "skills": "../../skills/architecture-wiki/"
+  "skills": "../../../skills/architecture-wiki/"
 }
