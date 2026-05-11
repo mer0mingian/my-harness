@@ -56,10 +56,10 @@
     "username": "Daniel",
     "mcp": {
         // MCP server wiring populated in a later phase.
-        // haft + codegraphcontext run inside the agent sandbox container
-        // as stdio MCP servers; graphiti (when enabled) is reachable at
-        // http://localhost:8000/mcp/ on the host or http://graphiti-mcp:8000/mcp/
-        // from within the sandbox network.
+        // CodeGraphContext (CGC) runs as the external `cgc` compose service
+        // alongside the agent container. Reach it via stdio by `docker exec`-ing
+        // into the cgc container — see harness-sandbox/docs/sandbox-install.md
+        // for the full opencode mcp.servers snippet.
         "context7": {
             "type": "local",
             "command": [

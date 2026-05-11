@@ -28,6 +28,106 @@ Select the appropriate level based on the documentation need:
 
 **Key Insight:** "Context + Container diagrams are sufficient for most software development teams." Only create Component/Code diagrams when they genuinely add value.
 
+## Working with Specific C4 Levels
+
+When creating architecture documentation, you may need to focus on a single C4 level. Use the level-specific reference guides for detailed guidance:
+
+| Level | Reference Guide | Focus |
+|-------|----------------|-------|
+| Context | [c4-level-context.md](references/c4-level-context.md) | System boundary, external actors, user personas |
+| Container | [c4-level-container.md](references/c4-level-container.md) | High-level technology choices, deployable units |
+| Component | [c4-level-component.md](references/c4-level-component.md) | Internal components, interfaces, logical groupings |
+| Code | [c4-level-code.md](references/c4-level-code.md) | Classes, interfaces, database schemas (rarely needed) |
+
+### Level Selection Decision Tree
+
+```
+Start
+ └─> Who is the audience?
+      ├─> Non-technical stakeholders → Context diagram only
+      ├─> Product/Business → Context + Container diagrams
+      ├─> Technical leads/Architects → Context + Container + key Component diagrams
+      └─> Development team → All levels as needed
+
+For each level, ask: "Does this diagram answer questions that the previous level cannot?"
+ └─> NO → Stop at previous level
+ └─> YES → Create this level, then repeat question for next level
+```
+
+### When to Stop at Each Level
+
+- **Stop at Context** when:
+  - Audience is non-technical (executives, business stakeholders)
+  - You only need to show system boundaries and external dependencies
+  - System is simple with few containers (< 3)
+
+- **Stop at Container** when:
+  - System architecture is straightforward
+  - Container responsibilities are clear from their names
+  - No particularly complex containers requiring internal breakdown
+  - **This is the recommended stopping point for 80% of systems**
+
+- **Stop at Component** when:
+  - Internal structure is well-understood by the team
+  - Component boundaries are clear from code organization
+  - No need for sequence diagrams or detailed interaction flows
+
+- **Use Code level** only when:
+  - Documenting a particularly complex algorithm or data structure
+  - Onboarding new developers to legacy code
+  - Showing database schema relationships
+  - Creating sequence diagrams for critical flows
+
+### Cross-Level Consistency Checks
+
+When creating multiple C4 levels, ensure consistency across diagrams:
+
+1. **Naming consistency**: Same element at different levels must use identical names
+   - Context: `System(orderSystem, "Order System", "...")`
+   - Container: `Container_Boundary(orderSystem, "Order System") { ... }`
+
+2. **Relationship preservation**: Relationships shown at higher levels must be reflected in lower levels
+   - If Context shows `Order System → Inventory System`
+   - Container must show which specific containers make that connection
+
+3. **Technology cascade**: Technology choices at Container level apply to Components within
+   - Container: `Container(api, "API", "FastAPI", "...")`
+   - Components within must use FastAPI-compatible technologies
+
+4. **Scope boundaries**: Elements shown at one level must "zoom into" their children at next level
+   - Container diagram shows `Container(webApp, "Web App", "React", "...")`
+   - Component diagram shows internal React components within that container
+
+### Instructing matd-architect for Level-Specific Work
+
+When delegating to `matd-architect` for a specific C4 level:
+
+```markdown
+# For Context level
+"Create C4 Context diagram focusing ONLY on system boundary and external actors.
+ Use arch-c4-architecture skill with references/c4-level-context.md guidance.
+ Show: user personas, external systems, system boundaries.
+ Exclude: internal structure, technology choices, deployment details."
+
+# For Container level
+"Create C4 Container diagram focusing ONLY on high-level containers.
+ Use arch-c4-architecture skill with references/c4-level-container.md guidance.
+ Show: deployable units, databases, technology stack, inter-container communication.
+ Exclude: internal components, code-level details, infrastructure nodes."
+
+# For Component level
+"Create C4 Component diagram focusing ONLY on internal components of [container name].
+ Use arch-c4-architecture skill with references/c4-level-component.md guidance.
+ Show: logical groupings, component interfaces, internal dependencies.
+ Exclude: class details, deployment info, external systems."
+
+# For Code level (rarely)
+"Create C4 Code diagram ONLY IF complexity warrants detailed documentation.
+ Use arch-c4-architecture skill with references/c4-level-code.md guidance.
+ Show: class hierarchies, database schemas, sequence diagrams for key flows.
+ Justify: [reason this level of detail is necessary]."
+```
+
 ## Quick Start Examples
 
 ### System Context (Level 1)
@@ -293,3 +393,8 @@ Write architecture documentation to `docs/architecture/` with naming convention:
 - [references/c4-syntax.md](references/c4-syntax.md) - Complete Mermaid C4 syntax
 - [references/common-mistakes.md](references/common-mistakes.md) - Anti-patterns to avoid
 - [references/advanced-patterns.md](references/advanced-patterns.md) - Microservices, event-driven, deployment
+- [references/c4-level-context.md](references/c4-level-context.md) - Context level guide (system boundary, external actors)
+- [references/c4-level-container.md](references/c4-level-container.md) - Container level guide (deployable units, technology)
+- [references/c4-level-component.md](references/c4-level-component.md) - Component level guide (internal components, interfaces)
+- [references/c4-level-code.md](references/c4-level-code.md) - Code level guide (classes, schemas, sequences)
+- [references/c4-best-practices.md](references/c4-best-practices.md) - Industry best practices (Simon Brown, progressive disclosure)

@@ -25,7 +25,7 @@ This workspace contains two sibling repositories with distinct responsibilities:
 
 | Repository | Purpose | Cadence | Status |
 |------------|---------|---------|--------|
-| **[harness-tooling](../README.md)** | Marketplace for skills, agents, commands, and plugin manifests consumed by Claude Code, OpenCode, and Gemini CLI | Changes often | ✅ Active development |
+| **[harness-tooling](../../README.md)** | Marketplace for skills, agents, commands, and plugin manifests consumed by Claude Code, OpenCode, and Gemini CLI | Changes often | ✅ Active development |
 | **[harness-sandbox](../../harness-sandbox/)** | Docker runtime stack: Dockerfile, docker-compose, host-side entry wrapper | Changes rarely | 📦 Fresh scaffold |
 
 ### Architectural Boundaries
@@ -38,7 +38,7 @@ This workspace contains two sibling repositories with distinct responsibilities:
 
 **harness-sandbox**:
 - Base: NVIDIA OpenShell-Community + Claude Code, OpenCode, Chloe, rtk
-- Services: Haft MCP, CodeGraphContext MCP, optional Graphiti memory
+- Services: CodeGraphContext MCP (external `cgc` compose service). [Superseded — Haft and Graphiti dropped from v1]
 - Not a monorepo — code bind-mounted from host, never baked into image
 
 ---
@@ -61,10 +61,10 @@ This workspace contains two sibling repositories with distinct responsibilities:
 - Gemini CLI scoped to research workflows only
 
 **Active Documents:**
-- [harness-v1-master-plan.md](harness-v1-master-plan.md) — v1 delivery scope
-- [harness-v1-agent-tasks.md](harness-v1-agent-tasks.md) — subagent prompts
+- [harness-v1-master-plan.md](../marketplace/plans/harness-v1-master-plan.md) — v1 delivery scope
+- [harness-v1-agent-tasks.md](../marketplace/plans/harness-v1-agent-tasks.md) — subagent prompts
 - [WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md](WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md) — complete feature spec
-- [workflow-runtime-mermaid-grammar.md](workflow-runtime-mermaid-grammar.md) — sequence diagram authoring
+- [workflow-runtime-mermaid-grammar.md](../workflow-runtime-mermaid-grammar.md) — sequence diagram authoring
 
 ### harness-sandbox Status
 
@@ -406,10 +406,10 @@ sequenceDiagram
 
 ### Harness Internal Documentation
 
-- [harness-v1-master-plan.md](harness-v1-master-plan.md) — v1 delivery plan
+- [harness-v1-master-plan.md](../marketplace/plans/harness-v1-master-plan.md) — v1 delivery plan
 - [WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md](WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md) — Complete feature spec
-- [workflow-runtime-mermaid-grammar.md](workflow-runtime-mermaid-grammar.md) — Sequence diagram compiler spec
-- [harness-v1-agent-tasks.md](harness-v1-agent-tasks.md) — Subagent execution prompts
+- [workflow-runtime-mermaid-grammar.md](../workflow-runtime-mermaid-grammar.md) — Sequence diagram compiler spec
+- [harness-v1-agent-tasks.md](../marketplace/plans/harness-v1-agent-tasks.md) — Subagent execution prompts
 
 ### External Standards
 

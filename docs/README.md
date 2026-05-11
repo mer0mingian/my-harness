@@ -13,8 +13,9 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 | **Build workflow orchestration runtime** | [Workflow Runtime section](#workflow-runtime-documents) |
 | **Integrate BMAD methodology** | [integration-bmad-method.md](#integration-strategies) |
 | **Understand skill naming decisions** | [decisions-skill-naming-resolution.md](#decisions--resolutions) |
-| **Learn from reference implementations** | [reference-workflows-ppries/](#reference-implementations) |
+| **Learn from reference implementations** | [marketplace/reference-workflows-ppries/](#reference-implementations) |
 | **Deep-dive research topics** | [deep-research/](#research--exploration) |
+| **Multi-Agent TDD workflow** | [SpecKit TDD section](#speckit-multi-agent-tdd) |
 
 ---
 
@@ -45,7 +46,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 
 **Supersedes:** `multi-agent-cli-harness-plan.md`, `multi-agent-plugins-marketplace-plan.md`, `multi-container-harness-plan.md` (all in [archive/](archive/))
 
-**Companion:** [harness-v1-agent-tasks.md](#harness-v1-agent-tasksmd)
+**Companion:** [harness-v1-agent-tasks.md](marketplace/plans/harness-v1-agent-tasks.md)
 
 ---
 
@@ -63,7 +64,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 - Phase 4 (Validation): V1-V2 tasks
 - Each task: prompt, model tier, dependencies, deliverables, validation criteria
 
-**Relationship:** Execution companion to [harness-v1-master-plan.md](#harness-v1-master-planmd)
+**Relationship:** Execution companion to [harness-v1-master-plan.md](marketplace/plans/harness-v1-master-plan.md)
 
 ---
 
@@ -85,7 +86,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 - Anti-patterns (what NOT to build)
 - Concrete TDD orchestration example
 
-**Companion:** [harness-workflow-runtime-plan.md](#harness-workflow-runtime-planmd), [workflow-runtime-mermaid-grammar.md](#workflow-runtime-mermaid-grammarmd)
+**Companion:** [harness-workflow-runtime-plan.md](marketplace/plans/harness-workflow-runtime-plan.md), [workflow-runtime-mermaid-grammar.md](#workflow-runtime-mermaid-grammarmd)
 
 ---
 
@@ -104,7 +105,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 - Rollout strategy
 - Key decisions resolved 2026-04-24
 
-**Parent:** [harness-v1-master-plan.md](#harness-v1-master-planmd)  
+**Parent:** [harness-v1-master-plan.md](marketplace/plans/harness-v1-master-plan.md)  
 **Companion:** [WORKFLOW_ORCHESTRATOR_REQUIREMENTS.md](#workflow_orchestrator_requirementsmd)
 
 ---
@@ -192,7 +193,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 
 ## Reference Implementations
 
-### reference-workflows-ppries/
+### marketplace/reference-workflows-ppries/
 **Status:** 📚 Reference implementation by ppries  
 **Purpose:** Working multi-agent workflow example for OpenCode  
 **Audience:** Workflow authors, anyone learning the patterns
@@ -242,6 +243,28 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 
 ---
 
+## SpecKit Multi-Agent TDD
+
+**Important:** This repository contains **two distinct MATD (Multi-Agent Test-Driven Development) implementations**:
+
+1. **matd SpecKit Extension** (`spec-kit-multi-agent-tdd/`) - For SpecKit CLI integration
+2. **matd Claude Code Plugin** (`.agents/plugins/matd/`) - For Claude Code marketplace
+
+Both share the same MATD methodology but integrate with different CLI systems. See [AGENTS.md](../AGENTS.md) for detailed comparison.
+
+Active planning documents for the SpecKit extension implementation, located in `speckit-tdd/plans/`.
+
+| Document | Purpose |
+|----------|---------|
+| [ROADMAP-Multi-Agent-TDD.md](speckit-tdd/plans/ROADMAP-Multi-Agent-TDD.md) | 12-slice roadmap with dependency graph and effort estimates |
+| [PLAN-Multi-Agent-TDD-Implementation.md](speckit-tdd/plans/PLAN-Multi-Agent-TDD-Implementation.md) | Vertical slice implementation plan |
+| [TASK-LIST-Multi-Agent-TDD.md](speckit-tdd/plans/TASK-LIST-Multi-Agent-TDD.md) | Granular task breakdown (66 tasks) |
+| [CONSTITUTION-Multi-Agent-TDD.md](speckit-tdd/plans/CONSTITUTION-Multi-Agent-TDD.md) | Constitutional principles and non-bypassable gates |
+| [ARTIFACT-SUMMARY.md](speckit-tdd/plans/ARTIFACT-SUMMARY.md) | Artifact details and configuration |
+| [PRD-Multi-Agent-TDD-Workflow.md](speckit-tdd/plans/PRD-Multi-Agent-TDD-Workflow.md) | Product requirements |
+
+---
+
 ## Archive
 
 ### archive/
@@ -249,7 +272,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 **Status:** 🗄️ Archived — DO NOT USE for new work
 
 **Contents:**
-- Plans superseded by [harness-v1-master-plan.md](#harness-v1-master-planmd)
+- Plans superseded by [harness-v1-master-plan.md](marketplace/plans/harness-v1-master-plan.md)
 - Each archived file has a deprecation banner linking to current authoritative docs
 
 ---

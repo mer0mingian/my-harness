@@ -23,7 +23,7 @@ PRIES turns specifications into tested, reviewed, mergeable code.
 | Phase 0 Governance   | `docs/governance/NFR_CATALOG.md`        | @pries-pm (validation), @pries-check (cross-ref) |
 | Phase 0 Governance   | `docs/governance/TEST_STRATEGY.md`      | @pries-test (pyramid), `pries-validate` (drift) |
 | Phase 1 Analysis     | `docs/business/PROBLEM_STATEMENT.md`    | @pries-pm (context)   |
-| Phase 2 PM           | `docs/product/PRD.md`, user stories     | @pries-pm (criteria)  |
+| Phase 2 PM           | `docs/product/spec.md`, user stories     | @pries-pm (criteria)  |
 | Phase 3 Architecture | `docs/architecture/ADR-*.md`            | @pries-make (constraints), @pries-check (compliance) |
 
 ### Validation gates
@@ -139,7 +139,7 @@ Trust model mirrors `docs/reference-workflows-ppries/`:
 ### Optional planning phases
 
 - `/bmad-spec` (Phase 1) for analyst-led problem statement.
-- `/bmad-pm` (Phase 2) for PRD and user stories.
+- `/bmad-pm` (Phase 2) for spec and user stories.
 - `/bmad-architect` (Phase 3) for ADRs.
 
 These are optional; if a ticket already carries enough context (acceptance

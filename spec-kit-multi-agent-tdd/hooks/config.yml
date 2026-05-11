@@ -1,0 +1,83 @@
+# Hook Configuration for TDD Workflow Constitutional Enforcement
+#
+# Hooks automatically enforce non-bypassable requirements at specific lifecycle points.
+# See: ARCHITECTURAL-CORRECTION-PLAN.md for hook handler implementation details.
+
+hooks:
+  # File Gate Enforcement (Test Phase)
+  # Blocks non-test files during test step to prevent implementation before tests exist.
+  PreToolUse:
+    - name: file_gate_enforcer
+      handler: python3 hooks/handlers/file_gate_enforcer.py
+      when: tool == "Write" && phase == "test"
+      description: "Block non-test files during test phase"
+      exit_codes:
+        0: "Allow write (file matches test pattern)"
+        2: "Block write (file does not match test pattern)"
+
+  # TDD Sequence Enforcement (Implementation Phase)
+  # Enforces RED before GREEN constitutional requirement.
+  # Blocks source code writes unless tests are in valid RED state.
+    - name: tdd_sequence_enforcer
+      handler: python3 hooks/handlers/tdd_sequence_enforcer.py
+      when: tool == "Write" && path.startsWith("src/")
+      description: "Enforce RED before GREEN (TDD cycle)"
+      exit_codes:
+        0: "Allow write (valid RED state)"
+        2: "Block write (not in RED state or validation failed)"
+
+  # Evidence Gate Enforcement (Commit Phase)
+  # Blocks git commits without valid evidence artifacts.
+  # Validates all 5 mandatory artifacts before allowing commit.
+    - name: evidence_gate_enforcer
+      handler: python3 hooks/handlers/evidence_gate_enforcer.py
+      when: tool == "Bash" && args.command.contains("git commit")
+      description: "Validate evidence before git commit"
+      exit_codes:
+        0: "Allow commit (all artifacts valid)"
+        2: "Block commit (missing or invalid evidence)"
+
+# Hook Lifecycle Events
+#
+# PreToolUse: Fires BEFORE a tool executes (can block execution)
+# PostToolUse: Fires AFTER a tool completes (can log/notify)
+# FileChanged: Fires when a file is modified
+# SessionStart: Fires at session initialization
+# SessionEnd: Fires at session termination
+#
+# See Claude Code hooks guide: https://code.claude.com/docs/en/hooks-guide
+
+# Context Variables Available in Hooks
+#
+# tool: Tool name (e.g., "Write", "Bash", "Edit")
+# args: Tool arguments (e.g., args.file_path, args.command)
+# phase: Current workflow phase (e.g., "test", "implement", "review", "commit")
+# context: Custom context (e.g., context.feature_id)
+# result: Tool execution result (PostToolUse only)
+
+# Exit Code Protocol
+#
+# 0: Allow/Success - Hook permits action or completed successfully
+# 1: Warning - Non-blocking issue (logged but action proceeds)
+# 2: Block/Error - Hook blocks action or critical failure
+
+# Configuration
+#
+# Hooks reference helper scripts created in Phase 1-3:
+# - scripts/validate_red_state.py
+# - scripts/validate_green_state.py
+# - scripts/validate_feature_artifacts.py
+# - scripts/extract_acceptance_criteria.py
+# - scripts/parse_pytest_output.py
+# - scripts/run_integration_checks.py
+# - scripts/escalate_broken_tests.py
+#
+# Hook handlers delegate validation to these scripts via subprocess.
+
+# Future Enhancements
+#
+# - Coverage gate: Block commit if coverage < threshold
+# - Test quality gate: Validate AC coverage (test count >= AC count)
+# - Breaking change detection: Warn on public API changes
+# - Dependency audit: Check for vulnerable packages
+# - Documentation gate: Require docstrings for new functions

@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Harness TDD Workflow Configuration",
+  "description": "Configuration schema for harness-tdd-workflow extension",
+  "type": "object",
+  "required": ["version", "agents", "artifacts"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Configuration schema version"
+    },
+    "agents": {
+      "type": "object",
+      "description": "Agent assignments mapping workflow roles to agent names",
+      "required": ["test_agent", "implementation_agent", "qa_agent", "arch_reviewer", "code_reviewer"],
+      "properties": {
+        "test_agent": {
+          "type": "string",
+          "description": "Agent for Step 7: Write Tests"
+        },
+        "implementation_agent": {
+          "type": "string",
+          "description": "Agent for Step 8: Implement"
+        },
+        "qa_agent": {
+          "type": "string",
+          "description": "Agent for acceptance validation"
+        },
+        "arch_reviewer": {
+          "type": "string",
+          "description": "Agent for architecture review"
+        },
+        "code_reviewer": {
+          "type": "string",
+          "description": "Agent for code review"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "Artifact configuration for standardized paths and naming",
+      "required": ["root", "types"],
+      "properties": {
+        "root": {
+          "type": "string",
+          "description": "Root directory for all workflow artifacts"
+        },
+        "types": {
+          "type": "object",
+          "description": "Artifact type suffixes",
+          "properties": {
+            "spec": {"type": "string"},
+            "test_design": {"type": "string"},
+            "impl_notes": {"type": "string"},
+            "arch_review": {"type": "string"},
+            "code_review": {"type": "string"},
+            "workflow_summary": {"type": "string"}
+          }
+        },
+        "search_paths": {
+          "type": "array",
+          "description": "Search paths for finding existing artifacts in priority order",
+          "items": {"type": "string"}
+        },
+        "mandatory": {
+          "type": "object",
+          "description": "Mandatory flags per CONSTITUTION",
+          "properties": {
+            "test_design": {"type": "boolean"},
+            "impl_notes": {"type": "boolean"},
+            "arch_review": {"type": "boolean"},
+            "code_review": {"type": "boolean"},
+            "workflow_summary": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "description": "Quality gates configuration",
+      "properties": {
+        "default_mode": {
+          "type": "string",
+          "enum": ["auto", "manual"],
+          "description": "Default gate execution mode"
+        },
+        "manual_gates": {
+          "type": "array",
+          "description": "Gates requiring human approval",
+          "items": {"type": "string"}
+        },
+        "max_review_cycles": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum iterations for review loop"
+        },
+        "convergence_detection": {
+          "type": "boolean",
+          "description": "Stop early if same findings repeat"
+        }
+      }
+    },
+    "planning": {
+      "type": "object",
+      "description": "Planning phase configuration",
+      "properties": {
+        "skill": {
+          "type": "string",
+          "description": "Skill to use for interactive planning"
+        },
+        "skill_path": {
+          "type": "string",
+          "description": "Path to skill if installed"
+        },
+        "interactive_by_default": {
+          "type": "boolean",
+          "description": "Use interactive mode by default"
+        },
+        "fallback_mode": {
+          "type": "string",
+          "enum": ["standard", "skip"],
+          "description": "Fallback if skill unavailable"
+        }
+      }
+    },
+    "test_framework": {
+      "type": "object",
+      "description": "Test framework configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["pytest"],
+          "description": "Test framework type"
+        },
+        "file_patterns": {
+          "type": "array",
+          "description": "File patterns to identify test files",
+          "items": {"type": "string"}
+        },
+        "failure_codes": {
+          "type": "object",
+          "description": "Failure codes for RED state validation",
+          "properties": {
+            "valid_red": {
+              "type": "array",
+              "description": "Valid RED states",
+              "items": {"type": "string"}
+            },
+            "invalid_escalate": {
+              "type": "array",
+              "description": "Invalid states requiring escalation",
+              "items": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "description": "Workflow execution configuration",
+      "properties": {
+        "skip_human_feedback": {
+          "type": "boolean",
+          "description": "Skip human feedback at workflow stages"
+        },
+        "parallel_enabled": {
+          "type": "boolean",
+          "description": "Enable parallel execution for independent steps"
+        },
+        "agent_timeout": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Timeout for agent tasks in minutes"
+        },
+        "validate_artifacts": {
+          "type": "boolean",
+          "description": "Enable artifact validation"
+        }
+      }
+    },
+    "jira": {
+      "type": "object",
+      "description": "Local Jira structure configuration",
+      "properties": {
+        "local_mode": {
+          "type": "boolean",
+          "description": "Enable local folder structure for epics/stories"
+        },
+        "root": {
+          "type": "string",
+          "description": "Root directory for epic/story folders"
+        },
+        "auto_create_stories": {
+          "type": "boolean",
+          "description": "Auto-create story files when running workflow"
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "description": "Logging and observability configuration",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["debug", "info", "warn", "error"],
+          "description": "Log level"
+        },
+        "workflow_log": {
+          "type": "string",
+          "description": "Log workflow steps to dedicated file"
+        },
+        "include_agent_responses": {
+          "type": "boolean",
+          "description": "Include agent responses in logs"
+        }
+      }
+    }
+  }
+}

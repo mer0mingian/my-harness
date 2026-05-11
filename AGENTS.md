@@ -1,255 +1,301 @@
-# AGENTS.md
+# Agent and Plugin Architecture
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
-
----
-
-# Core Development Workflow
-
-This project uses a **skill-based workflow (unless invoked differently by agents, e.g. )** for software development. Understanding when to invoke each skill is critical.
-
-## The Workflow Chain
-
-The User will request either direct work from a primary agent or workflows from [Superpowers](.opencode/superpowers-workflow.md) or [Spec-Test-Drivven Development](.opencode/daniels-workflow.md).
-
-## Skill Invocation Guidelines
-
-**Key principle:** Each skill has a specific trigger. Don't guess - follow the chain.
-
-| Trigger                           | Skill to Use                   |
-| --------------------------------- | ------------------------------ |
-| "Let's build X", "design Y"       | brainstorming first            |
-| "Plan this", "break down"         | writing-plans                  |
-| "Implement", "work through tasks" | subagent-driven-development    |
-| "Parallel", "batch"               | executing-plans                |
-| "Complete", "finish", "merge"     | finishing-a-development-branch |
+This document clarifies the marketplace structure and the different integration points for agent-based workflows.
 
 ---
 
-## AI Assistant Rules & Project Constraints (CRITICAL)
+## Repository Purpose
 
-### Subagent Model Enforcement
+**harness-tooling** is the **canonical source** for:
+- Skills (70+ reusable expertise modules)
+- Agents (specialized AI personas)
+- Commands (workflow entry points)
+- Plugins (bundled integrations)
+- Workflow extensions (CLI-specific integrations)
 
-**CRITICAL**: The agent framework may default to inheriting the parent agent's model, ignoring the `model` specified in the subagent's definition file. This can lead to incorrect model usage and violate project budget constraints.
-
-To prevent this, you **must** explicitly provide the `model` parameter when calling the `Task` tool to specify which model the subagent should use. You can refer to `.opencode/agents/preferred_models.yml` for a list of available free models (e.g., `opencode/nemotron-3-super-free`, `opencode/minimax-m2.5-free`).
-
-**Good Example (Correct):**
-
-```python
-task(
-    subagent_type="python-dev",
-    prompt="Implement the feature.",
-    description="...",
-    model="opencode/nemotron-3-super-free" # Explicitly sets the required model.
-)
-```
-
-**Bad Example (Incorrect):**
-
-```python
-task(
-    subagent_type="python-dev",
-    prompt="Implement the feature.",
-    description="..."
-    # Missing the model parameter, will likely inherit the wrong model
-)
-```
-
-- **Model Choice**: Prefer `opencode/minimax-m2.5-free` for all tasks (development, review, debugging). The free model providers have daily limited quotas which may make them unavailable. You may use other free models from `.opencode/agents/preferred_models.yml`. You MUST NOT USE paid models, unless the user explicitely asks you to.
-- **Minimal Changes**: Keep changes to existing files absolutely minimal! This is a private extension to an open-source project, and compatibility with the upstream branch is paramount.
-- **Dependency Management & Testing**:
-  - ALWAYS use the `python-environment` skill for dependency management and environment setup.
-  - ALWAYS use the `python-verification` skill for running tests and verifying completion.
-  - Test commands (MUST use `uv`):
-    ```bash
-    uv venv
-    uv pip install -r requirements.txt -r requirements-dev.txt
-
-    # PARALLEL EXECUTION (use -n 2 to limit CPU usage):
-    uv run pytest -n 2 tests/ -v
-    uv run pytest -n 2 tests/ --cov=sta
-
-    # Selective testing during development:
-    uv run pytest tests/ -v -k "lifepath"
-    uv run pytest tests/ --lf  # last failed only
-    ```
-  - Use `-n 2` for parallel execution (limits to 2 workers to avoid system slowdown)
-  - Use `-n auto` only if you need maximum speed and have CPU to spare
-  - Use `-k "keyword"` to run only tests matching a pattern during development.
-  - Ensure `.venv` is created and used for requirements.
-  - Check `.gitignore` to ensure `.venv` is excluded.
-- **Reference Files**: Do NOT read or reference `STA2e_Core Rulebook_DIGITAL_v1.1.txt`. Use `starshiprules.md` and other extracted reference files instead.
-- **Logging**: ALWAYS use the existing `sta/logging.py` module. Import `get_logger` and use the predefined loggers (`LOG_GAME`, `LOG_GM`, etc.) for all new code. Never use `print()` for debugging - use logging instead.
-- **Document Learnings**: After every significant user interaction, decision, or milestone completion, update `docs/learnings_and_decisions.md` to capture what was learned and what was decided.
-
-## 1. Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
-## 5. Fontend-Mapping
-
-* **Strict Typing:** "Jeder neue API-Endpoint muss ein Request- und Response-Schema in `schemas.py` haben."
-* **Frontend-Mapping:** "Bevor du JavaScript/Alpine.js Code schreibst, validiere die Route gegen die `main.py` (FastAPI)."
-* **Error Handling:** "Jeder Fetch-Request in Alpine.js muss einen `catch`-Block haben, der den Fehlerzustand im UI spiegelt."
-* **Pydantic Modelle als Vertrag:** Nutze Pydantic-Modelle in FastAPI konsequent. Da FastAPI automatisch eine `openapi.json` generiert, solltest du den Agenten anweisen, diese als Referenz zu nutzen.
-* **Alpine.js 'Data Stores':** Anstatt Logik in HTML-Attributen zu verstreuen, definiere zentrale Alpine-Stores.
-* **Action-Pattern:** Implementiere ein klares Muster für Requests. Jede Frontend-Aktion sollte einem spezifischen API-Endpoint entsprechen.
-
-## 6. User Journey Testing
-
-Wenn Playwright-Tests unvollständig sind, liegt es oft an mangelnden Selektoren oder fehlenden "Wait"-States für asynchrone API-Antworten.
-
-### User Journey Mapping
-
-Da sich Funktionalitäten in STA (z.B. Task Rolls, Momentum-Management, Threat-Generierung) überschneiden, hilft eine  **Zustandsmatrix** :
-
-| **Feature**        | **Trigger (Frontend)** | **Backend Logic** | **State Change** |
-| ------------------------ | ---------------------------- | ----------------------- | ---------------------- |
-| **Task Roll**      | Button Click                 | `post /roll`          | Update Momentum & Log  |
-| **Spend Momentum** | Toggle UI                    | `patch /momentum`     | Update Global State    |
-
-### Playwright Best Practices
-
-Verwende  **Page Object Models (POM)** . Anstatt hartcodierte Klicks zu senden, definiere Aktionen:
-
-* `gamePage.rollTask(attribute, discipline)`
-* `gamePage.assertMomentumCount(expected)`
-
-Nutze in Alpine.js dedizierte Test-Attribute: `<button data-testid="roll-button" ...>`. Das macht die Tests robuster gegenüber CSS-Änderungen.
-
-## 7. Spezifische Lösung für Star Trek Adventures (VTT)
-
-In einem VTT ist die **Synchronität** entscheidend (z.B. wenn der GM den "Threat"-Pool erhöht, müssen alle Spieler das sehen).
-
-1. **Server-Sent Events (SSE) oder WebSockets:** Da du FastAPI nutzt, prüfe, ob du für den globalen Status (Momentum/Threat) SSE implementierst. Das ist einfacher als WebSockets und perfekt für unidirektionale Updates vom Server zum Client.
-2. **Die "Momentum-Falle":** Da viele Aktionen in STA Momentum generieren oder verbrauchen, sollte die Logik dafür **ausschließlich im Backend** liegen. Das Frontend sendet nur den Befehl ("Würfel"), das Backend berechnet das neue Momentum und schickt den neuen State zurück.
+It serves **multiple agent CLI ecosystems**:
+- **Claude Code** - Via plugin manifest (`.claude-plugin/plugin.json`)
+- **OpenCode** - Via flat `.agents/` directory structure
+- **Gemini CLI** - Via extensions in `.gemini/` (v2 planned)
+- **SpecKit** - Via extension system (`spec-kit-multi-agent-tdd/`)
 
 ---
 
-## Parallel Worktree Workflow (For Future Self)
+## Directory Structure
 
-When working on a feature that requires parallel agent coordination:
+```
+harness-tooling/
+├── .agents/                          # Canonical marketplace (all CLIs)
+│   ├── agents/                       # 5+ specialized agents
+│   ├── skills/                       # 70+ reusable skills
+│   ├── commands/                     # Workflow commands
+│   ├── plugins/                      # Plugin bundles
+│   │   ├── matd/                     # MATD Claude Code plugin
+│   │   │   └── .claude-plugin/
+│   │   │       └── plugin.json       # References agents/ and skills/
+│   │   ├── harness-cgc-skill/        # CodeGraphContext integration
+│   │   └── harness-workflow-runtime/ # Workflow state management
+│   └── configs/
+│       └── bundles.yaml              # Named skill/agent bundles
+│
+├── .claude/                          # Claude Code symlink structure
+│   ├── .claude-plugin/
+│   │   └── plugin.json               # Main plugin manifest
+│   ├── agents/ → .agents/agents/     # Symlinks for Claude Code
+│   └── skills/ → .agents/skills/
+│
+├── spec-kit-multi-agent-tdd/         # SpecKit extension (separate integration)
+│   ├── extension.json                # SpecKit extension manifest
+│   ├── commands/                     # SpecKit command implementations
+│   ├── templates/                    # Artifact templates
+│   └── hooks/                        # SpecKit lifecycle hooks
+│
+└── .gemini/                          # Gemini CLI extensions (v2)
+    └── extensions/
+        └── matd-research/
+```
 
-1. **Create base feature branch** from `vtt-scope`:
+---
 
-   ```bash
-   git checkout -b feature/milestone-task vtt-scope
-   ```
-2. **Launch agents** with subagent-driven-development, assigning each to its own task. Instruct them to:
+## The Two "matd" Artifacts
 
-   - Create a separate git worktree: `git worktree add -b <task-branch> ../<task-name> feature/milestone-task`
-   - Work in that isolated directory
-   - Implement, test, commit, and push their branch
-   - Report back completion
-3. **Merge task branches** back to the base feature branch:
+### 1. matd Claude Code Plugin (`.agents/plugins/matd/`)
 
-   ```bash
-   git merge <task-branch>
-   ```
+**What it is:** A Claude Code plugin that bundles MATD agents and skills from the marketplace.
 
-   Resolve conflicts by combining distinct functionality (keep both agents' changes).
-4. **Cleanup** worktrees after merge:
-
-   ```bash
-   git worktree remove ../<task-name>
-   ```
-5. **Testing**: Run full test suite in base branch after merges.
-
-### Common Pitfalls & Detection
-
-- **Import errors in tests**: If tests fail with `module 'sta' has no attribute 'web'`, add `import sta.web` before any `mock.patch("sta.web.routes.*")` in `tests/conftest.py`. This ensures the submodule is loaded.
-- **Virtualenv missing**: Agents may find `.venv` absent in worktree. They should run `uv venv && uv pip install -r requirements*.txt`.
-- **Branch confusion**: Agents may commit to detached HEAD if worktree created incorrectly. Always create a named branch in worktree: `git worktree add -b my-task ../my-task feature/base`.
-- **Merge conflicts**: Shared files (e.g., `scenes.py`) will have overlapping changes. Resolve by merging logic, not discarding one side. Look for distinct endpoint functions; keep both.
-
-### Model Override
-
-When invoking an agent, specify model explicitly if needed:
-
+**Manifest:** `.agents/plugins/matd/.claude-plugin/plugin.json`
 ```json
 {
-  "model": "openrouter/stepfun/step-3.5-flash:free"
+  "name": "matd",
+  "version": "1.0.0",
+  "description": "Multi-Agent Test-Driven Development workflow for SpecKit",
+  "agents": "../../../agents/",
+  "skills": "../../../skills/"
 }
 ```
 
-Use this for cost savings or when default model fails.
+**How it works:**
+- References the shared `.agents/agents/` and `.agents/skills/` directories
+- When installed via marketplace manifest, expands to include all matd-* agents
+- Commands available: `/matd-01-specification`, `/matd-02-design`, `/matd-03-refine`, `/matd-04-implement`
+
+**Installation:**
+```yaml
+# .harness.yaml (marketplace manifest)
+plugins:
+  - matd
+```
+
+**Usage:**
+```bash
+# In Claude Code session
+/matd-01-specification "Add user authentication"
+/agents    # Lists matd-orchestrator, matd-architect, etc.
+```
+
+**Target audience:** Claude Code users in harness sandbox or standalone projects
 
 ---
 
-## Documentation Structure
+### 2. matd SpecKit Extension (`spec-kit-multi-agent-tdd/`)
 
-This project uses **progressive disclosure** - essential info first, detailed references on demand.
+**What it is:** A SpecKit CLI extension implementing the MATD workflow with PRIES methodology.
 
-| Level                     | Files                                            | When to Use                                           |
-| ------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
-| **Current Work**    | `docs/delivery_plan_*.md`                      | Execute in-progress milestone tasks                   |
-| **Reference**       | `docs/rules_reference.md`, `docs/objects.md` | Game rules, data models                               |
-| **C4 Overview**     | `docs/deepwiki/1.Overview.md`                  | System context, users, interactions                   |
-| **C4 Architecture** | `docs/deepwiki/2.Architecture.md`              | Domain modules, components, deployment                |
-| **C4 Deep Dive**    | `docs/deepwiki/4.Deep-Exploration/`            | Game Core, Data Persistence, Web Interface, Utilities |
-| **Archive**         | `docs/archive/learnings_and_decisions.md`      | Historical context                                    |
-| **Audit**           | `docs/audit/*.md`                              | Code quality & architecture reviews                   |
+**Manifest:** `spec-kit-multi-agent-tdd/extension.json`
+```json
+{
+  "name": "harness-tdd-workflow",
+  "version": "1.0.0",
+  "description": "MATD workflow commands and artifact templates for SpecKit",
+  "commands": {
+    "test": { "file": "commands/test.md", ... },
+    "execute": { "file": "commands/execute.md", ... },
+    ...
+  }
+}
+```
 
-See `docs/README.md` for full documentation guide.
+**How it works:**
+- Standalone extension for SpecKit CLI (`specify` command)
+- Has its own command implementations (not shared with Claude Code plugin)
+- Uses SpecKit template system for artifact generation
+- Hooks into SpecKit lifecycle (init, plan, analyze, etc.)
+
+**Installation:**
+```bash
+# Via SpecKit extension manager
+specify extension add harness-tdd-workflow --from /path/to/harness-tooling/spec-kit-multi-agent-tdd
+```
+
+**Usage:**
+```bash
+# In SpecKit-enabled project
+/speckit.matd.test feat-001
+/speckit.matd.execute feat-001 --mode=auto
+/speckit.matd.specify-product-brief feat-001
+```
+
+**Target audience:** Teams using SpecKit for specification-driven development
 
 ---
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+## Relationship Between the Two
+
+### Shared Concepts
+- Both implement **Multi-Agent Test-Driven Development**
+- Both use specialized agent roles (Orchestrator, Architect, QA, Dev, Specifier, Critical Thinker)
+- Both follow RED → GREEN → REFACTOR TDD cycle
+- Both use C4 architecture model for progressive disclosure
+
+### Differences
+
+| Aspect | matd Claude Code Plugin | matd SpecKit Extension |
+|--------|------------------------|------------------------|
+| **Integration Point** | Claude Code marketplace | SpecKit extension system |
+| **Command Namespace** | `/matd-*` | `/speckit.matd.*` |
+| **Artifact Format** | OpenSpec directory structure | SpecKit templates |
+| **Agent Discovery** | Via `.agents/agents/` symlinks | Embedded in extension commands |
+| **Skill References** | Via `.agents/skills/` marketplace | SpecKit-specific implementations |
+| **Installation** | Marketplace manifest (`.harness.yaml`) | SpecKit extension manager |
+| **Execution Model** | Claude Code agent orchestration | SpecKit command hooks |
+
+### Why Two Implementations?
+
+1. **Different CLI ecosystems** - SpecKit and Claude Code have different plugin architectures
+2. **Workflow compatibility** - SpecKit users expect `specify` CLI conventions; Claude Code users expect `/` commands
+3. **Artifact management** - SpecKit uses its own template system; Claude Code uses marketplace skills
+4. **Team adoption** - Some teams standardize on SpecKit; others use Claude Code directly
+
+---
+
+## Marketplace Plugin System
+
+### What are Plugins?
+
+Plugins are **self-contained directories** under `.agents/plugins/` that bundle related skills, agents, commands, or MCP servers with metadata.
+
+### Available Plugins
+
+| Plugin | Purpose | References |
+|--------|---------|------------|
+| **matd** | MATD workflow for Claude Code | `agents/`, `skills/` |
+| **harness-cgc-skill** | CodeGraphContext integration | `skills/code-graph-context/` |
+| **harness-workflow-runtime** | Workflow state management | Metadata only |
+| **harness-deepwiki-skill** | DeepWiki C4 documentation | (structure TBD) |
+
+### Plugin vs Extension
+
+**Plugin** (`.agents/plugins/matd/`):
+- Claude Code-specific packaging
+- References marketplace assets via relative paths
+- Installed via marketplace manifest resolution
+- Part of the overlay system
+
+**Extension** (`spec-kit-multi-agent-tdd/`):
+- SpecKit-specific packaging
+- Self-contained with own commands and templates
+- Installed via SpecKit extension manager
+- Independent of marketplace overlay
+
+---
+
+## Agent Roles
+
+### matd Agents (Shared Methodology)
+
+| Agent | Symbol | Role | Permissions |
+|-------|--------|------|-------------|
+| **matd-orchestrator** | - | PM Coordinator | Read, Orchestrate |
+| **matd-specifier** | Res | Requirements Engineer | Read, Write (openspec/, docs/business/) |
+| **matd-critical-thinker** | Crit | Red Team Validator | Read only |
+| **matd-architect** | Arch | Solution Designer | Read, Write, Orchestrate |
+| **matd-qa** | QA | Test Architect | Read, Write (tests/, openspec/) |
+| **matd-dev** | SWE | Implementation Engineer | Read, Write (app/, src/, lib/) |
+
+**Note:** Agent definitions live in `.agents/agents/matd-*.md` and are shared by both the Claude Code plugin and SpecKit extension (conceptually, not by code reference).
+
+---
+
+## Choosing the Right Integration
+
+### Use matd Claude Code Plugin When:
+- Working in Claude Code sessions
+- Using harness sandbox environment
+- Need marketplace skill library integration
+- Want `/matd-*` workflow commands
+- Project uses `.harness.yaml` manifest system
+
+### Use matd SpecKit Extension When:
+- Project is SpecKit-enabled (`specify init` was run)
+- Following SpecKit artifact conventions
+- Need `/speckit.matd.*` command namespace
+- Want SpecKit template-based artifact generation
+- Team standardizes on `specify` CLI
+
+### Can Both Coexist?
+Yes. A project can have:
+- `.harness.yaml` referencing the matd plugin (for Claude Code)
+- `.specify/extensions/harness-tdd-workflow` (for SpecKit)
+
+They operate independently and can complement each other.
+
+---
+
+## Development and Maintenance
+
+### Where Changes Go
+
+| Change Type | Location |
+|-------------|----------|
+| New skills | `.agents/skills/<skill-name>/` |
+| New agents | `.agents/agents/<agent-name>.md` |
+| Claude Code commands | `.agents/commands/<command-name>.md` |
+| SpecKit commands | `spec-kit-multi-agent-tdd/commands/<command>.md` |
+| Plugin metadata | `.agents/plugins/<plugin>/.claude-plugin/plugin.json` |
+| Extension metadata | `spec-kit-multi-agent-tdd/extension.json` |
+
+### Updating the matd Plugin
+
+```bash
+# Add new agent to marketplace
+cd .agents/agents
+vim matd-new-role.md
+
+# Plugin.json automatically includes all agents/ via directory reference
+# No plugin manifest update needed
+
+# Verify
+jq '.agents' .agents/plugins/matd/.claude-plugin/plugin.json
+# Output: "../../../agents/" (includes all)
+```
+
+### Updating the matd Extension
+
+```bash
+# Add new SpecKit command
+cd spec-kit-multi-agent-tdd/commands
+vim new-command.md
+
+# Register in extension.json
+cd ..
+vim extension.json
+# Add to "commands": { ... }
+
+# Test via SpecKit
+specify extension reload harness-tdd-workflow
+```
+
+---
+
+## Summary
+
+- **harness-tooling** maintains skills, agents, and commands for multiple CLI ecosystems
+- **matd Claude Code plugin** packages marketplace assets for Claude Code sessions
+- **matd SpecKit extension** provides SpecKit CLI integration with its own implementation
+- Both share the same MATD methodology but serve different workflows
+- Choose based on your primary CLI tool (Claude Code vs SpecKit)
+- Both can coexist in a project for teams using multiple tools
+
+For installation and usage details:
+- Claude Code plugin: See [README.md](README.md#quick-install)
+- SpecKit extension: See [spec-kit-multi-agent-tdd/USER-GUIDE.md](spec-kit-multi-agent-tdd/USER-GUIDE.md)

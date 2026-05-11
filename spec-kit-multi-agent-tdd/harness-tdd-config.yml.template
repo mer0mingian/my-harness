@@ -1,0 +1,116 @@
+# harness-tdd-workflow Configuration Template
+# Copy this file to .specify/harness-tdd-config.yml in your workspace
+
+version: "1.0"
+
+# Agent assignments (maps workflow roles to Claude Code agent names)
+# These agent names must match matd plugin agent definitions (matd-qa, matd-dev, matd-architect, matd-critical-thinker)
+agents:
+  test_agent: "matd-qa"                # Agent for Step 7: Write Tests
+  implementation_agent: "matd-dev"     # Agent for Step 8: Implement
+  qa_agent: "matd-qa"                  # Agent for acceptance validation
+  arch_reviewer: "matd-architect"      # Agent for architecture review
+  code_reviewer: "matd-critical-thinker"  # Agent for code review
+
+# Artifact configuration (standardized paths and naming)
+artifacts:
+  # Root directory for all workflow artifacts
+  root: "docs/features"
+
+  # Artifact type suffixes (used in {feature_id}-{suffix}.md)
+  types:
+    spec: "spec"
+    test_design: "test-design"
+    impl_notes: "impl-notes"
+    arch_review: "arch-review"
+    code_review: "code-review"
+    workflow_summary: "workflow-summary"
+
+  # Search paths for finding existing artifacts (in priority order)
+  search_paths:
+    - "docs/features"
+    - "docs/specs"
+    - ".specify/specs"
+
+  # Mandatory flags (per CONSTITUTION)
+  mandatory:
+    test_design: true       # Step 7 - Cannot be disabled
+    impl_notes: false       # Step 8 - Optional per CONSTITUTION line 125
+    arch_review: true       # Step 9 - Cannot be disabled
+    code_review: true       # Step 9 - Cannot be disabled
+    workflow_summary: true  # Step 10 - Cannot be disabled
+
+# Quality gates configuration
+# Gates enforce constitutional principles (RED state validation, review enforcement)
+gates:
+  default_mode: "auto"  # auto | manual
+  # List gates requiring human approval (e.g., ["arch_review", "code_review"])
+  manual_gates: []
+  # Max iterations for Step 9 review loop (prevents infinite cycles)
+  max_review_cycles: 3
+  # Stop early if same findings repeat (convergence detection)
+  convergence_detection: true
+
+# Planning configuration (Step 0: Interactive Planning)
+# Optional: Integrate Matt Pocock's grill-me skill for interactive planning
+planning:
+  skill: "general-grill-me"  # Optional: grill-me skill for interactive planning
+  skill_path: ".claude/skills/general-grill-me/"  # Path to skill (if installed via plugin)
+  interactive_by_default: true  # Use interactive mode by default
+  fallback_mode: "standard"  # Fallback if grill-me unavailable (standard | skip)
+
+# Test framework configuration (for failure code detection)
+# Used to detect valid RED states vs. broken tests
+test_framework:
+  type: "pytest"  # Test framework type (pytest only for Phase 2)
+  # File patterns to identify test files
+  file_patterns:
+    - "tests/**/*.py"
+    - "**/test_*.py"
+    - "**/*_test.py"
+  # Failure codes for RED state validation
+  failure_codes:
+    # Valid RED states (behavior missing, assertions mismatched)
+    valid_red:
+      - "MISSING_BEHAVIOR"
+      - "ASSERTION_MISMATCH"
+      - "AssertionError"
+      - "NameError"
+      - "AttributeError"
+    # Invalid states requiring escalation (test broken, env broken)
+    invalid_escalate:
+      - "TEST_BROKEN"
+      - "ENV_BROKEN"
+      - "SyntaxError"
+      - "ImportError"
+      - "ModuleNotFoundError"
+
+# Workflow execution configuration
+workflow:
+  # Human feedback at workflow stages (can be skipped with --skip-human-feedback flag)
+  skip_human_feedback: false
+  # Enable parallel execution for independent steps (Phase 3 feature)
+  parallel_enabled: false
+  # Timeout for agent tasks (in minutes)
+  agent_timeout: 30
+  # Enable artifact validation (check templates match outputs)
+  validate_artifacts: true
+
+# Local Jira structure (replaces Linear integration)
+# Future: Will sync with actual Jira via API
+jira:
+  # Enable local folder structure for epics/stories
+  local_mode: true
+  # Root directory for epic/story folders
+  root: ".specify/epics"
+  # Auto-create story files when running workflow
+  auto_create_stories: true
+
+# Logging and observability
+logging:
+  # Log level: debug | info | warn | error
+  level: "info"
+  # Log workflow steps to dedicated file
+  workflow_log: "docs/workflow/{feature_id}-workflow.log"
+  # Include agent responses in logs
+  include_agent_responses: false
