@@ -14,6 +14,7 @@ skills:
   - arch-writing-plans
   - general-system-design
   - general-improve-codebase-architecture
+  - general-grill-me
   - stdd-openspec
   - dev-backend-to-frontend-handoff
   - orchestrate-dispatching-parallel-agents

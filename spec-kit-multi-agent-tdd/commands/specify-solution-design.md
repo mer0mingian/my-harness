@@ -32,14 +32,14 @@ This command generates an Architecture Decision Record comparing solution altern
 
 ## User Input
 
-`/speckit.multi-agent.solution-design $ARGUMENTS`
+`/speckit.matd.solution-design $ARGUMENTS`
 
 **Arguments**:
 - `$ARGUMENTS`: Feature identifier (e.g., `feat-123`). Required.
 
 ## Step 1: Validate Prerequisites
 
-- If `$ARGUMENTS` is empty or not provided → ❌ Exit 1 with message: "Error: feature_id is required. Usage: /speckit.multi-agent.solution-design <feature_id>"
+- If `$ARGUMENTS` is empty or not provided → ❌ Exit 1 with message: "Error: feature_id is required. Usage: /speckit.matd.solution-design <feature_id>"
 - Set `feature_id` from `$ARGUMENTS` (trim whitespace)
 - Check that c4-context, c4-container, and c4-component agents exist in `.claude/agents/` or `~/.claude/agents/`
 - If any c4-* agent is missing → ❌ Exit 1 with message listing all missing agents (all must be installed together with the plugin)
@@ -56,12 +56,12 @@ If config file is missing or unreadable, continue with the defaults above. Log a
 
 Load all available context (in order of preference):
 
-1. **PRD**: `{artifacts.root}/{feature_id}-prd.md`
+1. **Spec**: `{artifacts.root}/{feature_id}-spec.md`
 2. **System Constitution**: search `docs/architecture/technical-constitution.md`, then `.specify/technical-constitution.md`
-3. **Spec**: search `docs/features/{feature_id}.md`, `docs/features/{feature_id}-spec.md`, `.specify/specs/{feature_id}.md`
+3. **Additional Spec**: search `docs/features/{feature_id}.md`, `docs/features/{feature_id}-spec.md`, `.specify/specs/{feature_id}.md`
 4. **Existing codebase analysis**: search for deepwiki/litho output in `docs/deepwiki/`, `docs/architecture/`. If none found AND `src/` exists, use `arch-smart-docs` skill to scan codebase structure.
 
-If PRD and System Constitution are both missing:
+If Spec and System Constitution are both missing:
 
 ⚠️ Warn: "Running solution-design without discover output increases spec drift risk. Proceeding with user input as primary context."
 
@@ -98,20 +98,20 @@ Update ADR: set `status: accepted`, record chosen alternative in `## Decision` s
 
 Delegate to **@c4-context** agent with `arch-c4-architecture` and `arch-mermaid-diagrams` skills.
 
-**Provide ALL context:** PRD + System Constitution + ADR (chosen solution summary) + codebase analysis (if available)
+**Provide ALL context:** Spec + System Constitution + ADR (chosen solution summary) + codebase analysis (if available)
 
 **Task for agent:** Generate C1 Context diagram for the chosen solution showing system boundary, external actors, and high-level interactions.
 
 **Output:** C1 Context section content for solution-design artifact.
 
-**If contradiction detected** (agent output conflicts with PRD or Constitution):
+**If contradiction detected** (agent output conflicts with Spec or Constitution):
 ⚠️ Interrupt: describe the contradiction to user and request resolution before continuing. ❌ Exit 2 if unresolved.
 
 ## Step 6: Invoke @c4-container Agent (Sequential)
 
 Delegate to **@c4-container** agent with `arch-c4-architecture` and `arch-mermaid-diagrams` skills.
 
-**Provide ALL context:** PRD + Constitution + ADR + C1 output from Step 5 + codebase analysis
+**Provide ALL context:** Spec + Constitution + ADR + C1 output from Step 5 + codebase analysis
 
 **Task:** Generate C2 Container diagram for the chosen solution.
 
@@ -123,7 +123,7 @@ Delegate to **@c4-container** agent with `arch-c4-architecture` and `arch-mermai
 
 Delegate to **@c4-component** agent with `arch-c4-architecture` and `arch-mermaid-diagrams` skills.
 
-**Provide ALL context:** PRD + Constitution + ADR + C1 + C2 outputs + codebase analysis
+**Provide ALL context:** Spec + Constitution + ADR + C1 + C2 outputs + codebase analysis
 
 **Task:** Generate C3 Component diagram for the chosen solution (internal structure of primary container).
 
@@ -190,7 +190,7 @@ workflow:
 
 ## Related Commands
 
-- `/speckit.multi-agent.discover`: Run discovery phase (prerequisite for this command)
+- `/speckit.specify`: Run discovery phase (prerequisite for this command)
 - `/speckit.plan`: Refinement phase (next step after solution-design)
-- `/speckit.multi-agent.test`: Generate failing tests for a specified feature
-- `/speckit.multi-agent.implement`: Implement feature code (RED → GREEN)
+- `/speckit.matd.test`: Generate failing tests for a specified feature
+- `/speckit.matd.implement`: Implement feature code (RED → GREEN)

@@ -31,7 +31,7 @@ End-to-end / dogfood runs verify that an agent following a command markdown file
 
 | Slice | Command/Artifact | Story Points | Dependencies |
 |-------|-----------------|-------------|--------------|
-| 7a | Templates: PRD + System Constitution | 2 | None |
+| 7a | Templates: Spec + System Constitution | 2 | None |
 | 7b | Templates: ADR + Solution Design (C2/C3) | 2 | None |
 | 7c | `/speckit.multi-agent.discover` command | 3 | 7a |
 | 7d | `/speckit.multi-agent.solution-design` command | 3 | 7a, 7b, c4-* agents |
@@ -44,7 +44,7 @@ End-to-end / dogfood runs verify that an agent following a command markdown file
 
 ## Artifact Reference
 
-### PRD (`${feature_id}-prd.md`)
+### Spec (`${feature_id}-spec.md`)
 
 **Created by:** `/speckit.multi-agent.discover`  
 **Sections (from Agentic Engineering Workflow.png Discovery panel):**
@@ -57,7 +57,7 @@ version: 1.0
 status: draft | approved
 ---
 
-# PRD: ${feature_title}
+# Spec: ${feature_title}
 
 ## What & Why
 ## Business Value
@@ -69,7 +69,7 @@ status: draft | approved
 ## Metrics
 ```
 
-**Behaviour on re-run:** Merge/update (not overwrite). Warn user if PRD already exists, then proceed.
+**Behaviour on re-run:** Merge/update (not overwrite). Warn user if Spec already exists, then proceed.
 
 ---
 
@@ -191,10 +191,10 @@ status: draft
 
 ---
 
-## Slice 7a: PRD + System Constitution Templates (2 pts)
+## Slice 7a: Spec + System Constitution Templates (2 pts)
 
 **Tasks:**
-- S7a-001: Create `templates/prd-template.md` with YAML frontmatter and all sections (1 pt)
+- S7a-001: Create `templates/spec-template.md` with YAML frontmatter and all sections (1 pt)
 - S7a-002: Create `templates/system-constitution-template.md` with all NFR sections (1 pt)
 
 **Acceptance criteria:**
@@ -229,7 +229,7 @@ status: draft
 **Workflow:**
 ```
 Step 1: Check prerequisites (feature_id provided, spec artifact exists?)
-  - If PRD already exists: mention it and proceed
+  - If Spec already exists: mention it and proceed
   - If spec exists: load it as context for grill-me
 
 Step 2: Load existing context
@@ -238,13 +238,13 @@ Step 2: Load existing context
 
 Step 3: Run grill-me session (general-grill-with-docs skill)
   - Relentless questioning throughout artifact generation
-  - Goal: fill all PRD sections to consensus
+  - Goal: fill all Spec sections to consensus
   - Allow user to defer unknowns (saved as open questions)
   - Stop: when agent reaches consensus OR user signals done
 
-Step 4: Generate/update PRD
+Step 4: Generate/update Spec
   - Fill template with grill-me outputs
-  - Merge with existing PRD if present
+  - Merge with existing Spec if present
   - Save unanswered questions to ${feature_id}-open-questions.md
 
 Step 5: Generate/update System Constitution
@@ -265,9 +265,9 @@ Step 7: Report
 **Acceptance criteria:**
 - [ ] Command markdown has valid YAML frontmatter
 - [ ] Command uses grill-with-docs skill throughout (verified by E2E run)
-- [ ] PRD created with all required sections (verified by E2E run + PR review)
+- [ ] Spec created with all required sections (verified by E2E run + PR review)
 - [ ] System Constitution extended/created silently
-- [ ] Open questions saved to separate file (not in PRD)
+- [ ] Open questions saved to separate file (not in Spec)
 - [ ] Re-run merges, does not overwrite
 - [ ] Artifact validation runs post-generation (warn, not block)
 
@@ -283,9 +283,9 @@ Step 7: Report
 ```
 Step 1: Validate prerequisites
   - Validate c4-* agents exist (fail fast if missing)
-  - Check PRD exists: if missing, warn about spec drift and ask user for problem description
+  - Check Spec exists: if missing, warn about spec drift and ask user for problem description
   - Check System Constitution exists: if missing, warn
-  - Load: PRD + Constitution + spec + ADR (if exists) + codebase (if src/ exists)
+  - Load: Spec + Constitution + spec + ADR (if exists) + codebase (if src/ exists)
 
 Step 2: Codebase analysis (if no deepwiki/C4 analysis available)
   - Use arch-smart-docs skill to scan src/ for components
@@ -304,19 +304,19 @@ Step 4: User confirms solution choice
   - Note chosen solution for C2/C3 generation
 
 Step 5: Invoke c4-context agent (sequential)
-  - Context: PRD + Constitution + ADR (chosen solution) + codebase analysis
+  - Context: Spec + Constitution + ADR (chosen solution) + codebase analysis
   - Task: Generate C1 Context diagram for chosen solution
   - Output: C1 section in solution-design.md
   - On contradiction: interrupt, ask user for resolution
 
 Step 6: Invoke c4-container agent (sequential)
-  - Context: ALL previous (PRD + Constitution + ADR + C1 output + codebase)
+  - Context: ALL previous (Spec + Constitution + ADR + C1 output + codebase)
   - Task: Generate C2 Container diagram
   - Output: C2 section in solution-design.md
   - On contradiction: interrupt, ask user for resolution
 
 Step 7: Invoke c4-component agent (sequential)
-  - Context: ALL previous (PRD + Constitution + ADR + C1 + C2 output + codebase)
+  - Context: ALL previous (Spec + Constitution + ADR + C1 + C2 output + codebase)
   - Task: Generate C3 Component diagram
   - Output: C3 section in solution-design.md
   - On contradiction: interrupt, ask user for resolution
@@ -339,7 +339,7 @@ Step 10: Report
 **Acceptance criteria:**
 - [ ] Command markdown has valid YAML frontmatter
 - [ ] Validates c4-* agents exist before starting (fail fast)
-- [ ] Warns if PRD/Constitution missing, proceeds with user input
+- [ ] Warns if Spec/Constitution missing, proceeds with user input
 - [ ] ADR generates 3 alternatives with C1/C2 mermaid per alternative (verified by E2E run)
 - [ ] User review gate: pauses after ADR, waits for solution confirmation
 - [ ] C4 agents invoked sequentially with full cumulative context
@@ -366,7 +366,7 @@ Proceed anyway.
 **`commands/commit.md`** — add to Step 1 (Validation):
 ```
 Check for Phase 3 artifacts:
-- PRD: ${feature_id}-prd.md
+- Spec: ${feature_id}-spec.md
 - System Constitution: technical-constitution.md
 - Solution Design: ${feature_id}-solution-design.md
 
@@ -377,7 +377,7 @@ If any missing:
 ### Minimum Artifact Set for Commit
 
 Per Q13c (required = block, missing = warn only):
-- ✅ PRD — required (warn if missing)
+- ✅ Spec — required (warn if missing)
 - ✅ System Constitution — required, may pre-exist (warn if missing)
 - ✅ C4 diagrams — Container level sufficient for existing systems (warn if missing)
 - ✅ Review artifacts — Arch review + Code review (BLOCK if missing — Phase 2 gate)
@@ -434,7 +434,7 @@ Add to `extension.json`:
 ```json
 "discover": {
   "file": "commands/discover.md",
-  "description": "Discovery phase: generate PRD and System Constitution via grill-me",
+  "description": "Discovery phase: generate Spec and System Constitution via grill-me",
   "usage": "/speckit.multi-agent.discover <feature-id>",
   "arguments": [
     {"name": "feature_id", "required": true, "description": "Feature identifier"}
@@ -462,8 +462,8 @@ Add to `extension.json`:
 ## Success Criteria
 
 Phase 3 complete when:
-- [ ] 4 templates created (PRD, System Constitution, ADR, Solution Design)
-- [ ] `/speckit.multi-agent.discover` generates PRD + extends System Constitution
+- [ ] 4 templates created (Spec, System Constitution, ADR, Solution Design)
+- [ ] `/speckit.multi-agent.discover` generates Spec + extends System Constitution
 - [ ] `/speckit.multi-agent.discover` re-run merges correctly
 - [ ] `/speckit.multi-agent.solution-design` validates agents, creates ADR with 3 alternatives
 - [ ] User review gate pauses for solution confirmation

@@ -18,7 +18,7 @@ exit_codes:
 
 # Product Brief Workflow (MATD — Product-Level Discovery)
 
-This command runs a grill-me session to elicit high-level product vision and create a product brief. Use this for NEW products, not individual features (use `/speckit.multi-agent.discover` for feature specs).
+This command runs a grill-me session to elicit high-level product vision and create a product brief. Use this for NEW products, not individual features (use `/speckit.specify` for feature specs).
 
 ## Prerequisites
 
@@ -132,7 +132,7 @@ Show a final summary:
 
 Suggest next step:
 
-> Product brief is now available as context for feature specifications. When creating feature specs with `/speckit.multi-agent.discover`, the matd-specifier agent can reference this product brief for additional context.
+> Product brief is now available as context for feature specifications. When creating feature specs with `/speckit.specify`, the matd-specifier agent can reference this product brief for additional context.
 
 ## Exit Codes
 
@@ -157,8 +157,8 @@ planning:
 
 ## Related Commands
 
-- `/speckit.multi-agent.discover`: Create feature spec (use this for individual features)
-- `/speckit.multi-agent.solution-design`: Create architecture design for a feature
+- `/speckit.specify`: Create feature spec (use this for individual features)
+- `/speckit.matd.specify-solution-design`: Create architecture design for a feature
 
 ## Product Brief vs Feature Spec
 

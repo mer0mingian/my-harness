@@ -28,7 +28,7 @@ This command spawns @check (architecture reviewer) and @simplify (code reviewer)
 
 ## User Input
 
-**Command**: `/speckit.multi-agent.review $FEATURE_ID`
+**Command**: `/speckit.matd.review $FEATURE_ID`
 
 **Arguments**:
 - `$FEATURE_ID`: Feature identifier (e.g., 'feat-123')
@@ -165,7 +165,7 @@ If overall verdict is `NEEDS_REVISION`:
 - Track current cycle in artifacts
 - On each cycle:
   1. Developer fixes issues
-  2. Re-invoke /speckit.multi-agent.review
+  2. Re-invoke /speckit.matd.review
   3. Increment cycle_number in artifacts
   4. Repeat until APPROVED or BLOCKED
 
@@ -309,9 +309,9 @@ workflow:
 
 ## Related Commands
 
-- `/speckit.multi-agent.implement`: Generate implementation notes (step 8)
-- `/speckit.multi-agent.commit`: Commit changes after review (step 10)
-- `/speckit.multi-agent.validate`: Validate full feature lifecycle
+- `/speckit.matd.implement`: Generate implementation notes (step 8)
+- `/speckit.matd.commit`: Commit changes after review (step 10)
+- `/speckit.matd.validate`: Validate full feature lifecycle
 
 ## Implementation Notes
 
@@ -331,21 +331,21 @@ workflow:
 
 ```
 Cycle 1:
-  /speckit.multi-agent.review feat-123
+  /speckit.matd.review feat-123
   → @check: NEEDS_REVISION
   → @simplify: APPROVED
   → Overall: NEEDS_REVISION
   → Developer fixes architecture issues
 
 Cycle 2:
-  /speckit.multi-agent.review feat-123
+  /speckit.matd.review feat-123
   → @check: APPROVED
   → @simplify: NEEDS_REVISION (new issues found)
   → Overall: NEEDS_REVISION
   → Developer fixes code quality issues
 
 Cycle 3:
-  /speckit.multi-agent.review feat-123
+  /speckit.matd.review feat-123
   → @check: APPROVED
   → @simplify: APPROVED
   → Overall: APPROVED

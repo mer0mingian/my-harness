@@ -28,7 +28,7 @@ This command spawns the @matd-qa agent to write failing tests (RED state) for a 
 
 ## User Input
 
-**Command**: `/speckit.multi-agent.test $FEATURE_ID [--run-tests] [--allow-non-test-files --justification "reason"]`
+**Command**: `/speckit.matd.test $FEATURE_ID [--run-tests] [--allow-non-test-files --justification "reason"]`
 
 **Arguments**:
 - `$FEATURE_ID`: Feature identifier (e.g., 'feat-123')
@@ -329,9 +329,9 @@ If you need to modify non-test files, request --allow-non-test-files flag.
 
 ## Related Commands
 
-- `/speckit.multi-agent.implement`: Implement feature (requires valid RED state)
-- `/speckit.multi-agent.review`: Review implementation and tests
-- `/speckit.multi-agent.validate`: Validate full feature lifecycle
+- `/speckit.matd.implement`: Implement feature (requires valid RED state)
+- `/speckit.matd.review`: Review implementation and tests
+- `/speckit.matd.validate`: Validate full feature lifecycle
 
 ## Implementation Notes
 

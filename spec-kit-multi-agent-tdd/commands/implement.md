@@ -33,13 +33,13 @@ This command prepares context for the @matd-dev agent to implement code that mak
 
 **Purpose**: Prepare implementation context and validate RED state entry conditions
 
-**Command**: `/speckit.multi-agent.implement $FEATURE_ID [--project-root PATH]`
+**Command**: `/speckit.matd.implement $FEATURE_ID [--project-root PATH]`
 
 ### Phase 2: GREEN State Validation (post-implementation)
 
 **Purpose**: Validate implementation success and run integration checks
 
-**Command**: `/speckit.multi-agent.implement $FEATURE_ID --validate-green [--project-root PATH]`
+**Command**: `/speckit.matd.implement $FEATURE_ID --validate-green [--project-root PATH]`
 
 ## User Input
 
@@ -680,9 +680,9 @@ _Track refactoring steps after achieving GREEN state_
 
 ## Related Commands
 
-- `/speckit.multi-agent.test`: Generate tests (Step 7) - prerequisite for implement
-- `/speckit.multi-agent.review`: Review implementation and tests (Step 9)
-- `/speckit.multi-agent.commit`: Commit implementation (Step 10)
+- `/speckit.matd.test`: Generate tests (Step 7) - prerequisite for implement
+- `/speckit.matd.review`: Review implementation and tests (Step 9)
+- `/speckit.matd.commit`: Commit implementation (Step 10)
 
 ## Implementation Notes
 

@@ -278,23 +278,23 @@ hooks:
 ```yaml
 provides:
   commands:
-    - name: "speckit.multi-agent.test"
+    - name: "speckit.matd.test"
       file: "commands/test.md"                    # Changed from .py
       description: "Generate failing tests"
     
-    - name: "speckit.multi-agent.implement"
+    - name: "speckit.matd.implement"
       file: "commands/implement.md"               # Changed from .py
       description: "Implement feature with TDD"
     
-    - name: "speckit.multi-agent.review"
+    - name: "speckit.matd.review"
       file: "commands/review.md"                  # Changed from .py
       description: "Parallel architecture + code review"
     
-    - name: "speckit.multi-agent.commit"
+    - name: "speckit.matd.commit"
       file: "commands/commit.md"                  # Changed from .py
       description: "Validate evidence and commit"
     
-    - name: "speckit.multi-agent.execute"
+    - name: "speckit.matd.execute"
       file: "commands/execute.md"                 # Changed from .py
       description: "Execute full TDD workflow"
   
@@ -321,7 +321,7 @@ provides:
 - [ ] Scripts referenced in frontmatter exist
 - [ ] Extension manifest updated
 - [ ] Hooks configuration created
-- [ ] Test each command: `/speckit.multi-agent.test feat-test`
+- [ ] Test each command: `/speckit.matd.test feat-test`
 - [ ] Verify hooks trigger correctly
 
 ---
@@ -359,15 +359,15 @@ cat > docs/features/feat-test-spec.md << 'EOF'
 EOF
 
 # Test command invocation
-/speckit.multi-agent.test feat-test
+/speckit.matd.test feat-test
 # Verify: test-design artifact created, RED state validated
 
 # Test implement command
-/speckit.multi-agent.implement feat-test
+/speckit.matd.implement feat-test
 # Verify: RED validation runs, impl notes created
 
 # Test commit command
-/speckit.multi-agent.commit feat-test
+/speckit.matd.commit feat-test
 # Verify: Evidence validation runs, workflow summary created
 ```
 
@@ -409,7 +409,7 @@ If architectural correction fails:
 - [ ] Extension manifest updated
 - [ ] Hooks configuration created
 - [ ] Commands follow SpecKit specification
-- [ ] Test command works: `/speckit.multi-agent.test feat-test`
+- [ ] Test command works: `/speckit.matd.test feat-test`
 - [ ] Hooks trigger automatically (file gate blocks non-test files)
 - [ ] Evidence gate blocks commit without artifacts
 

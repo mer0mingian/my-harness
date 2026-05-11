@@ -9,14 +9,14 @@
 ## Command Architecture & Sequencing
 
 ### Q1: Discover Command Scope
-The `/speckit.multi-agent.discover` command uses grill-me to generate PRD and Technical Constitution.
+The `/speckit.matd.discover` command uses grill-me to generate spec and Technical Constitution.
 
 **Q1a:** Should /discover create ONLY those 2 artifacts, or are there other Discovery Panel artifacts from workflow.svg we should include?
 
 **ANSWER:** No, these two are sufficient.
 
 **Q1b:** If user runs /discover twice for the same feature, should it:
-- A) Overwrite existing PRD/Constitution
+- A) Overwrite existing spec/Constitution
 - B) Merge/update existing artifacts
 - C) Error and require --force flag
 
@@ -24,7 +24,7 @@ The `/speckit.multi-agent.discover` command uses grill-me to generate PRD and Te
 
 **Q1c:** Should /discover validate that the feature doesn't already have a spec artifact before starting grill-me, or always proceed?
 
-**ANSWER:** Mention but proceed anyway if PRD already exists. If constitution exists, just extend/merge it, but do not warn.
+**ANSWER:** Mention but proceed anyway if spec already exists. If constitution exists, just extend/merge it, but do not warn.
 
 ---
 
@@ -39,12 +39,12 @@ You said /solution-design can run without /discover but should warn about spec d
 
 **ANSWER:** Proceed after warning.
 
-**Q2c:** If PRD/Constitution are missing, where should /solution-design look for problem context?
+**Q2c:** If spec/Constitution are missing, where should /solution-design look for problem context?
 - Spec artifact only?
 - User input (ask for problem description)?
 - Fail with "run /discover first"?
 
-**ANSWER:** User input. What is mean twith spec artifact? This should be the PRD.
+**ANSWER:** User input. What is mean twith spec artifact? This should be the spec.
 
 ---
 
@@ -92,7 +92,7 @@ What dimensions should ADR compare solutions on?
 
 **Q5a:** Should criteria be:
 - Fixed set (same for all ADRs: performance, maintainability, cost, complexity)
-- Problem-specific (agent determines relevant criteria from PRD/Constitution)
+- Problem-specific (agent determines relevant criteria from spec/Constitution)
 - User-defined (grill-me asks "what matters most for this decision?")
 
 **ANSWER:** A, extend if requested by user
@@ -156,7 +156,7 @@ Markdown command must invoke c4-context, c4-container, c4-component, c4-code age
 What context do c4-* agents need?
 
 **Q8a:** For c4-context agent, which inputs are REQUIRED?
-- [X] PRD
+- [X] spec
 - [X] Technical Constitution
 - [X] ADR (or at least the chosen solution summary)
 - [X] Existing codebase (for brownfield projects)
@@ -165,7 +165,7 @@ What context do c4-* agents need?
 **ANSWER:**
 
 **Q8b:** Do lower C4 levels need ALL previous levels, or just the immediate parent?
-- c4-container needs: Context only? Or Context + PRD + Constitution?
+- c4-container needs: Context only? Or Context + spec + Constitution?
 - c4-component needs: Container only? Or Container + Context?
 
 **ANSWER:** All
@@ -198,36 +198,36 @@ C4 agents should generate mermaid diagrams.
 
 ## Artifact Structure & Relationships
 
-### Q10: PRD Structure
-PRD is created by /discover via grill-me.
+### Q10: spec Structure
+spec is created by /discover via grill-me.
 
-**Q10a:** Should PRD be:
-- Single file (docs/features/${feature_id}-prd.md)
+**Q10a:** Should spec be:
+- Single file (docs/features/${feature_id}-spec.md)
 - Multiple files (prd-overview.md, user-stories.md, acceptance-criteria.md)
 - Section within spec artifact (no separate file)
 
-**ANSWER:** PRD should be a single file, breakdown to Epics/Stories happens during the refinement phase
+**ANSWER:** spec should be a single file, breakdown to Epics/Stories happens during the refinement phase
 
-**Q10b:** What sections MUST PRD contain? Suggest minimal required structure.
+**Q10b:** What sections MUST spec contain? Suggest minimal required structure.
 
-**ANSWER:** Check the /home/minged01/repositories/harness-workplace/workflow.svg . The "Discovery" panel defines that is part of the PRD and must-haves for the System Consitution. Let the user confirm.
+**ANSWER:** Check the /home/minged01/repositories/harness-workplace/workflow.svg . The "Discovery" panel defines that is part of the spec and must-haves for the System Consitution. Let the user confirm.
 
-**Q10c:** Should PRD follow a template, or be free-form based on grill-me conversation?
+**Q10c:** Should spec follow a template, or be free-form based on grill-me conversation?
 
-**ANSWER:** PRD needs to have a template. Overlay the user input from the diagram with the content of the specs generate with the /speckit.specify command. Let the user confirm.
+**ANSWER:** spec needs to have a template. Overlay the user input from the diagram with the content of the specs generate with the /speckit.specify command. Let the user confirm.
 
 ---
 
 ### Q11: Technical Constitution Scope
-What goes in Technical Constitution vs. PRD?
+What goes in Technical Constitution vs. spec?
 
-**Q11a:** PRD defines WHAT (features, user stories). Technical Constitution defines... ?
+**Q11a:** spec defines WHAT (features, user stories). Technical Constitution defines... ?
 - Non-functional requirements (performance, scalability, security)?
 - Technology constraints (must use Python 3.11, PostgreSQL)?
 - Design principles (microservices, event-driven)?
 - ALL of the above?
 
-**ANSWER:** see response to Q10. Important: PRD does not cover user stories. These are represented as Epics and derived from the PRD during refinement. PRD only contains the description what user functionality is desired, i.e. Job to be Done. Make a web research to understand the difference and let the user confirm.
+**ANSWER:** see response to Q10. Important: spec does not cover user stories. These are represented as Epics and derived from the spec during refinement. spec only contains the description what user functionality is desired, i.e. Job to be Done. Make a web research to understand the difference and let the user confirm.
 Must Haves:
 - C1-Level description
 - NFRs
@@ -258,7 +258,7 @@ Config has `validate_artifacts: true` but implementation is missing (G5).
 - [X] Required sections present (based on template)
 - [X] YAML frontmatter valid
 - [ ] Markdown syntax valid
-- [X] Cross-references exist (e.g., ADR references PRD)
+- [X] Cross-references exist (e.g., ADR references spec)
 - [X] File size reasonable (not empty, not > 10 pages)
 
 **ANSWER:** see checkmarks
@@ -296,8 +296,8 @@ Phase 2 enforces RED→GREEN with evidence artifacts.
 **ANSWER:** Yes, but only warn if non-existing
 
 **Q13c:** What's the MINIMUM artifact set for a valid commit in full workflow?
-- [ ] Spec --> in PRD
-- [X] PRD --> contains requirements
+- [ ] Spec --> in spec
+- [X] spec --> contains requirements
 - [X] Technical Constitution --> System Constitution, might pre-exist for established system
 - [ ] ADR
 - [X] C4 diagrams (all 4 levels? or just Context?) --> for existing system, container-only suffices
@@ -313,11 +313,11 @@ Phase 2 enforces RED→GREEN with evidence artifacts.
 ### Q14: Grill-Me Integration
 /discover uses grill-me skill for questioning.
 
-**Q14a:** Should grill-me run at START of /discover (to build PRD from scratch), or throughout (iterative refinement)?
+**Q14a:** Should grill-me run at START of /discover (to build spec from scratch), or throughout (iterative refinement)?
 
 **ANSWER:** throughout
 
-**Q14b:** How many questions should grill-me ask before generating PRD?
+**Q14b:** How many questions should grill-me ask before generating spec?
 - Fixed count (e.g., minimum 10 questions)
 - Until consensus (agent satisfied with understanding)
 - User-controlled (user says "stop, I've given enough info")
@@ -334,7 +334,7 @@ Phase 2 enforces RED→GREEN with evidence artifacts.
 Phase 2 has max 3 review cycles for /review command.
 
 **Q15a:** Should /discover have review cycles?
-- Agent generates PRD → user reviews → agent refines based on feedback → repeat?
+- Agent generates spec → user reviews → agent refines based on feedback → repeat?
 - Or: grill-me is inherently interactive, no separate review needed?
 
 **ANSWER:** no, only invoke manually
@@ -468,7 +468,7 @@ You mentioned extracting artifact names from workflow.svg.
 **ANSWER:** you may also parse from /home/minged01/repositories/harness-workplace/Agentic Engineering Workflow.png
 
 
-**Q21b:** Are there artifacts in workflow.svg NOT mentioned in our current plan (beyond PRD, Constitution, ADR, C4)?
+**Q21b:** Are there artifacts in workflow.svg NOT mentioned in our current plan (beyond spec, Constitution, ADR, C4)?
 
 **ANSWER:** check this yourself. there is testing strategy mentioned in refinement phase. this is derived from the spec. It is not a separate artifact
 

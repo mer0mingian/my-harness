@@ -1,12 +1,12 @@
 ---
-type: prd
+type: spec
 feature_id: "{{feature_id}}"
 version: "1.0"
 status: draft
 created: "{{timestamp}}"
 ---
 
-# PRD: {{feature_name}}
+# Spec: {{feature_name}}
 
 ## What & Why
 
@@ -81,6 +81,6 @@ _What will we measure to evaluate success?_
 
 **Verification Checklist:**
 - [ ] All 8 required sections present
-- [ ] YAML frontmatter valid
+- [ ] YAML frontmatter valid (type: spec)
 - [ ] Feature ID and timestamp filled
 - [ ] No placeholder values remain

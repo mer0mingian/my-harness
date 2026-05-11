@@ -136,7 +136,7 @@ The older `multi-agent-cli-harness-plan.md` contained several factual errors. Th
 │   ├── README.md
 │   ├── CLAUDE.md                               (sandbox repo instructions)
 │   ├── Task-List.md                            (implementation tasks)
-│   ├── Technical-Requirements.md               (requirements spec)
+│   ├── technical-constitution.md               (technical standards)
 │   └── Roadmap.md                              (phase dependencies)
 ├── sta2e-vtt-lite/                             (git, test project - app code)
 │   └── (empty until Phase 4)

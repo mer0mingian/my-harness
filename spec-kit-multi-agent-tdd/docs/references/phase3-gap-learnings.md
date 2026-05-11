@@ -10,8 +10,8 @@
 **Issue:** /plan command name misleading - doesn't just plan, it discovers requirements.
 
 **Resolution:**
-- Rename: `/speckit.multi-agent.plan` → `/speckit.multi-agent.discover`
-- Purpose: Generate PRD and Technical Constitution via grill-me questioning
+- Rename: `/speckit.matd.plan` → `/speckit.matd.discover`
+- Purpose: Generate spec and Technical Constitution via grill-me questioning
 - Sequence: /discover runs BEFORE /solution-design
 - Standalone: /solution-design CAN run without /discover, but warns about spec drift risk
 - Rationale: Discovery establishes user motivation and logic; solution design without it risks misalignment
@@ -93,7 +93,7 @@ tools:
 - **general-grill-with-docs:** For /discover command - grills user with domain awareness, updates CONTEXT.md and ADRs inline
 
 **Tools for Architecture Agents:**
-- **Read/Write:** Read PRD/Constitution/codebase, write diagram files
+- **Read/Write:** Read spec/Constitution/codebase, write diagram files
 - **Glob:** Find relevant code files to analyze structure
 - **Bash(tree/find/grep):** Explore project structure, detect patterns
 
@@ -104,7 +104,7 @@ tools:
 Invoke @c4-context agent with arch-c4-architecture and arch-mermaid-diagrams skills:
 
 **Context:**
-- PRD: ${prd_content}
+- Spec: ${spec_content}
 - Technical Constitution: ${constitution_content}
 - Feature: ${feature_id}
 - Codebase: (agent can Glob/Read to analyze)
@@ -131,7 +131,7 @@ Skills: Use arch-c4-architecture for workflow, arch-mermaid-diagrams for syntax
 
 **Diagram Source:** `Agentic Engineering Workflow.png`
 
-### PRD Must-Have Sections (Discovery Panel)
+### Spec Must-Have Sections (Discovery Panel)
 - What & Why
 - Business Value
 - Measurability
@@ -159,16 +159,17 @@ Skills: Use arch-c4-architecture for workflow, arch-mermaid-diagrams for syntax
 - Testing Strategy (derived here, not in implementation)
 - → Produces: vertical slices (Epic, Story, Task)
 
-### PRD ↔ Spec Relationship
-- PRD = upstream context (What & Why, business motivation, Job-to-be-Done)
-- Spec = SpecKit technical specification (acceptance criteria, user stories format)
-- PRD does NOT contain user stories — these are derived as Epics during Refinement
-- Both are inputs to Solution Design
+### Spec Terminology
+- **Spec** (feature specification) = requirements for features in existing products (created by `/speckit.specify`)
+- **Product Brief** = summary for entirely new products (separate document type, lives in `/docs/`)
+- Spec contains: What & Why, business motivation, Job-to-be-Done, acceptance criteria
+- User stories are derived as Epics during Refinement phase
+- Spec and Technical Constitution are inputs to Solution Design
 
 ## G4: Artifact Flow Understanding (CORRECTED)
 
 **Workflow.svg Analysis:**
-- Discovery Panel contains: PRD, Technical Constitution (confirmed via grep)
+- Discovery Panel contains: Spec, Technical Constitution (confirmed via grep)
 - Solution Design phase creates: ADR, Solution Design artifact
 - Phase flow: Discovery → Solution → Implementation → Review → Commit
 
@@ -180,7 +181,7 @@ Skills: Use arch-c4-architecture for workflow, arch-mermaid-diagrams for syntax
 
 ```
 /discover (Slice 7a)
-├── PRD (Product Requirements Document)
+├── Spec (Feature Specification)
 │   ├── User stories, acceptance criteria
 │   └── Success metrics, constraints
 │
@@ -191,7 +192,7 @@ Skills: Use arch-c4-architecture for workflow, arch-mermaid-diagrams for syntax
 
 /solution-design (Slice 7b)
 ├── ADR (Architecture Decision Record)
-│   ├── Input: PRD (problem), Tech Constitution (constraints)
+│   ├── Input: Spec (problem), Tech Constitution (constraints)
 │   ├── Compares: 3 solution approaches
 │   ├── Includes: C4 Context + Container diagrams for EACH approach
 │   └── Output: Chosen solution with rationale
@@ -221,14 +222,14 @@ Skills: Use arch-c4-architecture for workflow, arch-mermaid-diagrams for syntax
 ```
 
 **Flow Summary:**
-1. **PRD** defines WHAT (user stories, acceptance criteria)
+1. **Spec** defines WHAT (user stories, acceptance criteria)
 2. **Technical Constitution** defines HOW (constraints, tech choices, principles)
 3. **ADR** compares 3 solution approaches with C4 Context/Container for each → user chooses one
 4. **Solution Design** elaborates chosen solution with 4 detailed views (all 4 C4 levels + dependencies + interfaces + data)
 5. Implementation phases use Solution Design as blueprint
 
 **Artifact Files Created:**
-- `/discover`: `${feature_id}-prd.md`, `technical-constitution.md` (or update existing)
+- `/discover`: `${feature_id}-spec.md`, `technical-constitution.md` (or update existing)
 - `/solution-design`:
   - `${feature_id}-adr.md` (includes 3 approaches with Context/Container diagrams)
   - `${feature_id}-solution-design.md` (contains all 4 views with detailed diagrams)
@@ -319,7 +320,7 @@ Use Planning Poker approach with user during grilling phase to calibrate estimat
 ## Summary
 
 **Key Decisions:**
-1. **Command renamed:** /plan → /discover (generates PRD + Technical Constitution)
+1. **Command renamed:** /plan → /discover (generates spec + Technical Constitution)
 2. **ADR template:** 2-page Nygard pattern, 3 solutions default, includes C4 Context/Container for EACH approach
 3. **Solution Design artifact (NEW):** Separate document with 4 views:
    - Decomposition View (all 4 C4 levels: Context, Container, Component, Code)
@@ -327,12 +328,12 @@ Use Planning Poker approach with user during grilling phase to calibrate estimat
    - Interface View (API contracts, event schemas)
    - Data Design View (ERD, schemas, data flow diagrams)
 4. **Subagent skills:** arch-mermaid-diagrams, arch-c4-architecture, arch-smart-docs, general-grill-with-docs
-5. **Artifact flow:** PRD + Tech Constitution (from /discover) → ADR compares 3 approaches → Solution Design elaborates chosen approach
+5. **Artifact flow:** Spec + Tech Constitution (from /discover) → ADR compares 3 approaches → Solution Design elaborates chosen approach
 6. **Slice 8:** Implement 5 missing config features + validation + docs
 7. **Story points:** Planning Poker, Fibonacci scale, manual calibration
 
 **Artifacts Created by Phase 3:**
-- `/discover`: `${feature_id}-prd.md`, `technical-constitution.md`
+- `/discover`: `${feature_id}-spec.md`, `technical-constitution.md`
 - `/solution-design`: `${feature_id}-adr.md`, `${feature_id}-solution-design.md`
 
 **Next Steps:**

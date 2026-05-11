@@ -5,10 +5,10 @@ tools:
   - 'filesystem/read'
   - 'bash/execute'
 scripts:
-  invoke_test: /speckit.multi-agent.test
-  invoke_implement: /speckit.multi-agent.implement
-  invoke_review: /speckit.multi-agent.review
-  invoke_commit: /speckit.multi-agent.commit
+  invoke_test: /speckit.matd.test
+  invoke_implement: /speckit.matd.implement
+  invoke_review: /speckit.matd.review
+  invoke_commit: /speckit.matd.commit
 exit_codes:
   0: "Success - workflow completed or user aborted in interactive mode"
   1: "Validation failure at any step"
@@ -28,7 +28,7 @@ This command orchestrates the complete TDD workflow by invoking subcommands sequ
 
 ## User Input
 
-**Command**: `/speckit.multi-agent.execute $FEATURE_ID [--mode=auto|interactive] [--project-root PATH]`
+**Command**: `/speckit.matd.execute $FEATURE_ID [--mode=auto|interactive] [--project-root PATH]`
 
 **Arguments**:
 - `$FEATURE_ID`: Feature identifier (e.g., 'feat-123')
@@ -42,10 +42,10 @@ This command orchestrates the complete TDD workflow by invoking subcommands sequ
 The execute orchestrator manages the complete TDD workflow lifecycle:
 
 **Workflow Steps**:
-1. `/speckit.multi-agent.test` - Generate failing tests (RED)
-2. `/speckit.multi-agent.implement` - Implement feature (GREEN)
-3. `/speckit.multi-agent.review` - Review implementation and tests
-4. `/speckit.multi-agent.commit` - Commit changes to git
+1. `/speckit.matd.test` - Generate failing tests (RED)
+2. `/speckit.matd.implement` - Implement feature (GREEN)
+3. `/speckit.matd.review` - Review implementation and tests
+4. `/speckit.matd.commit` - Commit changes to git
 
 **Key Features**:
 - Sequential execution with dependency enforcement
@@ -59,7 +59,7 @@ The execute orchestrator manages the complete TDD workflow lifecycle:
 Execute the test generation subcommand:
 
 ```bash
-/speckit.multi-agent.test ${FEATURE_ID}
+/speckit.matd.test ${FEATURE_ID}
 ```
 
 **Exit code handling**:
@@ -79,7 +79,7 @@ Execute the test generation subcommand:
 Execute the implementation subcommand:
 
 ```bash
-/speckit.multi-agent.implement ${FEATURE_ID}
+/speckit.matd.implement ${FEATURE_ID}
 ```
 
 **Exit code handling**:
@@ -100,7 +100,7 @@ Execute the implementation subcommand:
 Execute the review subcommand:
 
 ```bash
-/speckit.multi-agent.review ${FEATURE_ID}
+/speckit.matd.review ${FEATURE_ID}
 ```
 
 **Exit code handling**:
@@ -121,7 +121,7 @@ Execute the review subcommand:
 Execute the commit subcommand:
 
 ```bash
-/speckit.multi-agent.commit ${FEATURE_ID}
+/speckit.matd.commit ${FEATURE_ID}
 ```
 
 **Exit code handling**:
@@ -434,11 +434,11 @@ interactive:
 
 ## Related Commands
 
-- `/speckit.multi-agent.test`: Generate failing tests (RED)
-- `/speckit.multi-agent.implement`: Implement feature (GREEN)
-- `/speckit.multi-agent.review`: Review implementation and tests
-- `/speckit.multi-agent.commit`: Commit changes to git
-- `/speckit.multi-agent.validate`: Validate full feature lifecycle (separate command)
+- `/speckit.matd.test`: Generate failing tests (RED)
+- `/speckit.matd.implement`: Implement feature (GREEN)
+- `/speckit.matd.review`: Review implementation and tests
+- `/speckit.matd.commit`: Commit changes to git
+- `/speckit.matd.validate`: Validate full feature lifecycle (separate command)
 
 ## Implementation Notes
 

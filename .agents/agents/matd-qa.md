@@ -19,6 +19,8 @@ skills:
   - general-git-guardrails-claude-code
   - general-finishing-a-development-branch
   - general-using-git-worktrees
+  - general-grill-me
+  - dev-tdd
 permission:
   read:
     '*': allow

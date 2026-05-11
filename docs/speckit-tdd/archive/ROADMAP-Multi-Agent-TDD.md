@@ -445,9 +445,9 @@ Applies across all Phase 3 (and downstream) work on this extension:
 
 This policy was adopted on 2026-05-08 (commit `04d0fa2` removed 6 structural markdown test files, ~143 test cases). Rationale: markdown command files are interpreted by an LLM agent at runtime and have no behaviour to regress against; section drift is caught by PR review.
 
-### Slice 7a: PRD + System Constitution Templates (2 pts)
+### Slice 7a: Spec + System Constitution Templates (2 pts)
 
-- S7a-001: `templates/prd-template.md` — What & Why, Business Value, Measurability, Goals & No-goals, Risks & Stories, Dependencies, People, Metrics (1 pt)
+- S7a-001: `templates/spec-template.md` — What & Why, Business Value, Measurability, Goals & No-goals, Risks & Stories, Dependencies, People, Metrics (1 pt)
 - S7a-002: `templates/system-constitution-template.md` — Tech Radar, Team Tech Skills, Compliance & Governance, NFRs (Testing Strategy, Performance, Scalability, Reliability) (1 pt)
 
 ### Slice 7b: ADR + Solution Design Templates (2 pts) [parallel with 7a]
@@ -459,13 +459,13 @@ This policy was adopted on 2026-05-08 (commit `04d0fa2` removed 6 structural mar
 
 - S7c-001: Command scaffold + prerequisite checks (0.5 pt)
 - S7c-002: grill-with-docs skill integration, consensus-driven questioning (1.5 pts)
-- S7c-003: PRD generation + merge-on-rerun + open questions artifact (1 pt)
+- S7c-003: Spec generation + merge-on-rerun + open questions artifact (1 pt)
 
 **Key behaviours:** grill-me runs throughout; re-run merges (not overwrites); unanswered questions saved to `${feature_id}-open-questions.md`.
 
 ### Slice 7d: `/speckit.multi-agent.solution-design` Command (3 pts)
 
-- S7d-001: Prerequisites validation (c4-* agents exist, warn if PRD missing) (0.5 pt)
+- S7d-001: Prerequisites validation (c4-* agents exist, warn if Spec missing) (0.5 pt)
 - S7d-002: ADR generation with 3 alternatives + C1/C2 mermaid per alternative (1 pt)
 - S7d-003: User review gate — pause after ADR, wait for solution confirmation (0.25 pt)
 - S7d-004: Sequential c4-context → c4-container → c4-component invocation with cumulative context (1 pt)
@@ -911,7 +911,7 @@ This investment pays off immediately in deployment and ongoing usage.
 - [PLAN-Multi-Agent-TDD-Implementation.md](PLAN-Multi-Agent-TDD-Implementation.md) — Implementation plan (vertical slices)
 - [PHASE2-UPDATED-Execute-Command.md](../../archive/PHASE2-UPDATED-Execute-Command.md) — Phase 2 update with Slice 3.5 details ✨ NEW (archived)
 - [TASK-LIST-Multi-Agent-TDD.md](TASK-LIST-Multi-Agent-TDD.md) — Granular task breakdown
-- [PRD-Multi-Agent-TDD-Workflow.md](PRD-Multi-Agent-TDD-Workflow.md) — Product requirements
+- [Spec-Multi-Agent-TDD-Workflow.md](Spec-Multi-Agent-TDD-Workflow.md) — Product requirements
 - [CONSTITUTION-Multi-Agent-TDD.md](CONSTITUTION-Multi-Agent-TDD.md) — Constitutional principles
 - [ARTIFACT-SUMMARY.md](ARTIFACT-SUMMARY.md) — Artifact details and configuration
 

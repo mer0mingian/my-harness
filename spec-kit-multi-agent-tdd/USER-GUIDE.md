@@ -44,7 +44,7 @@ The SpecKit Multi-Agent TDD extension adds AI-powered discovery, solution design
 
 **Deep discovery** (optional, recommended for complex features):
 ```bash
-/speckit.multi-agent.discover feat-001
+/speckit.matd.specify-product-brief feat-001
 ```
 
 This uses the "grill-me" technique — the AI asks you detailed questions to build shared understanding. Outputs:
@@ -56,7 +56,7 @@ This uses the "grill-me" technique — the AI asks you detailed questions to bui
 ### 2. Solution Design Phase — Architect the Solution
 
 ```bash
-/speckit.multi-agent.solution-design feat-001
+/speckit.matd.specify-solution-design feat-001
 ```
 
 This command:
@@ -98,7 +98,7 @@ Outputs:
 **Option A: Fully Automated Workflow (Recommended)**
 
 ```bash
-/speckit.multi-agent.execute feat-001
+/speckit.matd.execute feat-001
 ```
 
 This single command runs the complete TDD cycle:
@@ -111,16 +111,16 @@ This single command runs the complete TDD cycle:
 
 ```bash
 # Step 1: Write failing tests
-/speckit.multi-agent.test feat-001
+/speckit.matd.test feat-001
 
 # Step 2: Implement feature
-/speckit.multi-agent.implement feat-001
+/speckit.matd.implement feat-001
 
 # Step 3: Parallel reviews
-/speckit.multi-agent.review feat-001
+/speckit.matd.review feat-001
 
 # Step 4: Validate and commit
-/speckit.multi-agent.commit feat-001
+/speckit.matd.commit feat-001
 ```
 
 ---
@@ -132,13 +132,13 @@ This single command runs the complete TDD cycle:
 | Command | Purpose | Outputs |
 |---------|---------|---------|
 | `/speckit.specify <description>` | Create feature specification | `feat-NNN-spec.md` |
-| `/speckit.multi-agent.discover <feature-id>` | Deep requirements discovery via Q&A | `feat-NNN-prd.md`<br/>`technical-constitution.md` |
+| `/speckit.matd.specify-product-brief <feature-id>` | Deep requirements discovery via Q&A | `feat-NNN-prd.md`<br/>`technical-constitution.md` |
 
 ### Design Commands
 
 | Command | Purpose | Outputs |
 |---------|---------|---------|
-| `/speckit.multi-agent.solution-design <feature-id>` | Compare approaches, generate architecture | `feat-NNN-adr.md`<br/>`feat-NNN-solution-design.md` |
+| `/speckit.matd.specify-solution-design <feature-id>` | Compare approaches, generate architecture | `feat-NNN-adr.md`<br/>`feat-NNN-solution-design.md` |
 
 ### Planning Commands
 
@@ -152,11 +152,11 @@ This single command runs the complete TDD cycle:
 
 | Command | Arguments | Purpose | Outputs |
 |---------|-----------|---------|---------|
-| `/speckit.multi-agent.execute` | `<feature-id>` `[--mode=auto\|interactive]` | Full TDD workflow | All artifacts + commit |
-| `/speckit.multi-agent.test` | `<feature-id>` | Write failing tests (RED) | `feat-NNN-test-design.md`<br/>`tests/test_*.py` |
-| `/speckit.multi-agent.implement` | `<feature-id>` `[--skip-integration]` | Implement feature (GREEN) | `feat-NNN-impl-notes.md`<br/>`src/*.py` |
-| `/speckit.multi-agent.review` | `<feature-id>` `[--max-cycles=N]` | Architecture + code review | `feat-NNN-arch-review.md`<br/>`feat-NNN-code-review.md` |
-| `/speckit.multi-agent.commit` | `<feature-id>` | Validate and commit | `feat-NNN-workflow-summary.md`<br/>Git commit |
+| `/speckit.matd.execute` | `<feature-id>` `[--mode=auto\|interactive]` | Full TDD workflow | All artifacts + commit |
+| `/speckit.matd.test` | `<feature-id>` | Write failing tests (RED) | `feat-NNN-test-design.md`<br/>`tests/test_*.py` |
+| `/speckit.matd.implement` | `<feature-id>` `[--skip-integration]` | Implement feature (GREEN) | `feat-NNN-impl-notes.md`<br/>`src/*.py` |
+| `/speckit.matd.review` | `<feature-id>` `[--max-cycles=N]` | Architecture + code review | `feat-NNN-arch-review.md`<br/>`feat-NNN-code-review.md` |
+| `/speckit.matd.commit` | `<feature-id>` | Validate and commit | `feat-NNN-workflow-summary.md`<br/>Git commit |
 
 ---
 
@@ -241,7 +241,7 @@ The extension uses agents from the **matd** Claude Code plugin:
 | `matd-dev` | Implementation Engineer | Implements code using TDD within fixed file manifests |
 | `matd-architect` | Solution Architect | Architecture review, solution design |
 | `matd-critical-thinker` | Red Team Validator | Code review, analyzes for completeness/edge cases |
-| `matd-specifier` | Requirements Specifier | Deep discovery, specification refinement, PRD generation |
+| `matd-specifier` | Requirements Specifier | Deep discovery, specification refinement, spec generation |
 
 **Installation:**
 ```bash
@@ -271,14 +271,14 @@ cat .specify/harness-tdd-config.yml | grep "root:"
 ```
 
 Artifacts must exist before running implementation commands:
-- `/speckit.multi-agent.test` requires `feat-NNN-spec.md`
-- `/speckit.multi-agent.implement` requires `feat-NNN-test-design.md` + RED state
-- `/speckit.multi-agent.review` requires GREEN state
-- `/speckit.multi-agent.commit` requires review artifacts
+- `/speckit.matd.test` requires `feat-NNN-spec.md`
+- `/speckit.matd.implement` requires `feat-NNN-test-design.md` + RED state
+- `/speckit.matd.review` requires GREEN state
+- `/speckit.matd.commit` requires review artifacts
 
 ### Review cycle limit reached
 
-If `/speckit.multi-agent.review` stops at max cycles:
+If `/speckit.matd.review` stops at max cycles:
 1. Check `feat-NNN-arch-review.md` and `feat-NNN-code-review.md` for findings
 2. Address the issues manually
 3. Increase `max_review_cycles` in config if needed
@@ -289,11 +289,11 @@ If `/speckit.multi-agent.review` stops at max cycles:
 
 ### 1. Use Discovery for Complex Features
 
-For features with unclear requirements, always run `/speckit.multi-agent.discover` first. The grill-me questioning reveals assumptions and edge cases early.
+For features with unclear requirements, always run `/speckit.matd.specify-product-brief` first. The grill-me questioning reveals assumptions and edge cases early.
 
 ### 2. Keep Feature Scope Small
 
-SpecKit works best with small, focused features. If `/speckit.multi-agent.execute` takes >30 minutes, the feature is too large — break it down.
+SpecKit works best with small, focused features. If `/speckit.matd.execute` takes >30 minutes, the feature is too large — break it down.
 
 ### 3. Trust the RED State Validation
 
@@ -301,12 +301,12 @@ Don't bypass RED state checks. If tests fail for the wrong reasons (`SyntaxError
 
 ### 4. Review the Solution Design
 
-After `/speckit.multi-agent.solution-design`, read the ADR before coding. The AI may propose a simpler approach than you initially imagined.
+After `/speckit.matd.specify-solution-design`, read the ADR before coding. The AI may propose a simpler approach than you initially imagined.
 
 ### 5. Use Interactive Mode for Learning
 
 ```bash
-/speckit.multi-agent.execute feat-001 --mode=interactive
+/speckit.matd.execute feat-001 --mode=interactive
 ```
 
 Interactive mode pauses between steps, letting you review artifacts and approve next actions. Great for learning the workflow.
@@ -318,7 +318,7 @@ Interactive mode pauses between steps, letting you review artifacts and approve 
 ### Skip Integration Checks (Use Sparingly)
 
 ```bash
-/speckit.multi-agent.implement feat-001 --skip-integration
+/speckit.matd.implement feat-001 --skip-integration
 ```
 
 Skips ruff/mypy checks. Useful for prototyping, but don't commit without running them.
@@ -372,7 +372,7 @@ After completing implementation:
 - **Full command reference**: See [docs/references/COMMANDS-REFERENCE.md](docs/references/COMMANDS-REFERENCE.md)
 - **Configuration schema**: See [config-schema.json](config-schema.json)
 - **Agent definitions**: See `harness-tooling/.claude/agents/matd-*.md`
-- **Technical requirements**: See archived planning docs in `docs/speckit-tdd/archive/`
+- **Design history**: See archived planning docs in `docs/speckit-tdd/archive/`
 
 ---
 

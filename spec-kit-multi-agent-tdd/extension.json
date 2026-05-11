@@ -1,13 +1,13 @@
 {
   "name": "harness-tdd-workflow",
   "version": "1.0.0",
-  "description": "Multi-agent TDD workflow commands and artifact templates for SpecKit",
+  "description": "MATD (Multi-Agent Test-Driven) workflow commands and artifact templates for SpecKit",
   "author": "Harness Sandbox Team",
   "commands": {
     "test": {
       "file": "commands/test.md",
       "description": "Generate failing tests (RED state) for feature",
-      "usage": "/speckit.multi-agent.test <feature-id>",
+      "usage": "/speckit.matd.test <feature-id>",
       "arguments": [
         {
           "name": "feature_id",
@@ -19,7 +19,7 @@
     "execute": {
       "file": "commands/execute.md",
       "description": "Execute full TDD workflow (test → implement → review → commit)",
-      "usage": "/speckit.multi-agent.execute <feature-id> [--mode=auto|interactive]",
+      "usage": "/speckit.matd.execute <feature-id> [--mode=auto|interactive]",
       "arguments": [
         {
           "name": "feature_id",
@@ -36,7 +36,7 @@
     "implement": {
       "file": "commands/implement.md",
       "description": "Implement feature code (RED → GREEN)",
-      "usage": "/speckit.multi-agent.implement <feature-id> [--skip-integration]",
+      "usage": "/speckit.matd.implement <feature-id> [--skip-integration]",
       "arguments": [
         {
           "name": "feature_id",
@@ -53,7 +53,7 @@
     "review": {
       "file": "commands/review.md",
       "description": "Parallel architecture + code review",
-      "usage": "/speckit.multi-agent.review <feature-id> [--max-cycles=N]",
+      "usage": "/speckit.matd.review <feature-id> [--max-cycles=N]",
       "arguments": [
         {
           "name": "feature_id",
@@ -70,7 +70,7 @@
     "commit": {
       "file": "commands/commit.md",
       "description": "Validate evidence and create git commit",
-      "usage": "/speckit.multi-agent.commit <feature-id>",
+      "usage": "/speckit.matd.commit <feature-id>",
       "arguments": [
         {
           "name": "feature_id",
@@ -91,15 +91,39 @@
         }
       ]
     },
-    "solution-design": {
-      "file": "commands/solution-design.md",
+    "specify-adr": {
+      "file": "commands/specify-adr.md",
+      "description": "Create Architecture Decision Record using grill-me interview",
+      "usage": "/speckit.matd.specify-adr [decision-title]",
+      "arguments": [
+        {
+          "name": "decision_title",
+          "required": false,
+          "description": "Optional decision identifier (determined during grill-me if not provided)"
+        }
+      ]
+    },
+    "specify-solution-design": {
+      "file": "commands/specify-solution-design.md",
       "description": "Solution Design: generate ADR comparing approaches and C2/C3 architecture via c4-* agents",
-      "usage": "/speckit.multi-agent.solution-design <feature-id>",
+      "usage": "/speckit.matd.specify-solution-design <feature-id>",
       "arguments": [
         {
           "name": "feature_id",
           "required": true,
           "description": "Feature identifier (e.g., 'feat-123')"
+        }
+      ]
+    },
+    "specify-test-strategy": {
+      "file": "commands/specify-test-strategy.md",
+      "description": "Define test strategy and test pyramid using grill-me interview",
+      "usage": "/speckit.matd.specify-test-strategy [project-name]",
+      "arguments": [
+        {
+          "name": "project_name",
+          "required": false,
+          "description": "Optional project identifier (determined during grill-me if not provided)"
         }
       ]
     }

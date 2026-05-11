@@ -14,7 +14,7 @@ A comprehensive survey of current frameworks reveals distinct strategies for man
 | ----------------------------- | ------------------------------- | -------------------------------- | --------------------------- | -------------------------------------------- |
 | **Spec Kit**            | Multi-phase intent refinement   | Markdown (SPEC.md, PLAN.md)      | State-based phases          | 28+ Platforms (Copilot, Claude Code, Gemini) |
 | **OpenSpec**            | Brownfield delta management     | Markdown (Delta proposal)        | Change-specific proposals   | 20+ Platforms (Cursor, Windsurf, Kiro)       |
-| **BMAD-METHOD**         | Full-lifecycle agile governance | Docs-as-Code (PRD, Architecture) | Role-based verification     | 12+ Specialized Agent Roles                  |
+| **BMAD-METHOD**         | Full-lifecycle agile governance | Docs-as-Code (Spec, Architecture) | Role-based verification     | 12+ Specialized Agent Roles                  |
 | **Tessl**               | Spec-as-Source platform         | Structured YAML/DSL              | Compiler-driven             | Proprietary AI Execution Engine              |
 | **GSD (Get-Shit-Done)** | Context engineering focus       | Markdown meta-prompts            | Prompt-level anchoring      | Agent-agnostic CLI                           |
 
@@ -22,7 +22,7 @@ Spec Kit, maintained by GitHub, utilizes a command-line interface (CLI) to enfor
 
 OpenSpec addresses the complexity of "brownfield" projects—existing codebases where a full greenfield specification is infeasible. It employs a "delta" mechanism where each proposed change is isolated in a `proposal.md` within a specific directory structure.^^ This isolation allows agents to focus on the specific structural changes required without needing to parse the entire system architecture, which significantly reduces the risk of "creative" hallucinations that often plague agents when given too much freedom over a large file system.^^
 
-The BMAD-METHOD (Breakthrough Method for AI-driven Agile Development) represents the enterprise-tier approach, producing the highest fidelity of planning artifacts.^^ It generates a comprehensive Product Requirements Document (PRD), a detailed architectural schema, and a modular story breakdown.^^ While the overhead of reviewing these artifacts is substantial for human engineers, the depth of planning provides robust guardrails for safety-critical or heavily regulated systems where integration failures carry high organizational risk.^^
+The BMAD-METHOD (Breakthrough Method for AI-driven Agile Development) represents the enterprise-tier approach, producing the highest fidelity of planning artifacts.^^ It generates a comprehensive feature specification, a detailed architectural schema, and a modular story breakdown.^^ While the overhead of reviewing these artifacts is substantial for human engineers, the depth of planning provides robust guardrails for safety-critical or heavily regulated systems where integration failures carry high organizational risk.^^
 
 ### Strategic Applicability within AI-Driven Teams
 
@@ -32,7 +32,7 @@ Framework choice is often dictated by the integration requirements of the specif
 
 ## Structural Anatomy of Machine-Readable Specifications
 
-In the SDD paradigm, the quality of implementation is a direct function of the specification's structural density. A "good spec" for AI agents differs from a traditional PRD by incorporating technical constraints, explicit non-goals, and programmatic verification criteria that an autonomous agent can interpret deterministically.^^
+In the SDD paradigm, the quality of implementation is a direct function of the specification's structural density. A "good spec" for AI agents differs from traditional requirements documents by incorporating technical constraints, explicit non-goals, and programmatic verification criteria that an autonomous agent can interpret deterministically.^^
 
 ### The Core Artifact Set: Constitution, Spec, Plan, and Tasks
 

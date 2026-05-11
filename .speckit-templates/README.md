@@ -40,55 +40,97 @@ This directory contains company-specific templates for SpecKit-driven developmen
 
 ### Specification Templates (`specs/`)
 
-**Purpose**: Various specification formats for requirements definition.
+**Purpose**: Lightweight, feature-focused specifications for individual features. This is the native SpecKit format.
 
 **Expected Files**:
-- `spec-template.md` - Feature Specification (includes technical details)
+- `spec-template.md` - Lightweight Feature Specification (SpecKit native format)
+- `product-brief-template.md` - Comprehensive Product Brief (product-level, not feature-level)
 - `adr-template.md` - Architecture Decision Record
 
-**Spec Template Should Include**:
-- Feature overview and business value
-- User stories and personas
-- Acceptance criteria
-- Success metrics
-- Dependencies and assumptions
-- Technical requirements and constraints
-- System architecture impact
-- Performance requirements
-- Security considerations
+---
+
+#### Feature Spec Template (`spec-template.md`)
+
+**Format**: Native SpecKit lightweight specification
+
+**Scope**: Individual feature within a product
+
+**Sections** (8 required):
+1. **What & Why** - Feature definition and problem statement
+2. **Business Value** - Value to users/business, expected outcomes
+3. **Measurability** - Success metrics and measurement methods
+4. **Goals & No-goals** - Scope boundaries (in-scope vs out-of-scope)
+5. **Risks & Stories** - Technical/organizational risks, affected user stories
+6. **Dependencies** - Prerequisites and blockers
+7. **People** - Product Owner, Tech Lead, Stakeholders
+8. **Metrics** - Success measurement criteria
+
+**Variables**:
+- `{feature_id}` - Unique feature identifier
+- `{feature_name}` - Feature title
+- `{timestamp}` - Creation timestamp
+- `{what_why_placeholder}` - Feature definition
+- `{business_value_placeholder}` - Business value statement
+- `{measurability_placeholder}` - Success metrics
+- `{goal_1}`, `{goal_2}` - In-scope goals
+- `{no_goal_1}`, `{no_goal_2}` - Out-of-scope items
+- `{risk_1}`, `{risk_2}` - Identified risks
+- `{story_1_description}`, `{story_2_description}` - User stories
+- `{dependency_1}`, `{dependency_2}` - Prerequisites
+- `{product_owner}`, `{tech_lead}`, `{stakeholders}` - People
+- `{metric_1}`, `{metric_2}` - Success metrics
+
+**When to Use**:
+- Adding features to existing products
+- Need lightweight, focused specifications
+- Creating testable requirements
+- Planning implementation tasks
+
+**Note**: This is the NATIVE SpecKit format — lightweight and feature-focused. For comprehensive product-level documentation, use Product Brief Template below.
+
+---
+
+#### ADR Template (`adr-template.md`)
+
+**Purpose**: Document significant architectural decisions
 
 **ADR Template Should Include**:
-- Decision title and status
+- Decision title and status (with ADR number)
 - Context and problem statement
-- Decision drivers
-- Considered options
-- Decision outcome and consequences
+- Decision drivers (factors influencing the decision)
+- Considered options (minimum 3 alternatives with pros/cons)
+- Decision outcome (chosen option with rationale)
+- Consequences (positive and negative impacts)
+- Mitigation strategies (addressing negative consequences)
+- Related documents and links
 
-**Note**: Feature specs are for individual features within a product. For product-level documentation, see Product Brief Template section below.
+**ADR Creation**:
+- Use `/speckit.matd.specify-adr` command to create standalone ADRs
+- ADRs are numbered sequentially (adr-001, adr-002, etc.)
+- Default location: `docs/architecture/decisions/`
+- Can also be feature-specific: `openspec/changes/<feature-id>/adr/`
 
 ---
 
 ### Product Brief Template (`specs/`)
 
-**Purpose**: High-level product vision and goals for NEW products. Different from feature specs — this is product-level, not feature-level.
+**Purpose**: Comprehensive product-level vision and goals for NEW products. This is product-level, NOT feature-level.
+
+**Format**: Comprehensive product documentation (formerly PRD template)
+
+**Scope**: Entire product, not individual features
 
 **Expected Files**:
 - `product-brief-template.md` - Product-level vision, goals, and constraints
 
-**Product Brief Template Should Include**:
-- Product vision and strategic goals
-- Target users and personas
-- Core value proposition and differentiators
-- High-level feature capabilities (not detailed specs)
-- Success metrics and KPIs
-- Technical context and constitution references
-- Business, technical, and organizational constraints
-
-**When to Use**:
-- Creating a NEW product (not a feature)
-- Need product-level vision document
-- Establishing success metrics for entire product
-- Defining target users and value proposition
+**Sections** (7 required):
+1. **Product Vision & Goals** - Overarching vision, strategic goals
+2. **Target Users & Personas** - Primary personas, user needs, pain points
+3. **Core Value Proposition** - Unique value, key differentiators
+4. **High-Level Features** - Core capabilities (high-level only, NOT detailed specs)
+5. **Success Metrics** - KPIs, success criteria, measurement methods
+6. **Technical Context** - Technical constitution links, technology constraints, architecture references
+7. **Known Constraints** - Business, technical, organizational constraints
 
 **Variables**:
 - `{product_name}` - Name of the product
@@ -96,12 +138,37 @@ This directory contains company-specific templates for SpecKit-driven developmen
 - `{vision}` - Product vision statement
 - `{team_name}` - Owning team
 - `{timestamp}` - Creation timestamp
+- `{goal_1}`, `{goal_2}`, `{goal_3}` - Strategic goals
+- `{persona_1_name}`, `{persona_1_description}` - User personas
+- `{value_proposition}` - Core value proposition
+- `{differentiator_1}`, `{differentiator_2}` - Key differentiators
+- `{feature_1_name}`, `{feature_1_description}` - High-level features
+- `{kpi_1}`, `{kpi_1_target}` - Success metrics
+- `{tech_constraint_1}`, `{tech_constraint_2}` - Technology constraints
 
-**Integration with Specs**:
-- Product briefs are OPTIONAL — specs can exist independently
+**When to Use**:
+- Creating a NEW product (not a feature)
+- Need comprehensive product-level vision document
+- Establishing success metrics for entire product
+- Defining target users and value proposition
+
+**Integration with Feature Specs**:
+- Product briefs are OPTIONAL — feature specs can exist independently
 - When product brief exists, matd-specifier agent can reference it as additional context during feature spec creation
 - Use `/speckit.matd.specify-product-brief` to create product brief
-- Use `/speckit.multi-agent.discover` to create feature specs
+- Feature specs (spec-template.md) are created separately for individual features
+
+**Comparison: Product Brief vs Feature Spec**
+
+| Aspect | Product Brief | Feature Spec |
+|--------|--------------|--------------|
+| **Scope** | Product-level | Feature-level |
+| **Depth** | Comprehensive | Lightweight |
+| **Format** | Formerly PRD | Native SpecKit |
+| **Sections** | 7 sections | 8 sections |
+| **Focus** | Vision, strategy, users | What/Why, goals, metrics |
+| **Use Case** | New products | Individual features |
+| **Command** | `/speckit.matd.specify-product-brief` | (SpecKit native) |
 
 ---
 
@@ -151,20 +218,78 @@ This directory contains company-specific templates for SpecKit-driven developmen
 
 ### QA Validation Templates (`qa/`)
 
-**Purpose**: Standardized QA validation reporting.
+**Purpose**: Standardized QA validation reporting and test strategy documentation.
 
 **Expected Files**:
-- `browser-qa-template.md` - Browser-based QA validation
-- `cli-qa-template.md` - CLI-based QA validation
+- `test-strategy-template.md` - Project-level test strategy and test pyramid
+- `browser-qa-template.md` - Browser-based QA validation (optional)
+- `cli-qa-template.md` - CLI-based QA validation (optional)
 
-**Browser QA Template Should Include**:
+---
+
+#### Test Strategy Template (`test-strategy-template.md`)
+
+**Purpose**: Define project-level testing approach, test pyramid ratios, patterns, and coverage targets.
+
+**Format**: Comprehensive test strategy document
+
+**Scope**: Project or product-level (not feature-specific)
+
+**Sections** (12 required):
+1. **Testing Philosophy & Principles** - Core testing philosophy, principles, quality gates
+2. **Test Pyramid Strategy** - Unit:Integration:E2E ratios, layer definitions, execution time targets
+3. **Test Patterns & Conventions** - Naming conventions, organization, common patterns, anti-patterns
+4. **Tools & Frameworks** - Testing stack (unit, integration, e2e, mocking, coverage, CI/CD tools)
+5. **Coverage Targets** - Line/branch/function coverage targets, enforcement strategy, exemptions
+6. **CI/CD Integration** - Pipeline structure, test execution per stage, failure handling
+7. **Performance & Load Testing Strategy** - Performance testing approach, load scenarios, benchmarks
+8. **Security Testing Approach** - Static/dynamic analysis, dependency scanning, compliance
+9. **Test Data Management** - Test data strategy, generation, privacy, environment-specific data
+10. **Testing Workflow** - Developer workflow, TDD cycle (Red-Green-Refactor)
+11. **Review & Maintenance** - Test review process, flaky test management, maintenance schedule
+12. **Metrics & Reporting** - Key metrics, reporting cadence, dashboard location
+
+**Variables**:
+- `{project_name}` - Project identifier
+- `{timestamp}` - Creation timestamp
+- `{test_lead}` - Test strategy owner
+- `{testing_philosophy}` - Core testing philosophy
+- `{unit_ratio}`, `{integration_ratio}`, `{e2e_ratio}` - Test pyramid distribution percentages
+- `{test_pyramid_rationale}` - Rationale for chosen distribution
+- `{unit_scope}`, `{integration_scope}`, `{e2e_scope}` - Scope definitions per layer
+- `{unit_tool}`, `{integration_tool}`, `{e2e_tool}` - Testing tools per layer
+- `{line_coverage_target}`, `{branch_coverage_target}` - Coverage targets
+- `{ci_pipeline_structure}` - CI/CD pipeline structure
+- `{performance_testing_approach}` - Performance testing strategy
+- `{security_static_approach}`, `{security_dynamic_approach}` - Security testing approaches
+- `{test_data_strategy}` - Test data management strategy
+- `{tdd_cycle_description}` - TDD workflow description
+- And many more template variables for comprehensive coverage
+
+**When to Use**:
+- Starting a new project or product
+- Need to define overall testing approach
+- Establishing test pyramid ratios
+- Defining quality gates and coverage targets
+- Setting up CI/CD testing pipeline
+
+**Command**: `/speckit.matd.specify-test-strategy [project-name]`
+
+**Integration with Test Designs**:
+- Test strategy is OPTIONAL but recommended
+- When test strategy exists, matd-qa agent can reference it for test pyramid guidance during feature test creation
+- Feature test designs can be created independently without a test strategy
+
+---
+
+**Browser QA Template Should Include** (optional):
 - Test URLs and routes
 - UI element validation checklist
 - Screenshot placeholders
 - Accessibility checks
 - Responsive design validation
 
-**CLI QA Template Should Include**:
+**CLI QA Template Should Include** (optional):
 - Test commands to execute
 - Expected outputs
 - API endpoint validation

@@ -30,7 +30,7 @@ This command validates all evidence artifacts from the Multi-Agent TDD workflow 
 
 ## User Input
 
-**Command**: `/speckit.multi-agent.commit $FEATURE_ID [--project-root PATH]`
+**Command**: `/speckit.matd.commit $FEATURE_ID [--project-root PATH]`
 
 **Arguments**:
 - `$FEATURE_ID`: Feature identifier (e.g., 'feat-123')
@@ -262,10 +262,10 @@ artifacts:
 
 ## Related Commands
 
-- `/speckit.multi-agent.test`: Generate failing tests (RED state)
-- `/speckit.multi-agent.implement`: Implement feature to GREEN state
-- `/speckit.multi-agent.review`: Review architecture and code
-- `/speckit.multi-agent.validate`: Validate full feature lifecycle
+- `/speckit.matd.test`: Generate failing tests (RED state)
+- `/speckit.matd.implement`: Implement feature to GREEN state
+- `/speckit.matd.review`: Review architecture and code
+- `/speckit.matd.validate`: Validate full feature lifecycle
 
 ## Implementation Notes
 
