@@ -1,15 +1,57 @@
-# Harness Tooling - MATD Plugin Marketplace
+# Harness Tooling - Multi-Agent Development Marketplace
 
-**Multi-Agent Test-Driven Development (MATD) skills, agents, and commands for Claude Code, OpenCode, and Gemini CLI.**
+**Skills, agents, commands, and workflow integrations for Claude Code, OpenCode, Gemini CLI, and SpecKit.**
 
 ---
 
 ## What's Inside
 
-- **MATD Plugin** - Complete workflow with 5 specialized agents (Orchestrator, Architect, Specifier, Critical Thinker, QA, Dev)
 - **70+ Skills** - Reusable expertise in architecture, development, testing, orchestration
-- **5 Workflow Commands** - `/matd-01-specification` through `/matd-04-implement`
+- **Multiple Workflow Integrations** - MATD (Multi-Agent Test-Driven Development) for different CLI ecosystems
 - **C4 Architecture** - Progressive disclosure with level-specific guidance (Context → Container → Component → Code)
+- **SpecKit Extension** - PRIES workflow for spec-kit CLI
+- **Claude Code Plugin** - Native plugin support for Claude Code sessions
+
+---
+
+## MATD: Two Integration Points
+
+This repository provides **two distinct artifacts** for the MATD (Multi-Agent Test-Driven Development) workflow:
+
+### 1. matd SpecKit Extension
+- **Location**: `spec-kit-multi-agent-tdd/`
+- **Purpose**: SpecKit CLI extension implementing PRIES workflow (PM → Refine → Implement → Evaluate → Simplify)
+- **Usage**: Integrates with GitHub's SpecKit tool (`specify` CLI)
+- **Commands**: `/speckit.matd.test`, `/speckit.matd.execute`, `/speckit.matd.specify-*`
+- **Audience**: Teams using SpecKit for specification-driven development
+- **Installation**: Via SpecKit extension system (`specify extension add`)
+
+### 2. matd Claude Code Plugin
+- **Location**: `.agents/plugins/matd/`
+- **Purpose**: Skills, agents, and commands for Claude Code marketplace
+- **Usage**: Add `plugins: [matd]` to `.harness.yaml` for marketplace integration
+- **Commands**: `/matd-01-specification` through `/matd-04-implement`
+- **Audience**: Claude Code users working in harness sandbox or standalone projects
+- **Installation**: Via marketplace manifest (see Quick Install below)
+
+### How They Relate
+
+Both implementations share the same **Multi-Agent TDD methodology**:
+- Specialized agents (Orchestrator, Architect, Specifier, QA, Dev, Critical Thinker)
+- Test-driven development with RED → GREEN → REFACTOR cycle
+- Progressive architectural disclosure (C4 model)
+- Structured artifact creation (specs, plans, tests, implementations)
+
+They differ in:
+- **CLI integration layer** - SpecKit extension vs Claude Code plugin manifest
+- **Command namespace** - `/speckit.matd.*` vs `/matd-*`
+- **Artifact format** - SpecKit templates vs OpenSpec directory structure
+- **Execution model** - SpecKit hooks vs Claude Code agent orchestration
+
+**Which to use?**
+- Use **SpecKit extension** if working in a SpecKit-managed codebase (`specify init` was run)
+- Use **Claude Code plugin** for general Claude Code workflows or harness sandbox projects
+- Both can coexist; choose based on primary workflow tool
 
 ---
 

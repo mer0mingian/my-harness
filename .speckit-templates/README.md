@@ -2,6 +2,8 @@
 
 This directory contains company-specific templates for SpecKit-driven development workflows. Teams should populate these directories with Markdown templates that align with company standards and practices.
 
+**Related workflows:** These templates are used by the **matd SpecKit extension** (`spec-kit-multi-agent-tdd/`), which implements the MATD (Multi-Agent Test-Driven Development) workflow for the SpecKit CLI. For Claude Code users, see the **matd Claude Code plugin** (`.agents/plugins/matd/`) instead. Both share the same methodology but integrate with different CLI systems. See [AGENTS.md](../AGENTS.md) for details.
+
 ## Directory Structure
 
 ```

@@ -245,7 +245,14 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 
 ## SpecKit Multi-Agent TDD
 
-Active planning documents for the Multi-Agent TDD Workflow implementation, located in `speckit-tdd/plans/`.
+**Important:** This repository contains **two distinct MATD (Multi-Agent Test-Driven Development) implementations**:
+
+1. **matd SpecKit Extension** (`spec-kit-multi-agent-tdd/`) - For SpecKit CLI integration
+2. **matd Claude Code Plugin** (`.agents/plugins/matd/`) - For Claude Code marketplace
+
+Both share the same MATD methodology but integrate with different CLI systems. See [AGENTS.md](../AGENTS.md) for detailed comparison.
+
+Active planning documents for the SpecKit extension implementation, located in `speckit-tdd/plans/`.
 
 | Document | Purpose |
 |----------|---------|

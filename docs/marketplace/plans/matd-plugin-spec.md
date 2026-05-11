@@ -6,9 +6,13 @@
 
 ---
 
+**Scope Note:** This specification describes the **matd Claude Code plugin** (`.agents/plugins/matd/`). The repository also contains a separate **matd SpecKit extension** (`spec-kit-multi-agent-tdd/`) that implements the same MATD methodology for the SpecKit CLI. See [AGENTS.md](../../../AGENTS.md) for the distinction between these two artifacts.
+
+---
+
 ## Purpose
 
-The **MATD (Multi-Agent Test-Driven Development) Plugin** provides the complete workflow runtime for SpecKit-based test-driven development. It replaces the STDD/PRIES workflow implementations with a unified, diagram-driven approach.
+The **MATD (Multi-Agent Test-Driven Development) Plugin** provides the complete workflow runtime for Claude Code sessions. It implements the MATD methodology with specialized agents and marketplace skills.
 
 ## Plugin Architecture
 

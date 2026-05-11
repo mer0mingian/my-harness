@@ -6,9 +6,15 @@
 
 ---
 
-## Quick Start
+## Overview
 
-The SpecKit Multi-Agent TDD extension adds AI-powered discovery, solution design, and test-driven development workflows to GitHub's SpecKit.
+The **SpecKit Multi-Agent TDD extension** (also called "matd SpecKit extension") adds AI-powered discovery, solution design, and test-driven development workflows to GitHub's SpecKit.
+
+**Important:** This is the **SpecKit CLI integration**. If you are using **Claude Code** without SpecKit, see the **matd Claude Code plugin** (`.agents/plugins/matd/`) instead. Both implement the same MATD (Multi-Agent Test-Driven Development) methodology but integrate with different CLI systems. See [AGENTS.md](../AGENTS.md) for details.
+
+---
+
+## Quick Start
 
 ### Installation
 
