@@ -1,0 +1,120 @@
+---
+schema_version: "1.0"
+workflow:
+  id: "matd-tdd"
+  name: "MATD Test-Driven Development"
+  version: "1.0.0"
+  description: "Execute full TDD workflow (test → implement → review → commit)"
+
+inputs:
+  feature_id:
+    type: string
+    required: true
+    description: "Feature identifier (e.g., 'feat-123')"
+  mode:
+    type: string
+    required: false
+    default: "auto"
+    enum: ["auto", "interactive"]
+    description: "Execution mode: 'auto' runs all steps sequentially, 'interactive' pauses for approval"
+  project_root:
+    type: string
+    required: false
+    default: "."
+    description: "Project root directory (default: current directory)"
+
+steps:
+  - id: test
+    name: "Generate RED state tests"
+    description: "Generate failing tests from acceptance criteria"
+    command: speckit.matd.test
+    input:
+      args: "{{ inputs.feature_id }}"
+    exit_codes:
+      0: "Tests generated (RED state valid)"
+      1: "Validation failure (spec not found, no AC, tests GREEN)"
+      2: "Tests broken (TEST_BROKEN, ENV_BROKEN) - escalation required"
+    on_failure: halt
+
+  - id: review-tests
+    name: "Interactive checkpoint: test"
+    type: gate
+    condition: "{{ inputs.mode == 'interactive' }}"
+    prompt: |
+      Continue to next step? (y/n):
+    on_abort:
+      status: "ABORTED"
+      exit_code: 0
+
+  - id: implement
+    name: "Implement feature (GREEN state)"
+    description: "Implement feature to pass all tests"
+    command: speckit.matd.implement
+    input:
+      args: "{{ inputs.feature_id }}"
+    exit_codes:
+      0: "Implementation complete (GREEN state valid)"
+      1: "Tests still failing (implementation incomplete)"
+      2: "Critical failure (design issues, broken tests) - escalation required"
+    on_failure: halt
+
+  - id: review-implement
+    name: "Interactive checkpoint: implement"
+    type: gate
+    condition: "{{ inputs.mode == 'interactive' }}"
+    prompt: |
+      Continue to next step? (y/n):
+    on_abort:
+      status: "ABORTED"
+      exit_code: 0
+
+  - id: review
+    name: "Parallel review (matd-architect + matd-qa)"
+    description: "Review implementation and tests"
+    command: speckit.matd.review
+    input:
+      args: "{{ inputs.feature_id }}"
+    exit_codes:
+      0: "Reviews complete (implementation and arch reviews)"
+      1: "Validation failure (missing implementation notes, incomplete reviews)"
+      2: "BLOCKED verdict (review failed, changes required) - escalation required"
+    on_failure: halt
+
+  - id: review-review
+    name: "Interactive checkpoint: review"
+    type: gate
+    condition: "{{ inputs.mode == 'interactive' }}"
+    prompt: |
+      Continue to next step? (y/n):
+    on_abort:
+      status: "ABORTED"
+      exit_code: 0
+
+  - id: commit
+    name: "Commit changes"
+    description: "Commit changes to git with workflow summary"
+    command: speckit.matd.commit
+    input:
+      args: "{{ inputs.feature_id }}"
+    exit_codes:
+      0: "Committed successfully - workflow complete"
+      1: "Validation failure (uncommitted changes, validation errors)"
+      2: "System error (git not available, permissions) - escalation required"
+    on_failure: halt
+
+exit_codes:
+  0: "Success - workflow completed or user aborted in interactive mode"
+  1: "Validation failure at any step"
+  2: "Escalation required - critical failure in workflow step"
+
+configuration:
+  fail_fast: true
+  track_progress: true
+  preserve_artifacts: true
+
+related_commands:
+  - speckit.matd.test
+  - speckit.matd.implement
+  - speckit.matd.review
+  - speckit.matd.commit
+  - speckit.matd.validate

@@ -12,7 +12,6 @@
 | **0. Product-Level** | | | | |
 | | `/speckit.matd.specify-product-brief`<br/>*(NEW - Phase 3)* | `general-grill-me` | • Interview user to elicit product vision<br/>• Generate product brief for NEW products | `product-brief.md` |
 | | `/speckit.matd.specify-adr`<br/>*(NEW - Phase 3)* | `general-grill-me`<br/>`arch-mermaid-diagrams` | • Interview user about architectural decision<br/>• Generate standalone ADR with decision diagram | `adr-NNN-{slug}.md` |
-| | `/speckit.matd.specify-test-strategy`<br/>*(NEW - Phase 3)* | `general-grill-me`<br/>`dev-tdd`<br/>`arch-mermaid-diagrams` | • Interview user to define testing approach<br/>• Generate test strategy with test pyramid ratios<br/>• Optional: Create test pyramid visualization | `TEST_STRATEGY.md`<br/>`test-pyramid.md` (optional) |
 | **1. Discovery** | | | | |
 | | `/speckit.specify` | SpecKit native | • Create feature specification with automatic numbering, branch creation, directory structure | `${feature_id}-spec.md` |
 | **2. Solution Design** | | | | |
@@ -29,7 +28,7 @@
 | | `/speckit.matd.implement`<br/>*(Phase 2 - DONE)* | `dev-tdd`<br/>`stdd-make-constrained-implementation` | • Validate RED state before implementation<br/>• Implement feature to achieve GREEN state<br/>• Run integration checks (ruff, mypy)<br/>• Delegate to @dev-specialist agent | `${feature_id}-impl-notes.md` (optional)<br/>Source code in `src/` |
 | | `/speckit.matd.review`<br/>*(Phase 2 - DONE)* | `review-check-correctness`<br/>`review-simplify-complexity` | • Parallel architecture + code review<br/>• Delegate to @arch-specialist + @review-specialist (parallel)<br/>• Conflict resolution (safety wins)<br/>• Review cycles (max 3) | `${feature_id}-arch-review.md`<br/>`${feature_id}-code-review.md` |
 | | `/speckit.matd.commit`<br/>*(Phase 2 - DONE)* | `general-verification-before-completion` | • Validate all mandatory artifacts exist<br/>• Validate evidence chain (RED→GREEN proof)<br/>• Generate workflow summary<br/>• Create git commit | `${feature_id}-workflow-summary.md`<br/>Git commit |
-| | `/speckit.matd.execute`<br/>*(Phase 2 - DONE)* | Orchestrates all above | • Execute full TDD workflow: test → implement → review → commit<br/>• Halt on gate failures with diagnostics<br/>• Interactive mode available | All artifacts from test/implement/review/commit |
+| | `speckit workflow run workflows/matd-tdd.yml` | Orchestrates all above | • Execute full TDD workflow: test → implement → review → commit<br/>• Halt on gate failures with diagnostics<br/>• Interactive mode available via `--mode interactive` | All artifacts from test/implement/review/commit |
 | | `/speckit.implement` | SpecKit native | • Execute implementation based on plan/tasks/spec artifacts | Source code changes |
 | | `/speckit.agent-assign.execute` | Agent-Assign ext | • Execute tasks by spawning assigned agent for each task | Source code, tests, docs per task |
 
@@ -82,8 +81,8 @@
 
 **Option A: Multi-Agent TDD Workflow (Recommended)**
 ```bash
-# Full automated workflow
-/speckit.matd.execute feat-123
+# Full automated workflow via workflow runtime
+speckit workflow run workflows/matd-tdd.yml --feature-id feat-123
 
 # Or step-by-step
 /speckit.matd.test feat-123
@@ -146,7 +145,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │                   IMPLEMENTATION PHASE                          │
 ├─────────────────────────────────────────────────────────────────┤
-│ /speckit.matd.execute (orchestrates all below)          │
+│ speckit workflow run workflows/matd-tdd.yml (orchestrates all)  │
 │                                                                  │
 │ /speckit.matd.test                                      │
 │   ├─> feat-123-test-design.md                                  │
@@ -207,7 +206,7 @@
 | `/speckit.matd.implement` | `<feature-id>`<br/>`[--skip-integration]` | ✅ **Done** | Validates RED→GREEN, implements feature, runs integration checks, delegates to @dev-specialist | `${feature_id}-impl-notes.md`<br/>`src/*.py` |
 | `/speckit.matd.review` | `<feature-id>`<br/>`[--max-cycles=N]` | ✅ **Done** | Parallel architecture + code review, conflict resolution, review cycles (max 3) | `${feature_id}-arch-review.md`<br/>`${feature_id}-code-review.md` |
 | `/speckit.matd.commit` | `<feature-id>` | ✅ **Done** | Validates artifacts + evidence, generates workflow summary, creates git commit | `${feature_id}-workflow-summary.md`<br/>Git commit |
-| `/speckit.matd.execute` | `<feature-id>`<br/>`[--mode=auto\|interactive]` | ✅ **Done** | Orchestrates test→implement→review→commit workflow with gate enforcement | All test/implement/review/commit artifacts |
+| `speckit workflow run workflows/matd-tdd.yml` | `--feature-id <id>`<br/>`[--mode interactive]` | ✅ **Done** | Orchestrates test→implement→review→commit workflow with gate enforcement via workflow runtime | All test/implement/review/commit artifacts |
 
 ---
 
@@ -273,13 +272,12 @@ This table shows the complete mapping of MATD commands to their assigned agents,
 |---------|-------|---------------|-----------------|---------|
 | `/speckit.matd.specify-product-brief` | matd-specifier | general-grill-me, stdd-project-summary | `docs/product-brief.md` | Product-level vision and context for new products |
 | `/speckit.matd.specify-adr` | matd-architect | general-grill-me, arch-mermaid-diagrams | `docs/architecture/decisions/adr-NNN-{slug}.md` | Architecture decision records with diagrams |
-| `/speckit.matd.specify-test-strategy` | matd-qa | general-grill-me, dev-tdd, arch-mermaid-diagrams | `docs/testing/TEST_STRATEGY.md` | Test pyramid, patterns, coverage targets |
 | `/speckit.matd.specify-solution-design` | matd-architect | arch-c4-architecture, arch-mermaid-diagrams, arch-smart-docs | `openspec/changes/<id>/design.md` + C4 diagrams | Technical design with 4 architectural views |
 | `/speckit.matd.test` | matd-qa | dev-tdd, stdd-test-author-constrained | `tests/*.py`, `${feature_id}-test-design.md` | RED state - failing tests with design doc |
 | `/speckit.matd.implement` | matd-dev | dev-tdd, stdd-make-constrained-implementation | `src/*.py`, `${feature_id}-impl-notes.md` | GREEN state - implementation to pass tests |
 | `/speckit.matd.review` | matd-architect, matd-review | review-check-correctness, review-simplify-complexity | `${feature_id}-arch-review.md`, `${feature_id}-code-review.md` | Parallel architecture and code review |
 | `/speckit.matd.commit` | matd-orchestrator | general-verification-before-completion | `${feature_id}-workflow-summary.md`, git commit | Evidence validation and workflow summary |
-| `/speckit.matd.execute` | matd-orchestrator | Orchestrates test/implement/review/commit | All artifacts from sub-commands | Full TDD workflow orchestration |
+| `speckit workflow run workflows/matd-tdd.yml` | matd-orchestrator | Orchestrates test/implement/review/commit | All artifacts from sub-commands | Full TDD workflow orchestration via workflow runtime |
 
 ### Notes:
 - **Product-brief is optional**: Specs can exist without a product-brief

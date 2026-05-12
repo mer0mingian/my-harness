@@ -54,7 +54,7 @@ The **SpecKit Multi-Agent TDD extension** (also called "matd SpecKit extension")
 ```
 
 This uses the "grill-me" technique — the AI asks you detailed questions to build shared understanding. Outputs:
-- `feat-001-prd.md` — Product requirements document
+- `product-brief.md` — Product requirements document
 - `technical-constitution.md` — Non-negotiable technical constraints
 
 ---
@@ -104,10 +104,17 @@ Outputs:
 **Option A: Fully Automated Workflow (Recommended)**
 
 ```bash
-/speckit.matd.execute feat-001
+# Option A1: Use workflow (requires SpecKit workflow runtime)
+speckit workflow run workflows/matd-tdd.yml --feature-id feat-001
+
+# Option A2: Run commands individually
+/speckit.matd.test feat-001
+/speckit.matd.implement feat-001
+/speckit.matd.review feat-001
+/speckit.matd.commit feat-001
 ```
 
-This single command runs the complete TDD cycle:
+The workflow or command sequence runs the complete TDD cycle:
 1. **Test** — Generates failing tests (RED state)
 2. **Implement** — Writes minimal code to make tests pass (GREEN state)
 3. **Review** — Parallel architecture + code review by MATD agents
@@ -138,7 +145,7 @@ This single command runs the complete TDD cycle:
 | Command | Purpose | Outputs |
 |---------|---------|---------|
 | `/speckit.specify <description>` | Create feature specification | `feat-NNN-spec.md` |
-| `/speckit.matd.specify-product-brief <feature-id>` | Deep requirements discovery via Q&A | `feat-NNN-prd.md`<br/>`technical-constitution.md` |
+| `/speckit.matd.specify-product-brief <feature-id>` | Deep requirements discovery via Q&A | `product-brief.md`<br/>`technical-constitution.md` |
 
 ### Design Commands
 
@@ -158,7 +165,7 @@ This single command runs the complete TDD cycle:
 
 | Command | Arguments | Purpose | Outputs |
 |---------|-----------|---------|---------|
-| `/speckit.matd.execute` | `<feature-id>` `[--mode=auto\|interactive]` | Full TDD workflow | All artifacts + commit |
+| `speckit workflow run workflows/matd-tdd.yml` | `--feature-id <id>` `[--mode interactive]` | Full TDD workflow via workflow runtime | All artifacts + commit |
 | `/speckit.matd.test` | `<feature-id>` | Write failing tests (RED) | `feat-NNN-test-design.md`<br/>`tests/test_*.py` |
 | `/speckit.matd.implement` | `<feature-id>` `[--skip-integration]` | Implement feature (GREEN) | `feat-NNN-impl-notes.md`<br/>`src/*.py` |
 | `/speckit.matd.review` | `<feature-id>` `[--max-cycles=N]` | Architecture + code review | `feat-NNN-arch-review.md`<br/>`feat-NNN-code-review.md` |
@@ -204,6 +211,21 @@ gates:
   max_review_cycles: 3        # Stop after N review iterations
   convergence_detection: true # Stop if reviews repeat same findings
 ```
+
+---
+
+## Test Strategy (Moved to Constitution)
+
+The test strategy is now defined at the project level in the constitution, not per-feature.
+
+To set your project's test strategy:
+
+```bash
+/speckit.constitution \
+  "Test Strategy: Integration-first (pytest), TDD mandatory, coverage >80%"
+```
+
+Customize the strategy string based on your project's testing approach. The test strategy becomes part of the constitution and applies to all features in the project.
 
 ---
 
@@ -312,7 +334,7 @@ After `/speckit.matd.specify-solution-design`, read the ADR before coding. The A
 ### 5. Use Interactive Mode for Learning
 
 ```bash
-/speckit.matd.execute feat-001 --mode=interactive
+speckit workflow run workflows/matd-tdd.yml --feature-id feat-001 --mode interactive
 ```
 
 Interactive mode pauses between steps, letting you review artifacts and approve next actions. Great for learning the workflow.
