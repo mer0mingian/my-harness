@@ -79,10 +79,11 @@ What are you building?
 ## References
 
 - [UV CLI Reference](references/uv-commands.md)
-- [Project Templates & Scaffolding](references/project-scaffolding.md)
 - [pyproject.toml Configuration](references/pyproject.md)
 - [Packaging & PyPI Guide](references/packaging.md)
-- [Migration Guide (Poetry/Pip)](references/migration-guides.md)
+- [Migration Checklist (Poetry/Pip)](references/migration-checklist.md)
+- [Testing Setup](references/testing.md)
+- [Security Tooling](references/security-setup.md)
 
 ---
 

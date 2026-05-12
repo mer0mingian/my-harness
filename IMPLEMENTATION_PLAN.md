@@ -145,10 +145,6 @@ The MATD (Multi-Agent Test-Driven Development) extension implements a complete T
 | **7. Parallel Review**        | `/speckit.matd.review`                  | `docs/reviews/{id}-arch.md` + `{id}-code.md`   | matd-architect + matd-qa | review-check-correctness, review-simplify-complexity | **Keep as-is (unique value)**                                                                                                                            |
 | **8. Commit & Summary**       | `/speckit.matd.commit`                  | `docs/features/{id}-summary.md` + git commit     | matd-critical-thinker                      | verification-before-completion                       | **Keep - Add doc update hooks**                                                                                                                          |
 
-|  |  |  |  |
-| - | - | - | - |
-
-
 **Important**: The core MATD subagent architecture (matd-qa, matd-dev, matd-architect, matd-critical-thinker) **remains unchanged**. Only orchestration and specification discovery commands are affected.
 
 ### 2.2 Simplified Workflow (After Implementation)
