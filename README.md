@@ -88,14 +88,18 @@ git clone <harness-tooling-url> .harness-tooling
 # OpenCode auto-discovers agents/skills in .agents/
 ```
 
-### Gemini CLI (Planned for v2)
+### SpecKit Extension
 
 ```bash
-cd .gemini/extensions/matd-research
-gemini extensions install .
+specify extension add harness-tdd-workflow \
+  --from /path/to/harness-tooling/spec-kit-multi-agent-tdd
 ```
 
-**Note:** Gemini support is scaffolded but not implemented in v1.
+### Complete Registration Guide
+
+For detailed installation instructions, troubleshooting, and advanced topics, see [docs/PLUGIN_REGISTRATION_GUIDE.md](docs/PLUGIN_REGISTRATION_GUIDE.md).
+
+**Note:** Gemini CLI support is scaffolded but not implemented in v1.
 
 ---
 

@@ -37,6 +37,8 @@ The **SpecKit Multi-Agent TDD extension** (also called "matd SpecKit extension")
 4. **Configure** (optional):
    Copy `harness-tdd-config.yml.template` to `.specify/harness-tdd-config.yml` and customize agent assignments and artifact paths.
 
+**For detailed installation instructions and troubleshooting**, see [../docs/PLUGIN_REGISTRATION_GUIDE.md](../docs/PLUGIN_REGISTRATION_GUIDE.md).
+
 ---
 
 ## Typical Workflow

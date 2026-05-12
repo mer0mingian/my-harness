@@ -297,5 +297,6 @@ specify extension reload harness-tdd-workflow
 - Both can coexist in a project for teams using multiple tools
 
 For installation and usage details:
-- Claude Code plugin: See [README.md](README.md#quick-install)
-- SpecKit extension: See [spec-kit-multi-agent-tdd/USER-GUIDE.md](spec-kit-multi-agent-tdd/USER-GUIDE.md)
+- **Quick Start**: [README.md](README.md#quick-install)
+- **Complete Registration Guide**: [docs/PLUGIN_REGISTRATION_GUIDE.md](docs/PLUGIN_REGISTRATION_GUIDE.md)
+- **SpecKit Usage**: [spec-kit-multi-agent-tdd/USER-GUIDE.md](spec-kit-multi-agent-tdd/USER-GUIDE.md)
