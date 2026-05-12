@@ -395,9 +395,30 @@ After completing implementation:
 
 ---
 
+## Automated Documentation
+
+After completing feature implementation, update C4 diagrams and Code Graph Context:
+
+```bash
+/speckit.matd.update-docs feat-001
+```
+
+This incrementally regenerates:
+- **C4 architecture diagrams** (docs/c4/)
+- **Code Graph Context index** (.cgc/)
+
+**Optional**: Enable automatic updates via SpecKit hooks. See [AUTOMATION.md](docs/AUTOMATION.md) for:
+- Manual vs automatic workflows
+- Hook configuration examples
+- Performance tuning
+- Troubleshooting
+
+---
+
 ## Getting Help
 
 - **Full command reference**: See [docs/references/COMMANDS-REFERENCE.md](docs/references/COMMANDS-REFERENCE.md)
+- **Automated documentation**: See [docs/AUTOMATION.md](docs/AUTOMATION.md)
 - **Configuration schema**: See [config-schema.json](config-schema.json)
 - **Agent definitions**: See `harness-tooling/.claude/agents/matd-*.md`
 - **Design history**: See archived planning docs in `docs/speckit-tdd/archive/`
