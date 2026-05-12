@@ -1,17 +1,13 @@
 ---
-description: "Validate evidence artifacts and create workflow summary before git commit"
+description: "Validate evidence artifacts and create workflow summary before git commit using SpecKit"
 tools:
-  - 'filesystem/read'
-  - 'filesystem/write'
   - 'bash/execute'
-scripts:
-  load_config: lib/config.py
-  find_artifact: lib/artifacts.py
-  generate_summary: lib/templates.py
+requires:
+  - speckit
 exit_codes:
   0: "Success - workflow summary created, ready for commit"
   1: "Validation failure - missing required artifacts from previous steps"
-  2: "Escalation required - missing template or permission error"
+  2: "Escalation required - template error or SpecKit failure"
 ---
 
 # Commit Workflow (Multi-Agent TDD Phase 6)
@@ -20,13 +16,9 @@ This command validates all evidence artifacts from the Multi-Agent TDD workflow 
 
 ## Prerequisites
 
-- All workflow steps completed:
-  - Test Design artifact (Step 7)
-  - Implementation Notes artifact (Step 8)
-  - Architecture Review artifact (Step 9)
-  - Code Review artifact (Step 9)
-- Configuration file at `.specify/harness-tdd-config.yml` (optional, uses defaults if missing)
-- Jinja2 template engine installed
+- All workflow steps completed (Test Design, Implementation Notes, Architecture Review, Code Review)
+- SpecKit CLI installed and configured
+- Configuration file at `.specify/harness-tdd-config.yml` (optional, uses defaults)
 
 ## User Input
 
@@ -38,74 +30,57 @@ This command validates all evidence artifacts from the Multi-Agent TDD workflow 
 
 ## Step 1: Load Configuration
 
-Load harness configuration from `.specify/harness-tdd-config.yml` or use defaults:
+SpecKit loads configuration from `.specify/harness-tdd-config.yml` or uses defaults.
 
-**Default configuration**:
-```yaml
-version: '1.0'
-artifacts:
-  root: 'docs/features'
-  types:
-    spec: 'spec'
-    test_design: 'test-design'
-    impl_notes: 'impl-notes'
-    arch_review: 'arch-review'
-    code_review: 'code-review'
-    workflow_summary: 'workflow-summary'
+**Key configuration**:
+- `artifacts.root`: Base directory for artifacts (default: `docs/features`)
+- `workflow.agent_timeout`: Task timeout in minutes (default: 30)
+- Artifact paths: `{artifacts.root}/{feature_id}-{artifact_type}.md`
+
+## Step 2: Validate Required Artifacts
+
+Validate all required artifacts using SpecKit:
+
+**SpecKit validation command**:
+```bash
+specify artifact list --feature-id "$feature_id" --required --quiet
 ```
 
-**Config keys loaded**:
-- `workflow.agent_timeout` — agent task timeout in minutes (default: 30 if key missing)
-- `jira.auto_create_stories` — when `true` and `jira.local_mode: true`, call `auto_create_story_structure` for the feature before validation (default: false); when `false`, skip silently
-- `jira.local_mode` — enable local Jira structure management (default: false)
-
-**Auto-create story structure** (when `jira.auto_create_stories: true` and `jira.local_mode: true`):
-- Call `auto_create_story_structure(feature_id, epic_id, story_id)` from `lib/jira_local.py`
-- `epic_id` and `story_id` are read from config keys `jira.epic_id` and `jira.story_id`
-- If file already exists, no error is raised (idempotent)
-- If `jira.auto_create_stories: false`, this step is skipped silently
-
-**Artifact paths constructed as**:
-- Pattern: `{artifacts.root}/{feature_id}-{artifact_type}.md`
-- Example: `docs/features/feat-123-test-design.md`
-
-## Step 2: Find Required Artifacts
-
-Locate all required artifacts for validation:
-
-**Required artifacts**:
+**Required artifacts** (validated by SpecKit):
 1. **Test Design** (Step 7): `{feature_id}-test-design.md`
 2. **Implementation Notes** (Step 8): `{feature_id}-impl-notes.md`
 3. **Architecture Review** (Step 9): `{feature_id}-arch-review.md`
 4. **Code Review** (Step 9): `{feature_id}-code-review.md`
 
-**Validation**:
-- Each artifact path constructed from config
-- Check file exists at expected location
-- Collect missing artifacts
-
-**On failure**: List all missing artifacts → ❌ Exit 1 with error
+**On failure**: SpecKit returns non-zero exit code → ❌ Exit 1 with error
 
 **Example failure output**:
 ```
-✗ Validation failure: Missing required artifacts
-  - Test Design (Step 7)
-  - Code Review (Step 9)
+✗ Validation failure: Missing required artifacts for feature: feat-123
 
-Run previous workflow steps to create missing artifacts.
+Run this command to see which artifacts are missing:
+  specify artifact list --feature-id feat-123 --required
 ```
 
 ## Step 3: Generate Workflow Summary
 
-Create workflow summary artifact from template. Complete this step within ${agent_timeout} minutes (default: 30). If the summary cannot be generated within the time limit, output partial results with what has been completed, then escalate to human with the list of remaining artifacts to include.
+Create workflow summary artifact using SpecKit template rendering. Complete this step within ${agent_timeout} minutes (default: 30). If the summary cannot be generated within the time limit, output partial results with what has been completed, then escalate to human with the list of remaining artifacts to include.
+
+**SpecKit render command**:
+```bash
+specify artifact render workflow-summary \
+  --feature-id "$feature_id" \
+  --template workflow-summary-template.md \
+  --output "docs/features/${feature_id}-summary.md"
+```
 
 **Output path**: `{artifacts.root}/{feature_id}-workflow-summary.md`
 
-**Template location** (checked in order):
+**Template location** (SpecKit resolves in order):
 1. Custom: `.specify/templates/workflow-summary-template.md`
-2. Built-in: `templates/workflow-summary-template.md`
+2. Built-in: SpecKit default template
 
-**Template variables**:
+**Template variables** (auto-populated by SpecKit):
 - `feature_id`: Feature identifier
 - `feature_name`: Extracted from spec or defaults to feature_id
 - `timestamp`: ISO 8601 UTC timestamp
@@ -115,30 +90,17 @@ Create workflow summary artifact from template. Complete this step within ${agen
 - `arch_review_path`: Path to architecture review artifact
 - `code_review_path`: Path to code review artifact
 
-**Template engine**: Jinja2 with StrictUndefined
+**On template not found or render failure**: ❌ Exit 2 with escalation
 
-**On template not found**: ❌ Exit 2 with escalation
-
-**Example escalation output**:
+**Example failure output**:
 ```
-✗ Escalation required: Template directory not found: /path/to/templates
+✗ ERROR: Failed to generate workflow summary
 
-The workflow summary template is missing or cannot be accessed.
-Template should be at: /path/to/.specify/templates/workflow-summary-template.md
+Check that the template exists and is valid:
+  .specify/templates/workflow-summary-template.md
 ```
 
-## Step 4: Write Workflow Summary
-
-Write rendered template to output path:
-
-**Actions**:
-1. Create parent directory if needed (mkdir -p)
-2. Write content with UTF-8 encoding
-3. Verify file created successfully
-
-**On permission error**: ❌ Exit 2 with escalation
-
-## Step 5: Display Success Message
+## Step 4: Display Success Message
 
 Print confirmation with artifact paths and next steps.
 
@@ -159,13 +121,13 @@ Next steps:
   3. Create pull request for review
 ```
 
-## Git Commit (Manual Step)
+## Step 5: Git Commit (Manual Step)
 
 After workflow summary generated, create git commit manually:
 
 **Stage artifacts**:
 ```bash
-git add docs/features/${FEATURE_ID}-*.md
+git add docs/features/${FEATURE_ID}-*.md src/ tests/
 ```
 
 **Commit message format**:
@@ -177,13 +139,18 @@ git commit -m "feat(${FEATURE_ID}): implement feature with TDD workflow
 - Reviews: Arch + Code approved
 - Evidence: RED→GREEN validated
 
-Workflow summary: docs/features/${FEATURE_ID}-workflow-summary.md"
+Workflow summary: docs/features/${FEATURE_ID}-workflow-summary.md
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```
 
 **Next steps after commit**:
 1. Review workflow summary
 2. Create pull request
 3. Link to workflow summary in PR description
+
+**Note on documentation updates**:
+C4 diagrams and Code Graph Context (CGC) index updates are automated via GitHub Actions on PR merge to main/live branches. See `.github/workflows/auto-docs.yml` for automated documentation pipeline. Manual execution of `deepwiki generate` or `cgc index` is not required.
 
 ## Exit Codes
 
@@ -201,64 +168,29 @@ Workflow summary: docs/features/${FEATURE_ID}-workflow-summary.md"
 
 ## Output Examples
 
-### Success (all artifacts validated)
-
+**Success**:
 ```
 ✓ Success!
-  Workflow Summary: /path/to/docs/features/feat-auth-login-workflow-summary.md
+  Workflow Summary: docs/features/feat-123-workflow-summary.md
 
-Artifacts validated:
-  - Test Design: /path/to/docs/features/feat-auth-login-test-design.md
-  - Implementation Notes: /path/to/docs/features/feat-auth-login-impl-notes.md
-  - Architecture Review: /path/to/docs/features/feat-auth-login-arch-review.md
-  - Code Review: /path/to/docs/features/feat-auth-login-code-review.md
-
-Next steps:
-  1. Review workflow summary: /path/to/docs/features/feat-auth-login-workflow-summary.md
-  2. Run git commit with appropriate message
-  3. Create pull request for review
+Next steps: Review summary, git commit, create PR
 ```
 
-### Validation Failure (missing artifacts)
-
+**Validation Failure**:
 ```
-✗ Validation failure: Missing required artifacts
-  - Implementation Notes (Step 8)
-  - Code Review (Step 9)
-
-Run previous workflow steps to create missing artifacts.
+✗ Missing required artifacts for feature: feat-123
+Run: specify artifact list --feature-id feat-123 --required
 ```
 
-### Escalation Required (missing template)
-
+**Template Error**:
 ```
-✗ Escalation required: Template directory not found: /path/to/spec-kit-multi-agent-tdd/templates
-
-The workflow summary template is missing or cannot be accessed.
-Template should be at: /path/to/.specify/templates/workflow-summary-template.md
+✗ Failed to generate workflow summary
+Check template: .specify/templates/workflow-summary-template.md
 ```
 
 ## Configuration Reference
 
-`.specify/harness-tdd-config.yml`:
-
-```yaml
-version: '1.0'
-artifacts:
-  root: 'docs/features'
-  types:
-    spec: 'spec'
-    test_design: 'test-design'
-    impl_notes: 'impl-notes'
-    arch_review: 'arch-review'
-    code_review: 'code-review'
-    workflow_summary: 'workflow-summary'
-```
-
-**Configuration options**:
-- `artifacts.root`: Base directory for all artifacts
-- `artifacts.types.*`: Suffix for each artifact type
-- Paths constructed as: `{root}/{feature_id}-{type}.md`
+See `.specify/harness-tdd-config.yml` for artifact paths and workflow settings. SpecKit manages artifact type resolution automatically.
 
 ## Related Commands
 
@@ -270,18 +202,19 @@ artifacts:
 ## Implementation Notes
 
 **Current behavior**:
-- Validates all required artifacts exist
-- Generates workflow summary from template
+- Uses SpecKit queries for artifact validation (no custom loops)
+- Uses SpecKit template rendering for workflow summary generation
 - Provides git commit guidance
 - Manual commit step required
+- Documentation updates automated via GitHub Actions (not manual hooks)
 
-**Template requirements**:
-- Jinja2 template engine
-- Template variables documented in Step 3
-- StrictUndefined mode (fails on missing variables)
+**SpecKit integration**:
+- `specify artifact list --required`: Validates all required artifacts exist
+- `specify artifact render`: Generates workflow summary from template
+- No custom validation loops or manual template rendering
+- No post-commit hooks (deepwiki, cgc) — handled by CI/CD
 
 **Future enhancements**:
 - Automatic git commit option
 - PR creation automation
-- Integration with CI/CD pipelines
 - Spec lifecycle update (Planned → Implemented)
