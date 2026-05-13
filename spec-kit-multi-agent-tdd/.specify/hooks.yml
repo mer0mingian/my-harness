@@ -1,0 +1,19 @@
+# SpecKit Hooks Configuration
+# Integration checks run automatically after implementation
+
+post_implement:
+  - name: lint
+    command: ruff check src/
+    critical: false
+    description: "Code linting with ruff"
+
+  - name: typecheck
+    command: mypy src/
+    critical: false
+    description: "Type checking with mypy"
+
+  # Example: Add security scanning (critical)
+  # - name: security-scan
+  #   command: bandit -r src/
+  #   critical: true
+  #   description: "Security vulnerability scanning"
