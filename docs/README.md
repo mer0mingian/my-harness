@@ -16,6 +16,7 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 | **Learn from reference implementations** | [marketplace/reference-workflows-ppries/](#reference-implementations) |
 | **Deep-dive research topics** | [deep-research/](#research--exploration) |
 | **Multi-Agent TDD workflow** | [SpecKit TDD section](#speckit-multi-agent-tdd) |
+| **Install plugins/extensions** | [PLUGIN_REGISTRATION_GUIDE.md](#plugin--extension-registration) |
 
 ---
 
@@ -240,6 +241,25 @@ This is the documentation hub for the **harness-tooling** marketplace repository
 
 **Audience:** Architects, researchers, anyone exploring advanced patterns  
 **Note:** These are exploration documents, not implementation specifications
+
+---
+
+## Plugin & Extension Registration
+
+### PLUGIN_REGISTRATION_GUIDE.md
+**Status:** ✅ Approved  
+**Last Updated:** 2026-05-12  
+**Purpose:** Comprehensive guide to installing and registering harness-tooling components  
+**Audience:** All users (Claude Code, SpecKit, OpenCode)
+
+**Contents:**
+- Installation instructions for all CLI ecosystems
+- Manifest file locations and formats
+- Verification steps and troubleshooting
+- Plugin vs Extension differences
+- Advanced topics (custom plugins/extensions)
+
+**Supersedes:** Scattered installation instructions in README.md, AGENTS.md, USER-GUIDE.md
 
 ---
 

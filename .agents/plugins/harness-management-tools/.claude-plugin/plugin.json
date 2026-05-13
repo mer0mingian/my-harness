@@ -1,0 +1,15 @@
+{
+  "name": "harness-management-tools",
+  "version": "1.0.0",
+  "description": "Plugin and extension management skills for Claude Code and SpecKit",
+  "author": {
+    "name": "Daniel Minges",
+    "email": "minged01@stepstone.com"
+  },
+  "keywords": ["plugin", "extension", "speckit", "claude-code", "marketplace"],
+  "category": "development",
+  "skills": [
+    "../../../skills/manage-plugin-creation/SKILL.md",
+    "../../../skills/manage-speckit-extension/SKILL.md"
+  ]
+}

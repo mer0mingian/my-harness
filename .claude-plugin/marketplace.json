@@ -1,5 +1,5 @@
 {
-  "name": "my-plugins",
+  "name": "harness-tooling-marketplace",
   "owner": {
     "name": "mer0mingian"
   },
@@ -8,6 +8,14 @@
       "name": "all-my-skills",
       "source": "./.claude/plugins/all-my-skills/.claude-plugin/plugin.json",
       "description": "Daniel's STDD + orchestration + review workflows for Claude Code"
+    },
+    {
+      "name": "harness-management-tools",
+      "source": "./.agents/plugins/harness-management-tools/.claude-plugin/plugin.json",
+      "description": "Plugin and extension management skills for Claude Code and SpecKit",
+      "version": "1.0.0",
+      "keywords": ["plugin", "extension", "speckit", "claude-code", "marketplace"],
+      "category": "development"
     }
   ]
 }

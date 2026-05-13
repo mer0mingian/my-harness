@@ -16,23 +16,6 @@
         }
       ]
     },
-    "execute": {
-      "file": "commands/execute.md",
-      "description": "Execute full TDD workflow (test → implement → review → commit)",
-      "usage": "/speckit.matd.execute <feature-id> [--mode=auto|interactive]",
-      "arguments": [
-        {
-          "name": "feature_id",
-          "required": true,
-          "description": "Feature identifier (e.g., 'feat-123')"
-        },
-        {
-          "name": "--mode",
-          "required": false,
-          "description": "Execution mode: auto (default) or interactive"
-        }
-      ]
-    },
     "implement": {
       "file": "commands/implement.md",
       "description": "Implement feature code (RED → GREEN)",
@@ -79,6 +62,18 @@
         }
       ]
     },
+    "update-docs": {
+      "file": "commands/update-docs.md",
+      "description": "Update C4 diagrams and Code Graph Context index after feature implementation",
+      "usage": "/speckit.matd.update-docs [feature-id]",
+      "arguments": [
+        {
+          "name": "feature_id",
+          "required": false,
+          "description": "Feature identifier for CGC tagging (default: 'unknown')"
+        }
+      ]
+    },
     "specify-product-brief": {
       "file": "commands/specify-product-brief.md",
       "description": "Create or update product brief using grill-me interview for new products",
@@ -112,18 +107,6 @@
           "name": "feature_id",
           "required": true,
           "description": "Feature identifier (e.g., 'feat-123')"
-        }
-      ]
-    },
-    "specify-test-strategy": {
-      "file": "commands/specify-test-strategy.md",
-      "description": "Define test strategy and test pyramid using grill-me interview",
-      "usage": "/speckit.matd.specify-test-strategy [project-name]",
-      "arguments": [
-        {
-          "name": "project_name",
-          "required": false,
-          "description": "Optional project identifier (determined during grill-me if not provided)"
         }
       ]
     }

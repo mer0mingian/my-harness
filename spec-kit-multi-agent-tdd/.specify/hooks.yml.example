@@ -1,0 +1,37 @@
+# SpecKit Hooks Configuration (Example with Documentation Automation)
+# Copy to .specify/hooks.yml to enable
+# Integration checks run automatically after implementation
+
+post_implement:
+  # Code quality checks
+  - name: lint
+    command: ruff check src/
+    critical: false
+    description: "Code linting with ruff"
+
+  - name: typecheck
+    command: mypy src/
+    critical: false
+    description: "Type checking with mypy"
+
+  # Documentation automation (OPTIONAL - enable if desired)
+  # Uncomment to auto-update C4 and CGC after feature implementation
+  #
+  # - name: update-c4-docs
+  #   command: bash scripts/update-c4-docs.sh "${FEATURE_ID:-unknown}"
+  #   critical: false
+  #   description: "Update C4 architecture diagrams"
+  #
+  # - name: update-cgc-index
+  #   command: bash scripts/update-cgc-index.sh "${FEATURE_ID:-unknown}"
+  #   critical: false
+  #   description: "Update Code Graph Context index"
+
+  # Security scanning (example - optional)
+  # - name: security-scan
+  #   command: bandit -r src/
+  #   critical: true
+  #   description: "Security vulnerability scanning"
+
+# Note: All hooks are non-blocking by default (critical: false)
+# Set critical: true to fail the workflow if the hook fails

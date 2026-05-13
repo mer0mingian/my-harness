@@ -20,6 +20,8 @@ exit_codes:
 
 This command runs a grill-me session to elicit high-level product vision and create a product brief. Use this for NEW products, not individual features (use `/speckit.specify` for feature specs).
 
+**Note:** This command uses the Opus agent (not a dedicated subagent) with the `general-grill-me` skill for deep requirements discovery through relentless questioning.
+
 ## Prerequisites
 
 - Product name or concept provided by user
@@ -46,11 +48,11 @@ If config file is missing or unreadable, continue with the defaults above. Log a
 
 ## Step 2: Check Existing Product Brief
 
-**Check for existing product brief:**
+**Check for existing Product Brief:**
 
 Search for: `docs/product-brief.md`
 
-- If found: mention it to the user — "Product brief already exists at `docs/product-brief.md`, will merge updates" — then proceed
+- If found: mention it to the user — "Product Brief already exists at `docs/product-brief.md`, will merge updates" — then proceed
 - If not found: continue (will create from template in Step 5)
 
 ## Step 3: Check Existing System Constitution
@@ -95,9 +97,9 @@ Use the `general-grill-me` skill throughout this step.
 ## Step 5: Generate/Update Product Brief
 
 - Fill `.speckit-templates/specs/product-brief-template.md` with answers gathered in the grill-me session
-- If existing product brief found (Step 2): merge new information into it — do not overwrite sections that are already complete unless the user provided updates in this session
+- If existing Product Brief found (Step 2): merge new information into it — do not overwrite sections that are already complete unless the user provided updates in this session
 - Save to: `docs/product-brief.md`
-- If save fails: ❌ Exit 2 with message: "Error: failed to write product brief to `docs/product-brief.md`"
+- If save fails: ❌ Exit 2 with message: "Error: failed to write Product Brief to `docs/product-brief.md`"
 - If `product-brief-template.md` is missing: ❌ Exit 2 with message: "Error: template not found at `.speckit-templates/specs/product-brief-template.md`"
 
 ## Step 6: Generate/Update System Constitution (if needed)
@@ -125,18 +127,18 @@ If no technical constraints were discussed, skip this step entirely.
 Show a final summary:
 
 ```
-✓ Product brief created/updated at: docs/product-brief.md
+✓ Product Brief created/updated at: docs/product-brief.md
 ✓ System Constitution created/updated at: docs/architecture/technical-constitution.md (if applicable)
 ⚠ Open questions saved at: docs/product-brief-open-questions.md (only if any)
 ```
 
 Suggest next step:
 
-> Product brief is now available as context for feature specifications. When creating feature specs with `/speckit.specify`, the matd-specifier agent can reference this product brief for additional context.
+> Product Brief is now available as context for feature specifications. When creating feature specs with `/speckit.specify`, the matd-specifier agent can reference this Product Brief for additional context.
 
 ## Exit Codes
 
-- **0**: Success — product brief created or updated
+- **0**: Success — Product Brief created or updated
 - **1**: Validation failure — required inputs missing
 - **2**: Escalation required — template missing or write error
 
@@ -146,7 +148,7 @@ Suggest next step:
 
 ```yaml
 artifacts:
-  root: docs                   # Root dir for product brief output
+  root: docs                   # Root dir for Product Brief output
 
 workflow:
   agent_timeout: 30            # Grill-me session timeout in minutes (default: 30)
@@ -174,4 +176,4 @@ planning:
 - Creating testable specifications
 - Planning implementation tasks
 
-**Note:** Product briefs are OPTIONAL. Feature specs can be created independently without a product brief.
+**Note:** Product Briefs are OPTIONAL. Feature specs can be created independently without a Product Brief.
