@@ -144,6 +144,24 @@ mkdir -p "${WORKSPACE_ROOT}/${PROJECT_NAME}/.litho"
 
 **Rationale:** Ensures the host source directory exists and is user-owned (not root from failed Docker runs) before container startup.
 
+### Fix D: Override WORKDIR for Litho Service (Required)
+
+Add to `harness-sandbox/docker-compose.yml` litho service block (after `image:` line):
+
+```yaml
+container_name: harness-litho-${PROJECT_NAME:-default}
+
+# Override Dockerfile WORKDIR to writable location (workspace is read-only)
+# Litho doesn't need to cd into the project - it takes --project-path argument
+working_dir: /tmp
+```
+
+**Root Cause:** The litho Dockerfile has `WORKDIR /workspace/project`, but the litho service mounts `/workspace` as read-only. During container initialization, Docker's runc attempts to create the working directory path, which fails with `mkdir /workspace/project: read-only file system`.
+
+**Rationale:** Litho doesn't need to be in the project directory as its working directory - it takes `--project-path` as a command-line argument. Overriding to `/tmp` (or any writable location) allows the container to start while maintaining the read-only workspace mount.
+
+**Additional benefit:** Adds `container_name` to match the naming pattern used by agent and cgc services.
+
 ---
 
 ## 5. Validation Steps
@@ -217,15 +235,18 @@ Execute fixes in this sequence:
    - Prevents incorrect project detection during testing
    
 2. **Apply Fix A** (restructure volume mounts)
-   - Core fix for the mount conflict
+   - Core fix for the cache mount conflict
    
-3. **Apply Fix C** (add cache pre-creation to wrapper)
+3. **Apply Fix D** (override WORKDIR in docker-compose.yml)
+   - Prevents container init failure on read-only workspace
+   
+4. **Apply Fix C** (add cache pre-creation to wrapper)
    - Defense-in-depth to prevent permission issues
 
-4. **Run validation steps 1-6** in order
+5. **Run validation steps 1-6** in order
    - Confirm each step passes before proceeding
 
-5. **Test with both project directories**
+6. **Test with both project directories**
    - From `~/repositories/sta2e-agent-workspace`
    - From `~/repositories/sta2e-vtt-lite-system`
    - Verify PROJECT_NAME auto-detection works for both
@@ -234,10 +255,12 @@ Execute fixes in this sequence:
 
 ## 7. Acceptance Criteria
 
-- [ ] Litho container starts successfully with `harness up --profile litho`
-- [ ] No OCI runtime errors in container creation
+- [ ] Litho container starts successfully with `harness up` (default profiles include litho)
+- [ ] No OCI runtime errors related to mount creation or WORKDIR
+- [ ] Container named `harness-litho-${PROJECT_NAME}` (matches naming pattern)
 - [ ] `/workspace` is mounted read-only in litho container
 - [ ] `/litho-cache` is mounted read-write in litho container
+- [ ] Container working directory is `/tmp` (not `/workspace/project`)
 - [ ] `PROJECT_NAME` auto-detection works from any invocation directory
 - [ ] `harness-sandbox/.env` does not contain hardcoded PROJECT_NAME
 - [ ] `.litho` cache directory is user-owned (not root)
