@@ -29,7 +29,7 @@ This repository provides **two distinct artifacts** for the MATD (Multi-Agent Te
 ### 2. matd Claude Code Plugin
 - **Location**: `.agents/plugins/matd/`
 - **Purpose**: Skills, agents, and commands for Claude Code marketplace
-- **Usage**: Add `plugins: [matd]` to `.harness.yaml` for marketplace integration
+- **Usage**: Add `plugins: [matd]` to `.harness.yml` for marketplace integration
 - **Commands**: `/matd-01-specification` through `/matd-04-implement`
 - **Audience**: Claude Code users working in harness sandbox or standalone projects
 - **Installation**: Via marketplace manifest (see Quick Install below)

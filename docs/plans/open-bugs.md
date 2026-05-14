@@ -1,58 +1,29 @@
 # Open Bugs
 
-These bugs have been observed on the test agent workspace located in `/home/minged01/repositories/sta2e-agent-workspace/.`
+No open bugs at this time.
 
-Deploy a separate Opus agent to investigate each agents. Create a spec using specify skill for each issue, do not apply changes.
+## Recently Resolved
 
-Have each subagent ask clarifying questions.
+All previously tracked bugs have been resolved and merged to `dev` branch:
 
-## Invalid Char in .harness.yml
+1. **Invalid Char in .harness.yml** - Fixed em-dash characters in template
+   - Spec: [docs/specs/bug-fix-invalid-char-harness-yml.md](../specs/bug-fix-invalid-char-harness-yml.md)
+   - Resolution: Replaced 28 em-dash chars with ASCII hyphens
+   - Story points: 1
 
-Reading MCP configuration: /home/minged01/repositories/sta2e-agent-workspace/.harness.yml
+2. **Default to stony compose profile** - Unified corporate/private build system
+   - Spec: [docs/specs/bug-fix-stony-compose-profile.md](../specs/bug-fix-stony-compose-profile.md)
+   - Resolution: Added `harness build --corporate/--private`, consolidated .env, deleted deprecated files
+   - Story points: 13
 
-+ ```
-  local overrides: /home/minged01/repositories/sta2e-agent-workspace/.harness.local.yml
-  File "/home/minged01/repositories/sta2e-agent-workspace/.harness.yml", line 37
-  role: Marketplace — skills, agents, commands, plugin manifests
-  ^
-  SyntaxError: invalid character '—' (U+2014)
-  [+] up 2/2
-  ```
+3. **Wrong agent yml files** - Template shipped with .yml instead of .md
+   - Spec: [docs/specs/bug-fix-wrong-agent-format.md](../specs/bug-fix-wrong-agent-format.md)
+   - Resolution: Removed .yml files, added pre-commit hook, documented .md requirement
+   - Story points: 2
 
-## Default to stony compose profile
+4. **Claude startup errors** - Plugin path mismatch for all-my-skills
+   - Spec: [docs/specs/bug-fix-claude-startup-errors.md](../specs/bug-fix-claude-startup-errors.md)
+   - Resolution: Created .claude-plugin/plugin.json, fixed marketplace.json source path
+   - Story points: 2
 
-- The wrapper **does not** support `--profile stony` for compose overlays.
-- The build of the stony image is far too complicated. Add a tag for building the private image instead, let latest point to stony.
-- harness up should support --profile private
-- harness up should not need additional flags for cgc, litho, if they are configured to start from .harness.yml.
-- consolidate the .env and .env.stony into one file. on non-corporate deployment of the sandbox, CA part should be ignored
-- check if there is an overlap between .env.stony, .env. and .litho.toml, and remove it from the .env files
-
-## Claude in workspace has weird agent yml files
-
-```
-~/repositories/sta2e-agent-workspace/.claude/agents$ ll
-total 28
-drwxr-xr-x 2 minged01 minged01 4096 May 13 22:43 ./
-drwxr-xr-x 3 minged01 minged01 4096 May 13 22:43 ../
--rw-r--r-- 1 minged01 minged01    0 May 13 22:43 .gitkeep
--rw-r--r-- 1 minged01 minged01 2215 May 13 22:43 arch-specialist.yml
--rw-r--r-- 1 minged01 minged01 2148 May 13 22:43 dev-specialist.yml
--rw-r--r-- 1 minged01 minged01 2181 May 13 22:43 qa-specialist.yml
--rw-r--r-- 1 minged01 minged01 2307 May 13 22:43 review-specialist.yml
--rw-r--r-- 1 minged01 minged01 1762 May 13 22:43 test-specialist.yml
-```
-
-Agents are defined as md files. These seem to come from an outdated version of the matd plugin. Please
-
-## Error on Claude Code startup on Host machine
-
-```
- ~/repositories/sta2e-agent-workspace
-  ⎿ SessionStart:startup says: Plugin hook error: /bin/sh: 1:
-    /home/minged01/.claude/plugins/cache/superpowers-marketplace/superpowers/4.0.0/hooks/run-hook.cmd: not found
-  ⎿ SessionStart:startup says: Plugin hook error: /bin/sh: 1:
-    /home/minged01/.claude/plugins/cache/superpowers-marketplace/superpowers/4.0.0/hooks/run-hook.cmd: not found
-```
-
-Also claude seems to be configured to use outdated models!?!
+All fixes merged and pushed to origin/dev on 2026-05-14.
