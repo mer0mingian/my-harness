@@ -1,5 +1,11 @@
 # Open Bugs
 
+These bugs have been observed on the test agent workspace located in `/home/minged01/repositories/sta2e-agent-workspace/.`
+
+Deploy a separate Opus agent to investigate each agents. Create a spec using specify skill for each issue, do not apply changes.
+
+Have each subagent ask clarifying questions.
+
 ## Invalid Char in .harness.yml
 
 Reading MCP configuration: /home/minged01/repositories/sta2e-agent-workspace/.harness.yml
