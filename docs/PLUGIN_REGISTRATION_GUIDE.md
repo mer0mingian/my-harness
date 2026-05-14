@@ -73,7 +73,7 @@ git pull origin dev
 
 ### Automatic Installation (via Workspace Manifest)
 
-If your project has a `.harness.yaml` file:
+If your project has a `.harness.yml` file:
 
 ```yaml
 plugins:

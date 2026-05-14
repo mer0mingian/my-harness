@@ -199,7 +199,7 @@ specify extension reload harness-tdd-workflow
 
 ### Can Both Coexist?
 Yes. A project can have both:
-- `.harness.yaml` referencing the matd plugin (for Claude Code)
+- `.harness.yml` referencing the matd plugin (for Claude Code)
 - `.specify/extensions/harness-tdd-workflow` (for SpecKit)
 
 They operate independently and can complement each other.

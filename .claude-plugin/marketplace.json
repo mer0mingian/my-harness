@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "all-my-skills",
-      "source": "./.claude/plugins/all-my-skills/.claude-plugin/plugin.json",
+      "source": "./.claude-plugin/plugin.json",
       "description": "Daniel's STDD + orchestration + review workflows for Claude Code"
     },
     {
