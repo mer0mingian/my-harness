@@ -23,9 +23,9 @@ cd ~/repositories/sta2e-agent-workspace
 harness up --profile litho
 ```
 
-**Expected behavior:** Litho container starts successfully with read-only workspace and writable cache.
+**Expected behavior:** Litho container starts successfully with writable workspace (litho writes documentation to architecture/).
 
-**Actual behavior:** Container creation fails with read-only filesystem error.
+**Actual behavior:** Container creation fails with read-only filesystem error during mount creation.
 
 ---
 
